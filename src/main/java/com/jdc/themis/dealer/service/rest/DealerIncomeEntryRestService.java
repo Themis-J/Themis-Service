@@ -1,11 +1,11 @@
-package com.jdc.themis.dealer.service;
+package com.jdc.themis.dealer.service.rest;
 
 import javax.time.calendar.LocalDate;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
@@ -13,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jdc.themis.dealer.dao.RefDataDAO;
+import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.Menu;
+import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
+import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesRevenueResponse;
 import com.jdc.themis.dealer.web.domain.MenuItem;
-import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesRevenueRequest;
+import com.jdc.themis.dealer.web.domain.VehicleItem;
 
 @Service
 public class DealerIncomeEntryRestService {
@@ -34,6 +37,15 @@ public class DealerIncomeEntryRestService {
 		this.refDataDAL = refDataDAL;
 	}
 
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/vehicleSalesRevenue")
+	public Response saveVehicleSalesRevenue(
+			final SaveVehicleSalesRevenueRequest request) {
+		return Response.ok().build();
+	}
+
 	@GET
 	@Path("/vehicleSalesRevenue")
 	// @Produces({"application/xml","application/json"})
@@ -45,15 +57,6 @@ public class DealerIncomeEntryRestService {
 		response.setDealerID(1);
 		response.setValidDate(LocalDate.of(2013, 8, 1));
 		return Response.ok(response).build();
-	}
-
-	@POST
-	@Produces("application/json")
-	@Consumes("application/json")
-	@Path("/vehicleSalesRevenue")
-	public Response saveVehicleSalesRevenue(
-			final SaveVehicleSalesRevenueRequest request) {
-		return Response.ok().build();
 	}
 
 	@GET
@@ -91,6 +94,24 @@ public class DealerIncomeEntryRestService {
 			item.setDisplayText(menu.getDisplayText());
 			item.setParentID(refDataDAL.getParentMenuID(menu.getId()));
 			
+			response.getItems().add(item);
+		}
+		return Response.ok(response).build();
+	}
+	
+	@GET
+	@Path("/vehicle/all")
+	// @Produces({"application/xml","application/json"})
+	@Produces({ "application/json" })
+	@Transactional(readOnly = true)
+	public Response getAllVehicles() {
+		final GetVehicleResponse response = new GetVehicleResponse();
+
+		for (final Vehicle vehicle : refDataDAL.getVehicleList()) {
+			final VehicleItem item = new VehicleItem();
+			item.setId(vehicle.getId());
+			item.setName(vehicle.getName());
+			item.setTimestamp(vehicle.getTimestamp());
 			response.getItems().add(item);
 		}
 		return Response.ok(response).build();

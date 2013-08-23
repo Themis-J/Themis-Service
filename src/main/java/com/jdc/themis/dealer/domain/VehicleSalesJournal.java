@@ -1,5 +1,12 @@
 package com.jdc.themis.dealer.domain;
 
-public class VehicleSalesJournal {
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+
+@Entity
+public class VehicleSalesJournal extends TemporalEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 }

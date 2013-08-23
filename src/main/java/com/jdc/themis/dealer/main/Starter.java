@@ -7,7 +7,14 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-
+/**
+ * Main entry to the dealer service. 
+ * 
+ * @author chen386_2000
+ *
+ * @TODO: add client for integration testing.
+ *
+ */
 public class Starter {
 	public static void main(final String[] args) throws Exception {
 		Server server = new Server(8080);

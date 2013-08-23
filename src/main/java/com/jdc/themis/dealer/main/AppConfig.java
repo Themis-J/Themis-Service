@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.ImportResource;
-import com.jdc.themis.dealer.service.DealerIncomeEntryRestService;
+import com.jdc.themis.dealer.service.rest.DealerIncomeEntryRestService;
 
 @Configuration
 @ImportResource({"classpath:META-INF/database-config.xml", 
@@ -43,7 +43,7 @@ public class AppConfig {
 	public DealerIncomeEntryRestService dealerRestService() {
 		return new DealerIncomeEntryRestService();
 	}
-
+		
 	@Bean
 	public JacksonJsonProvider jsonProvider() {
 		return new JacksonJsonProvider();

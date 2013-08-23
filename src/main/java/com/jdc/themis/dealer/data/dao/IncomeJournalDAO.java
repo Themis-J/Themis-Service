@@ -1,4 +1,4 @@
-package com.jdc.themis.dealer.dao;
+package com.jdc.themis.dealer.data.dao;
 
 public interface IncomeJournalDAO {
 
