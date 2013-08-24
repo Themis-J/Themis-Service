@@ -55,6 +55,7 @@ public class TaxJournal implements TemporalEntity, Serializable {
 	private LocalDate validDate;
 
 	@Type(type="datetime")
+	@Id
 	public Instant getTimestamp() {
 		return timestamp;
 	}
@@ -72,6 +73,7 @@ public class TaxJournal implements TemporalEntity, Serializable {
 	}
 
 	@Type(type="localdate")
+	@Id
 	public LocalDate getValidDate() {
 		return validDate;
 	}
