@@ -99,7 +99,6 @@ CREATE TABLE public.Menu
    id integer, 
    name character varying(100) NOT NULL, 
    displayText character varying(100), 
-   link character varying(200), 
    CONSTRAINT Menu_PK PRIMARY KEY (id)
 ) 
 WITH (
@@ -125,10 +124,11 @@ DROP TABLE IF EXISTS public.DealerEntryItemStatus CASCADE;
 CREATE TABLE public.DealerEntryItemStatus
 (
    timestamp timestamp without time zone, 
+   timeEnd timestamp without time zone, 
    validDate date, 
    dealerID integer, 
    entryItemID integer NOT NULL, 
-   isCompleted boolean NOT NULL, 
+   updateBy character varying(100),
    CONSTRAINT DEIS_Unique UNIQUE (dealerID, entryItemID, validDate)
 ) 
 WITH (
@@ -269,7 +269,6 @@ CREATE TABLE public.SalesServiceJournal
    amount double precision,
    margin double precision,
    count integer,
-   countType integer,
    updatedBy character varying(20) NOT NULL, 
    CONSTRAINT SSJ_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
 ) 
@@ -289,7 +288,6 @@ CREATE TABLE public.VehicleSalesJournal
    amount double precision,
    margin double precision,
    count integer,
-   countType integer,
    updatedBy character varying(20) NOT NULL, 
    CONSTRAINT VSJ_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
 ) 

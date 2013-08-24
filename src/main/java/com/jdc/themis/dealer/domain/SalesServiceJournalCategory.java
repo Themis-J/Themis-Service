@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class SalesServiceJounralCategory implements Serializable {
+public class SalesServiceJournalCategory implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

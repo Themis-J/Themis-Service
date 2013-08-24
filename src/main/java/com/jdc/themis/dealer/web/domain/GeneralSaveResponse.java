@@ -14,27 +14,24 @@ import com.jdc.themis.common.json.adaptor.JsonCalendarInstantDeserializer;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
 @XmlRootElement
-public class VehicleSalesRevenueDetail implements Serializable { 
-	
+public class GeneralSaveResponse implements Serializable{
+
 	private static final long serialVersionUID = 1L;
-	private Integer vehicleID;
-	private String name;
 	private Instant timestamp;
-	private Long count;
-	private Double amount;
-	private Double margin;
+	private Boolean success;
+	private String errorMsg;
 	
-	public Integer getVehicleID() {
-		return vehicleID;
+	public Boolean getSuccess() {
+		return success;
 	}
-	public void setVehicleID(Integer vehicleID) {
-		this.vehicleID = vehicleID;
+	public void setSuccess(Boolean success) {
+		this.success = success;
 	}
-	public String getName() {
-		return name;
+	public String getErrorMsg() {
+		return errorMsg;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 	@XmlJavaTypeAdapter(JaxbCalendarInstantAdaptor.class)
 	@JsonSerialize(using = JsonCalendarInstantSerializer.class)
@@ -45,23 +42,4 @@ public class VehicleSalesRevenueDetail implements Serializable {
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}
-	public Long getCount() {
-		return count;
-	}
-	public void setCount(Long count) {
-		this.count = count;
-	}
-	public Double getAmount() {
-		return amount;
-	}
-	public void setAmount(Double amount) {
-		this.amount = amount;
-	}
-	public Double getMargin() {
-		return margin;
-	}
-	public void setMargin(Double margin) {
-		this.margin = margin;
-	}
-
 }

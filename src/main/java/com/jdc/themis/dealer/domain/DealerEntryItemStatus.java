@@ -1,7 +1,6 @@
 package com.jdc.themis.dealer.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,18 +27,13 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
 @Entity
-public class SalesServiceJournal implements TemporalEntity, Serializable {
+public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	private Integer id;
-	@Id
+	
+	private Integer entryItemID;
 	private Integer dealerID;
-	@Id
-	private Integer departmentID;
-	private BigDecimal amount;
-	private BigDecimal margin;
+	private String updateBy;
 	@Id
 	@Type(type = "datetime")
 	private Instant timestamp;
@@ -76,36 +70,25 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 		this.validDate = validDate;
 	}
 	
-	
-	public Integer getId() {
-		return id;
+	@Id
+	public Integer getEntryItemID() {
+		return entryItemID;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+	public void setEntryItemID(Integer entryItemID) {
+		this.entryItemID = entryItemID;
 	}
+	@Id
 	public Integer getDealerID() {
 		return dealerID;
 	}
 	public void setDealerID(Integer dealerID) {
 		this.dealerID = dealerID;
 	}
-	public Integer getDepartmentID() {
-		return departmentID;
+	public String getUpdateBy() {
+		return updateBy;
 	}
-	public void setDepartmentID(Integer departmentID) {
-		this.departmentID = departmentID;
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
 	}
-	public BigDecimal getAmount() {
-		return amount;
-	}
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-	public BigDecimal getMargin() {
-		return margin;
-	}
-	public void setMargin(BigDecimal margin) {
-		this.margin = margin;
-	}
-	
+
 }

@@ -22,6 +22,7 @@ import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
+import com.jdc.themis.dealer.domain.SalesServiceJournalCategory;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.TaxJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
@@ -35,7 +36,7 @@ import com.jdc.themis.dealer.domain.Vehicle;
  */
 @Service
 public class RefDataDAOImpl implements RefDataDAO {
-	final static Logger logger = LoggerFactory.getLogger(RefDataDAOImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(RefDataDAOImpl.class);
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -141,6 +142,14 @@ public class RefDataDAOImpl implements RefDataDAO {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<SalesServiceJournalItem> list = session.createCriteria(SalesServiceJournalItem.class).list();
+		return ImmutableList.copyOf(list);
+	}
+	
+	@Override
+	public List<SalesServiceJournalCategory> getSalesServiceJournalCategoryList() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<SalesServiceJournalCategory> list = session.createCriteria(SalesServiceJournalCategory.class).list();
 		return ImmutableList.copyOf(list);
 	}
 

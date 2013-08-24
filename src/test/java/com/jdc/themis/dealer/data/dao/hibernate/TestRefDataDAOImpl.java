@@ -13,7 +13,7 @@ import com.jdc.themis.dealer.data.dao.RefDataDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({
-    "/META-INF/test-database-config.xml" })
+    "classpath:/META-INF/test-database-config.xml" })
 @Transactional
 public class TestRefDataDAOImpl {
 	

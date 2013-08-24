@@ -14,21 +14,21 @@ import com.jdc.themis.common.json.adaptor.JsonCalendarInstantDeserializer;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
 @XmlRootElement
-public class VehicleSalesRevenueDetail implements Serializable { 
+public class SalesServiceRevenueDetail implements Serializable { 
 	
 	private static final long serialVersionUID = 1L;
-	private Integer vehicleID;
+	private Integer itemID;
 	private String name;
 	private Instant timestamp;
 	private Long count;
 	private Double amount;
 	private Double margin;
 	
-	public Integer getVehicleID() {
-		return vehicleID;
+	public Integer getItemID() {
+		return itemID;
 	}
-	public void setVehicleID(Integer vehicleID) {
-		this.vehicleID = vehicleID;
+	public void setItemID(Integer itemID) {
+		this.itemID = itemID;
 	}
 	public String getName() {
 		return name;

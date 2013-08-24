@@ -5,6 +5,7 @@ import java.util.List;
 import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
+import com.jdc.themis.dealer.domain.SalesServiceJournalCategory;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.TaxJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
@@ -34,4 +35,6 @@ public interface RefDataDAO {
 	List<TaxJournalItem> getTaxJournalItemList();
 
 	List<SalesServiceJournalItem> getSalesServiceJournalItemList();
+	
+	List<SalesServiceJournalCategory> getSalesServiceJournalCategoryList();
 }

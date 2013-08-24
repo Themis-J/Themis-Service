@@ -1,20 +1,24 @@
 package com.jdc.themis.dealer.web.domain;
 
 import java.io.Serializable;
-import java.util.List;
-
 import javax.time.calendar.LocalDate;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SaveVehicleSalesRevenueRequest implements Serializable{
+public class SaveTaxRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
 	private LocalDate validDate;
-	private List<VehicleSalesRevenueDetail> detail;
 	private String updateBy;
+	private Double tax;
 	
+	public Double getTax() {
+		return tax;
+	}
+	public void setTax(Double tax) {
+		this.tax = tax;
+	}
 	public String getUpdateBy() {
 		return updateBy;
 	}
@@ -34,12 +38,5 @@ public class SaveVehicleSalesRevenueRequest implements Serializable{
 	public void setValidDate(LocalDate validDate) {
 		this.validDate = validDate;
 	}
-	public List<VehicleSalesRevenueDetail> getDetail() {
-		return detail;
-	}
-	public void setDetail(List<VehicleSalesRevenueDetail> detail) {
-		this.detail = detail;
-	}
-	
 	
 }

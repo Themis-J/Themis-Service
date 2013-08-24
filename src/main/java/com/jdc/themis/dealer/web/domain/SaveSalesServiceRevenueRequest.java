@@ -7,14 +7,21 @@ import javax.time.calendar.LocalDate;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SaveVehicleSalesRevenueRequest implements Serializable{
+public class SaveSalesServiceRevenueRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
 	private LocalDate validDate;
-	private List<VehicleSalesRevenueDetail> detail;
+	private List<SalesServiceRevenueDetail> detail;
 	private String updateBy;
+	private Integer departmentID;
 	
+	public Integer getDepartmentID() {
+		return departmentID;
+	}
+	public void setDepartmentID(Integer departmentID) {
+		this.departmentID = departmentID;
+	}
 	public String getUpdateBy() {
 		return updateBy;
 	}
@@ -34,10 +41,10 @@ public class SaveVehicleSalesRevenueRequest implements Serializable{
 	public void setValidDate(LocalDate validDate) {
 		this.validDate = validDate;
 	}
-	public List<VehicleSalesRevenueDetail> getDetail() {
+	public List<SalesServiceRevenueDetail> getDetail() {
 		return detail;
 	}
-	public void setDetail(List<VehicleSalesRevenueDetail> detail) {
+	public void setDetail(List<SalesServiceRevenueDetail> detail) {
 		this.detail = detail;
 	}
 	
