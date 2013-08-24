@@ -1,5 +1,7 @@
 package com.jdc.themis.dealer.service.rest;
 
+import java.util.Collection;
+
 import javax.time.calendar.LocalDate;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -15,11 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.Menu;
+import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesRevenueResponse;
 import com.jdc.themis.dealer.web.domain.MenuItem;
+import com.jdc.themis.dealer.web.domain.MenuOrderItem;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesRevenueRequest;
 import com.jdc.themis.dealer.web.domain.VehicleItem;
 
@@ -74,6 +78,16 @@ public class DealerIncomeEntryRestService {
 		item.setDisplayText(menu.getDisplayText());
 		item.setParentID(refDataDAL.getParentMenuID(id));
 		
+		final Collection<MenuHierachy> children = refDataDAL.getChildMenus(id);
+		if ( children != null ) {
+			for (final MenuHierachy child : children) {
+				item.getChildren().add(
+						new MenuOrderItem(
+								child.getMenuHierachyID().getChildID(), 
+								refDataDAL.getMenu(child.getMenuHierachyID().getChildID()).getName(), 
+								child.getItemOrder()));
+			}
+		}
 		response.getItems().add(item);
 
 		return Response.ok(response).build();

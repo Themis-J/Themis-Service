@@ -12,6 +12,7 @@ public class MenuHierachy implements Serializable {
 	
 	@Id
 	private MenuHierachyId menuHierachyID;
+	private Integer itemOrder;
 	
 	public MenuHierachyId getMenuHierachyID() {
 		return menuHierachyID;
@@ -19,7 +20,6 @@ public class MenuHierachy implements Serializable {
 	public void setMenuHierachyID(MenuHierachyId menuHierachyID) {
 		this.menuHierachyID = menuHierachyID;
 	}
-	private Integer itemOrder;
 	public Integer getItemOrder() {
 		return itemOrder;
 	}

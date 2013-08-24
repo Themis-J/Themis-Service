@@ -6,13 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class SalesServiceJournalItem implements Serializable {
+public class SalesServiceJounralCategory implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
 	private String name;
-	private Integer categoryID;
 	
 	@Id
 	public Integer getId() {
@@ -26,12 +25,6 @@ public class SalesServiceJournalItem implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public Integer getCategoryID() {
-		return categoryID;
-	}
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
 	}
 
 }

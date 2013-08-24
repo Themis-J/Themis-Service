@@ -16,16 +16,18 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 		   typeClass = PersistentTimestamp.class
 		)
 @Entity
-public class Vehicle implements Serializable {
+public class TaxJournalItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@Id
+
 	private Integer id;
 	private String name;
-	private Integer categoryID;
 	@Type(type="datetime")
 	private Instant timestamp;
 	
+	// Kai: you might find it' strange to declare this custom type on both type and get function
+	// but suprised that it will fail either embedded database or postgres if I remove one of them. 
+	// Damn!
 	@Type(type="datetime")
 	public Instant getTimestamp() {
 		return timestamp;
@@ -33,7 +35,7 @@ public class Vehicle implements Serializable {
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}
-	
+	@Id
 	public Integer getId() {
 		return id;
 	}
@@ -46,11 +48,5 @@ public class Vehicle implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getCategoryID() {
-		return categoryID;
-	}
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
-	}
-
+	
 }

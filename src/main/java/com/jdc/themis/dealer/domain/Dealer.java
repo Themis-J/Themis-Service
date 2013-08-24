@@ -1,16 +1,22 @@
 package com.jdc.themis.dealer.domain;
 
-import javax.time.Instant;
+import java.io.Serializable;
 
-public class Dealer {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Dealer implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
 	private String name;
 	private String fullName;
-	private String city;
 	private String code;
-	private Instant timestamp;
+	private String city;
 	
+	@Id
 	public Integer getId() {
 		return id;
 	}
@@ -41,11 +47,5 @@ public class Dealer {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public Instant getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(Instant timestamp) {
-		this.timestamp = timestamp;
-	}
-	
+
 }

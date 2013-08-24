@@ -46,12 +46,12 @@ public class PersistentLocalDate implements EnhancedUserType, Serializable {
 			return null;
 		}
 		final Date date = rs.getDate(name);
+		if ( date == null ) {
+			return null;
+		}
 		final Calendar c = new GregorianCalendar();
 		c.setTime(date);
 		final Object value = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-		if ( value == null ) {
-			return null;
-		}
 		return value;
 	}
 

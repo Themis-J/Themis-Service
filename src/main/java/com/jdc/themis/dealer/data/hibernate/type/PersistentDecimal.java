@@ -1,29 +1,27 @@
 package com.jdc.themis.dealer.data.hibernate.type;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
-
-import javax.time.Instant;
 
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.EnhancedUserType;
 
-public class PersistentTimestamp implements EnhancedUserType, Serializable {
+public class PersistentDecimal implements EnhancedUserType, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public int[] sqlTypes() {
-		return new int[]{Types.TIMESTAMP};
+		return new int[]{Types.DOUBLE};
 	}
 
 	@Override
-	public Class<Instant> returnedClass() {
-		return Instant.class;
+	public Class<BigDecimal> returnedClass() {
+		return BigDecimal.class;
 	}
 
 	@Override
@@ -43,28 +41,27 @@ public class PersistentTimestamp implements EnhancedUserType, Serializable {
 		if ( rs.wasNull() ) {
 			return null;
 		}
-		final Timestamp timestamp = rs.getTimestamp(name);
-		if ( timestamp == null ) {
+		final Double decimal = rs.getDouble(name);
+		if ( decimal == null ) {
 			return null;
 		}
-		final Object value = Instant.millis(timestamp.getTime());
-		return value;
+		return new BigDecimal(decimal);
 	}
 
 	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index)
 			throws HibernateException, SQLException {
 		if ( value == null ) {
-			st.setNull(index, Types.TIMESTAMP);
+			st.setNull(index, Types.DOUBLE);
 		} else {
-			st.setTimestamp(index, new Timestamp(((Instant) value).toEpochMillisLong()));
+			final BigDecimal decimal = (BigDecimal) value;
+			st.setDouble(index, decimal.doubleValue());
 		}
 	}
 
 	@Override
 	public Object deepCopy(Object value) throws HibernateException {
-		// instant is immutable so we can return it directly
-		return (Instant) value;
+		return new BigDecimal(((BigDecimal) value).toString());
 	}
 
 	@Override
@@ -101,7 +98,7 @@ public class PersistentTimestamp implements EnhancedUserType, Serializable {
 
 	@Override
 	public Object fromXMLString(String xmlValue) {
-		return Instant.parse(xmlValue);
+		return new BigDecimal(xmlValue);
 	}
 
 }

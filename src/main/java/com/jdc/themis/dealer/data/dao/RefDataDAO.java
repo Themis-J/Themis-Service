@@ -2,18 +2,17 @@ package com.jdc.themis.dealer.data.dao;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
+import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
+import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
+import com.jdc.themis.dealer.domain.TaxJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
 
 /**
  * Data access layer to query static reference data like menus. 
  * 
  * @author chen386_2000
- * 
- * @TODO: finish all other static reference data like journal items.
  *
  */
 public interface RefDataDAO {
@@ -24,10 +23,15 @@ public interface RefDataDAO {
 	
 	Integer getParentMenuID(Integer id);
 	
-	List<MenuHierachy> getMenuHierachy();
+	Collection<MenuHierachy> getChildMenus(Integer id);
 	
-	Map<Integer, Collection<Integer>> getMenuMapping();
+	List<MenuHierachy> getMenuHierachy();
 	
 	List<Vehicle> getVehicleList();
 	
+	List<Dealer> getDealerList();
+	
+	List<TaxJournalItem> getTaxJournalItemList();
+
+	List<SalesServiceJournalItem> getSalesServiceJournalItemList();
 }

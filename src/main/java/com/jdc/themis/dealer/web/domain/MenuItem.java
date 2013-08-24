@@ -1,7 +1,11 @@
 package com.jdc.themis.dealer.web.domain;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.google.common.collect.Lists;
 
 @XmlRootElement
 public class MenuItem implements Serializable{
@@ -12,13 +16,13 @@ public class MenuItem implements Serializable{
 	private String name;
 	private String displayText;
 	private Integer parentID;
-	private Integer order;
-	
-	public Integer getOrder() {
-		return order;
+	private List<MenuOrderItem> children = Lists.newArrayList();
+
+	public List<MenuOrderItem> getChildren() {
+		return children;
 	}
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setChildren(List<MenuOrderItem> children) {
+		this.children = children;
 	}
 	public String getDisplayText() {
 		return displayText;
