@@ -8,36 +8,49 @@ import javax.persistence.Id;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
-public class SalesServiceJournalItem implements Serializable {
+public class EnumValue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	private Integer id;
+	@Id
+	private Integer typeID;
+	@Id
+	private Integer value;
 	private String name;
-	private Integer categoryID;
 	
 	@Id
-	public Integer getId() {
-		return id;
+	public Integer getTypeID() {
+		return typeID;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+
+
+	public void setTypeID(Integer typeID) {
+		this.typeID = typeID;
 	}
+
+	@Id
+	public Integer getValue() {
+		return value;
+	}
+
+
+	public void setValue(Integer value) {
+		this.value = value;
+	}
+
+
 	public String getName() {
 		return name;
 	}
+
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getCategoryID() {
-		return categoryID;
-	}
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
-	}
+
 	public String toString() {
-		return new ToStringBuilder(this).append("id", id)
+		return new ToStringBuilder(this).append("typeId", typeID)
 				.append("name", name)
+				.append("value", value)
 				.getStringBuffer().toString();
 	}
 }

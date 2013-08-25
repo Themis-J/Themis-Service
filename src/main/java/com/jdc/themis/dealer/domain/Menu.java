@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @Entity
 public class Menu implements Serializable {
 
@@ -33,5 +35,9 @@ public class Menu implements Serializable {
 	public void setDisplayText(String displayText) {
 		this.displayText = displayText;
 	}
-	
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+				.append("name", name)
+				.getStringBuffer().toString();
+	}
 }

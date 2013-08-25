@@ -16,39 +16,36 @@ import org.hibernate.annotations.Type;
 
 @FilterDefs(
 		{
-			@org.hibernate.annotations.FilterDef(name="hrFilter", 
+			@org.hibernate.annotations.FilterDef(name="ardFilter", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
-					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
-			@org.hibernate.annotations.FilterDef(name="hrFilterSingleItem", 
+			@org.hibernate.annotations.FilterDef(name="ardFilterSingleItem", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="id", type="integer"), 
-					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
+					@org.hibernate.annotations.ParamDef(name="durationID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
 		}
 		)
 @Filters( {
-    @Filter(name="hrFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="hrFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="ardFilterSingleItem", condition="validDate = :referenceDate and durationID = :durationID and id = :id and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="ardFilter", condition="validDate = :referenceDate and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @Entity
-public class HumanResourceAllocation implements TemporalEntity, Serializable {
+public class AccountReceivableDuration implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "hrFilter";
-	public static String FILTER_SINGLEITEM = "hrFilterSingleItem";
+	public static String FILTER = "ardFilter";
+	public static String FILTER_SINGLEITEM = "ardFilterSingleItem";
 
 	@Id
 	private Integer id;
 	@Id
 	private Integer dealerID;
-	@Id
-	private Integer departmentID;
-	private BigDecimal allocation;
+	private BigDecimal amount;
 	@Id
 	@Type(type = "datetime")
 	private Instant timestamp;
@@ -58,7 +55,18 @@ public class HumanResourceAllocation implements TemporalEntity, Serializable {
 	@Type(type = "localdate")
 	private LocalDate validDate;
 	private String updatedBy;
+	@Id
+	private Integer durationID;
 	
+	@Id
+	public Integer getDurationID() {
+		return durationID;
+	}
+
+	public void setDurationID(Integer durationID) {
+		this.durationID = durationID;
+	}
+
 	public String getUpdatedBy() {
 		return updatedBy;
 	}
@@ -111,25 +119,18 @@ public class HumanResourceAllocation implements TemporalEntity, Serializable {
 	public void setDealerID(Integer dealerID) {
 		this.dealerID = dealerID;
 	}
-	@Id
-	public Integer getDepartmentID() {
-		return departmentID;
+	public BigDecimal getAmount() {
+		return amount;
 	}
-	public void setDepartmentID(Integer departmentID) {
-		this.departmentID = departmentID;
-	}
-	public BigDecimal getallocation() {
-		return allocation;
-	}
-	public void setAllocation(BigDecimal allocation) {
-		this.allocation = allocation;
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 	
 	public String toString() {
-		return new ToStringBuilder(this).append("positionID", id)
+		return new ToStringBuilder(this).append("id", id)
 				.append("dealerID", dealerID)
-				.append("departmentID", departmentID)
-				.append("allocation", allocation)
+				.append("durationID", durationID)
+				.append("amount", amount)
 				.append("updatedBy", updatedBy)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)

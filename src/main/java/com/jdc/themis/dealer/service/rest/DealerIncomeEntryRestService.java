@@ -35,6 +35,7 @@ import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
+import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.web.domain.CompletedEntryItem;
 import com.jdc.themis.dealer.web.domain.GeneralSaveResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
@@ -125,6 +126,7 @@ public class DealerIncomeEntryRestService {
 	@Path("/menu")
 	@Produces({ "application/json", "application/xml" })
 	@Transactional(readOnly = true)
+	@Performance
 	public Response getAllMenu() {
 		final GetMenuResponse response = new GetMenuResponse();
 
@@ -154,6 +156,7 @@ public class DealerIncomeEntryRestService {
 	@Path("/vehicle")
 	@Produces({ "application/json", "application/xml" })
 	@Transactional(readOnly = true)
+	@Performance
 	public Response getAllVehicles() {
 		final GetVehicleResponse response = new GetVehicleResponse();
 
@@ -177,6 +180,7 @@ public class DealerIncomeEntryRestService {
 	@Path("/salesServiceRevenue/items")
 	@Produces({ "application/json", "application/xml" })
 	@Transactional(readOnly = true)
+	@Performance
 	public Response getAllSalesServiceRevenueItems() {
 		final GetSalesServiceRevenueItemResponse response = new GetSalesServiceRevenueItemResponse();
 
@@ -200,6 +204,7 @@ public class DealerIncomeEntryRestService {
 	@Consumes("application/json")
 	@Path("/vehicleSalesRevenue")
 	@Transactional
+	@Performance
 	public Response saveVehicleSalesRevenue(
 			final SaveVehicleSalesRevenueRequest request) {
 		try {
@@ -264,6 +269,7 @@ public class DealerIncomeEntryRestService {
 	@Path("/vehicleSalesRevenue")
 	@Produces({ "application/json", "application/xml" })
 	@Transactional
+	@Performance
 	public Response getVehicleSalesRevenue(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("departmentID") Integer departmentID,
@@ -311,6 +317,7 @@ public class DealerIncomeEntryRestService {
 	@Consumes({ "application/json", "application/xml" })
 	@Path("/salesServiceRevenue")
 	@Transactional
+	@Performance
 	public Response saveSalesServiceRevenue(
 			final SaveSalesServiceRevenueRequest request) {
 		try {
@@ -375,6 +382,7 @@ public class DealerIncomeEntryRestService {
 	@Path("/salesServiceRevenue")
 	@Produces({ "application/json", "application/xml" })
 	@Transactional
+	@Performance
 	public Response getSalesServiceRevenue(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("departmentID") Integer departmentID,
@@ -422,6 +430,7 @@ public class DealerIncomeEntryRestService {
 	@Consumes("application/json")
 	@Path("/tax")
 	@Transactional
+	@Performance
 	public Response saveIncomeTax(
 			final SaveTaxRequest request) {
 		try {
@@ -465,6 +474,7 @@ public class DealerIncomeEntryRestService {
 	@Path("/tax")
 	@Produces({ "application/json", "application/xml" })
 	@Transactional
+	@Performance
 	public Response getIncomeTax(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("validDate") String validDate) {
@@ -499,6 +509,7 @@ public class DealerIncomeEntryRestService {
 	@Consumes({"application/json", "application/xml" })
 	@Path("/menu/entrystatus")
 	@Transactional
+	@Performance
 	public Response saveDealerEntryItemStatus(
 			final SaveDealerEntryItemStatusRequest request) {
 		try {
@@ -538,6 +549,7 @@ public class DealerIncomeEntryRestService {
 	@Path("/menu/entrystatus")
 	@Produces({ "application/json", "application/xml" })
 	@Transactional
+	@Performance
 	public Response getDealerEntryItemStatus(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("validDate") String validDate) {

@@ -16,13 +16,13 @@ import org.hibernate.annotations.Type;
 
 @FilterDefs(
 		{
-			@org.hibernate.annotations.FilterDef(name="hrFilter", 
+			@org.hibernate.annotations.FilterDef(name="efsFilter", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
-			@org.hibernate.annotations.FilterDef(name="hrFilterSingleItem", 
+			@org.hibernate.annotations.FilterDef(name="efsFilterSingleItem", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
@@ -32,15 +32,15 @@ import org.hibernate.annotations.Type;
 		}
 		)
 @Filters( {
-    @Filter(name="hrFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="hrFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="efsFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="efsFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @Entity
-public class HumanResourceAllocation implements TemporalEntity, Serializable {
+public class EmployeeFeeSummary implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "hrFilter";
-	public static String FILTER_SINGLEITEM = "hrFilterSingleItem";
+	public static String FILTER = "efsFilter";
+	public static String FILTER_SINGLEITEM = "efsFilterSingleItem";
 
 	@Id
 	private Integer id;
@@ -48,7 +48,7 @@ public class HumanResourceAllocation implements TemporalEntity, Serializable {
 	private Integer dealerID;
 	@Id
 	private Integer departmentID;
-	private BigDecimal allocation;
+	private BigDecimal amount;
 	@Id
 	@Type(type = "datetime")
 	private Instant timestamp;
@@ -118,18 +118,18 @@ public class HumanResourceAllocation implements TemporalEntity, Serializable {
 	public void setDepartmentID(Integer departmentID) {
 		this.departmentID = departmentID;
 	}
-	public BigDecimal getallocation() {
-		return allocation;
+	public BigDecimal getAmount() {
+		return amount;
 	}
-	public void setAllocation(BigDecimal allocation) {
-		this.allocation = allocation;
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 	
 	public String toString() {
-		return new ToStringBuilder(this).append("positionID", id)
+		return new ToStringBuilder(this).append("id", id)
 				.append("dealerID", dealerID)
 				.append("departmentID", departmentID)
-				.append("allocation", allocation)
+				.append("amount", amount)
 				.append("updatedBy", updatedBy)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)

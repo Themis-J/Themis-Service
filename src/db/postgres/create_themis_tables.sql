@@ -348,7 +348,6 @@ WITH (
   OIDS = FALSE
 )
 ;
-
 CREATE TABLE public.EmployeeFeeItem
 (
    id integer, 
@@ -360,7 +359,6 @@ WITH (
   OIDS = FALSE
 )
 ;
-
 CREATE TABLE public.EmployeeFee
 (
    timestamp timestamp without time zone NOT NULL, 
@@ -369,9 +367,10 @@ CREATE TABLE public.EmployeeFee
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
+   feeTypeID NOT NULL, 
    amount double precision,
    updatedBy character varying(20) NOT NULL, 
-   CONSTRAINT EF_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
+   CONSTRAINT EF_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, feeTypeID)
 ) 
 WITH (
   OIDS = FALSE

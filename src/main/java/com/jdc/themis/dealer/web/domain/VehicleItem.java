@@ -6,11 +6,9 @@ import javax.time.Instant;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarInstantAdaptor;
-import com.jdc.themis.common.json.adaptor.JsonCalendarInstantDeserializer;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
 @XmlRootElement
@@ -34,7 +32,6 @@ public class VehicleItem implements Serializable{
 	public Instant getTimestamp() {
 		return timestamp;
 	}
-	@JsonDeserialize(using = JsonCalendarInstantDeserializer.class)
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}

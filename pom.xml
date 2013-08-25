@@ -39,7 +39,7 @@
 		<org.eclipse.jetty.version>8.1.8.v20121106</org.eclipse.jetty.version>
 		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
 		<jetty.plugin.version>6.1.25</jetty.plugin.version>
-        <javax.validation.version>1.1.0.CR3</javax.validation.version>
+		<javax.validation.version>1.1.0.CR3</javax.validation.version>
 	</properties>
 
 	<dependencies>
@@ -77,6 +77,16 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.7.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -225,42 +235,42 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12</version>
-					<configuration>
-						<!--http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#testFailureIgnore -->
-						<testFailureIgnore>true</testFailureIgnore>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.mortbay.jetty</groupId>
-					<artifactId>maven-jetty-plugin</artifactId>
-					<version>${jetty.plugin.version}</version>
-					<configuration>
-						<scanIntervalSeconds>2</scanIntervalSeconds>
-						<stopKey>foo</stopKey>
-						<stopPort>9999</stopPort>
-						<webApp>${basedir}/target/dealerEntryService.war</webApp>
-						<webAppConfig>
-							<contextPath>/</contextPath>
-						</webAppConfig>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.1</version>
-					<configuration>
-						<archive>
-							<manifest>
-								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-							</manifest>
-						</archive>
-					</configuration>
-				</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12</version>
+				<configuration>
+					<!--http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#testFailureIgnore -->
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>${jetty.plugin.version}</version>
+				<configuration>
+					<scanIntervalSeconds>2</scanIntervalSeconds>
+					<stopKey>foo</stopKey>
+					<stopPort>9999</stopPort>
+					<webApp>${basedir}/target/dealerEntryService.war</webApp>
+					<webAppConfig>
+						<contextPath>/</contextPath>
+					</webAppConfig>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 
 	</build>

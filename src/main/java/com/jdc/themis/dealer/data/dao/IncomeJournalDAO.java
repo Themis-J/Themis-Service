@@ -10,6 +10,12 @@ import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 
+/**
+ * Income journal data access layer.
+ * 
+ * @author Kai Chen
+ *
+ */
 public interface IncomeJournalDAO {
 
 	Instant saveTaxJournal(Integer dealerID, Collection<TaxJournal> journals);

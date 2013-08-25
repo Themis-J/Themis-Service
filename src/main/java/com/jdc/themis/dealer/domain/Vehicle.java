@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.time.Instant;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -52,5 +53,9 @@ public class Vehicle implements Serializable {
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
 	}
-
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+				.append("name", name)
+				.getStringBuffer().toString();
+	}
 }

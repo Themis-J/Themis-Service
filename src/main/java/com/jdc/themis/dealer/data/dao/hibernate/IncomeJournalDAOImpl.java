@@ -27,6 +27,7 @@ import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
+import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.utils.Utils;
 
 /**
@@ -103,6 +104,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	private final ExecutorWithJournalLock executor = new ExecutorWithJournalLock();
 	
 	@Override
+	@Performance
 	public Instant saveTaxJournal(final Integer dealerID, final Collection<TaxJournal> journals) {
 		return executor.executeWithWriteLock(TaxJournal.class.getName(), dealerID.toString(), new JournalRunnable<Instant>() {
 
@@ -155,6 +157,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
+	@Performance
 	public Collection<TaxJournal> getTaxJournal(final Integer dealerID,
 			final LocalDate validDate) {
 		return executor.executeWithReadLock(TaxJournal.class.getName(), dealerID.toString(), new JournalRunnable<Collection<TaxJournal>>() {
@@ -180,6 +183,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
+	@Performance
 	public Instant saveDealerEntryItemStatus(final Integer dealerID,
 			final Collection<DealerEntryItemStatus> journals) {
 		return executor.executeWithWriteLock(TaxJournal.class.getName(), dealerID.toString(), new JournalRunnable<Instant>() {
@@ -222,6 +226,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
+	@Performance
 	public Collection<DealerEntryItemStatus> getDealerEntryItemStatus(
 			final Integer dealerID, final LocalDate validDate) {
 		return executor.executeWithReadLock(DealerEntryItemStatus.class.getName(), dealerID.toString(), new JournalRunnable<Collection<DealerEntryItemStatus>>() {
@@ -246,6 +251,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
+	@Performance
 	public Instant saveVehicleSalesJournal(final Integer dealerID,
 			final Integer departmentID, final Collection<VehicleSalesJournal> journals) {
 		return executor.executeWithWriteLock(VehicleSalesJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
@@ -301,6 +307,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 	
 	@Override
+	@Performance
 	public Collection<VehicleSalesJournal> getVehicleSalesJournal(
 			final Integer dealerID, final Integer departmentID, final LocalDate validDate) {
 		return executor.executeWithReadLock(VehicleSalesJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<VehicleSalesJournal>>() {
@@ -325,6 +332,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
+	@Performance
 	public Instant saveSalesServiceJournal(final Integer dealerID,
 			final Integer departmentID, final Collection<SalesServiceJournal> journals) {
 		return executor.executeWithWriteLock(SalesServiceJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
@@ -376,6 +384,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
+	@Performance
 	public Collection<SalesServiceJournal> getSalesServiceJournal(
 			final Integer dealerID, final Integer departmentID, final LocalDate validDate) {
 		return executor.executeWithReadLock(SalesServiceJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<SalesServiceJournal>>() {

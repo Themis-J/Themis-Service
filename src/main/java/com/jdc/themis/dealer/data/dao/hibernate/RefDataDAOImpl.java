@@ -19,19 +19,28 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
+import com.jdc.themis.dealer.domain.Duration;
+import com.jdc.themis.dealer.domain.EmployeeFeeItem;
+import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
+import com.jdc.themis.dealer.domain.EnumType;
+import com.jdc.themis.dealer.domain.EnumValue;
+import com.jdc.themis.dealer.domain.GeneralJournalItem;
+import com.jdc.themis.dealer.domain.JobPosition;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.SalesServiceJournalCategory;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.TaxJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
+import com.jdc.themis.dealer.utils.Performance;
 
 
 /**
  * Hibernate implementation for reference data access layer. 
  * 
- * @author chen386_2000
+ * @author Kai Chen
  *
  */
 @Service
@@ -49,22 +58,30 @@ public class RefDataDAOImpl implements RefDataDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
+	private List<Menu> cachedMenuList;
+	
 	@Override
-	public List<Menu> getMenuList() {
+	public synchronized List<Menu> getMenuList() {
 		logger.info("Fetching menu list");
-		
-		final Session session = sessionFactory.getCurrentSession();
-		@SuppressWarnings("unchecked")
-		final List<Menu> list = session.createCriteria(Menu.class).list();
-		return ImmutableList.copyOf(list);
+		if ( cachedMenuList == null ) {
+			final Session session = sessionFactory.getCurrentSession();
+			@SuppressWarnings("unchecked")
+			final List<Menu> list = session.createCriteria(Menu.class).list();
+			cachedMenuList = ImmutableList.copyOf(list);
+		} 
+		return cachedMenuList;
 	}
 
+	private List<MenuHierachy> cachedMenuHierachyList;
 	@Override
-	public List<MenuHierachy> getMenuHierachy() {
+	public synchronized List<MenuHierachy> getMenuHierachy() {
 		final Session session = sessionFactory.getCurrentSession();
-		@SuppressWarnings("unchecked")
-		final List<MenuHierachy> list = session.createCriteria(MenuHierachy.class).list();
-		return ImmutableList.copyOf(list);
+		if ( cachedMenuHierachyList == null ) {
+			@SuppressWarnings("unchecked")
+			final List<MenuHierachy> list = session.createCriteria(MenuHierachy.class).list();
+			cachedMenuHierachyList = ImmutableList.copyOf(list);
+		}
+		return cachedMenuHierachyList;
 	}
 
 	private enum GetParentIDFunction implements Function<MenuHierachy, Integer> {
@@ -165,6 +182,100 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Collection<MenuHierachy> getChildMenus(Integer id) {
 		return getParentMenuMapping(id);
+	}
+
+	@Override
+	public List<EnumType> getEnumTypes() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<EnumType> list = session.createCriteria(EnumType.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	private enum GetEnumTypeIDFunction implements Function<EnumValue, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(EnumValue value) {
+	        return value.getTypeID();
+	    }
+	}
+	@Override
+	public List<EnumValue> getEnumValues() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<EnumValue> list = session.createCriteria(EnumValue.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	private enum GetEnumTypeNameFunction implements Function<EnumType, String> {
+	    INSTANCE;
+
+	    @Override
+	    public String apply(EnumType type) {
+	        return type.getName();
+	    }
+	}
+	@Override
+	@Performance
+	public EnumValue getEnumValue(String enumType, Integer enumValue) {
+		final Map<String, EnumType> enumTypes = Maps.uniqueIndex(getEnumTypes(), GetEnumTypeNameFunction.INSTANCE);
+		final EnumType type = enumTypes.get(enumType);
+		final ImmutableListMultimap<Integer, EnumValue> values = Multimaps.index(getEnumValues(), GetEnumTypeIDFunction.INSTANCE);
+		for (final EnumValue ev : values.asMap().get(type.getId())) {
+			if ( ev.getValue().equals(enumValue) ) {
+				return ev;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<GeneralJournalItem> getGeneralJournalItemList() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<GeneralJournalItem> list = session.createCriteria(GeneralJournalItem.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	@Override
+	public List<JobPosition> getJobPositionList() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<JobPosition> list = session.createCriteria(JobPosition.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	@Override
+	public List<AccountReceivableDurationItem> getAccountReceivableItemList() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<AccountReceivableDurationItem> list = session.createCriteria(AccountReceivableDurationItem.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	@Override
+	public List<Duration> getDurationList() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<Duration> list = session.createCriteria(Duration.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	@Override
+	public List<EmployeeFeeItem> getEmployeeFeeItemList() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<EmployeeFeeItem> list = session.createCriteria(EmployeeFeeItem.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	@Override
+	public List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItemList() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<EmployeeFeeSummaryItem> list = session.createCriteria(EmployeeFeeSummaryItem.class).list();
+		return ImmutableList.copyOf(list);
 	}
 
 }

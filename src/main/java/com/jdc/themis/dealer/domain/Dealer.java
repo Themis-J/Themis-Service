@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @Entity
 public class Dealer implements Serializable {
 
@@ -47,5 +49,9 @@ public class Dealer implements Serializable {
 	public void setCode(String code) {
 		this.code = code;
 	}
-
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+				.append("name", name)
+				.getStringBuffer().toString();
+	}
 }

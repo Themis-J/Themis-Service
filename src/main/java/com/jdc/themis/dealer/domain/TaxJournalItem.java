@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.time.Instant;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -48,5 +49,9 @@ public class TaxJournalItem implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+				.append("name", name)
+				.getStringBuffer().toString();
+	}
 }

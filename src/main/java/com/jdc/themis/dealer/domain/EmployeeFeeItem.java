@@ -8,13 +8,12 @@ import javax.persistence.Id;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
-public class SalesServiceJournalItem implements Serializable {
+public class EmployeeFeeItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
 	private String name;
-	private Integer categoryID;
 	
 	@Id
 	public Integer getId() {
@@ -28,12 +27,6 @@ public class SalesServiceJournalItem implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public Integer getCategoryID() {
-		return categoryID;
-	}
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
 	}
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id)

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
-public class SalesServiceJournalItem implements Serializable {
+public class GeneralJournalItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
