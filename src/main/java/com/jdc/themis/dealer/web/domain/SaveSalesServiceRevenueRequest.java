@@ -6,13 +6,15 @@ import java.util.List;
 import javax.time.calendar.LocalDate;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.collect.Lists;
+
 @XmlRootElement
 public class SaveSalesServiceRevenueRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
 	private LocalDate validDate;
-	private List<SalesServiceRevenueDetail> detail;
+	private final List<SalesServiceRevenueDetail> detail = Lists.newArrayList();
 	private String updateBy;
 	private Integer departmentID;
 	
@@ -44,9 +46,5 @@ public class SaveSalesServiceRevenueRequest implements Serializable{
 	public List<SalesServiceRevenueDetail> getDetail() {
 		return detail;
 	}
-	public void setDetail(List<SalesServiceRevenueDetail> detail) {
-		this.detail = detail;
-	}
-	
 	
 }

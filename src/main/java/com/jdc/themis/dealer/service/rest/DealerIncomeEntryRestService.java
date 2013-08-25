@@ -1,7 +1,9 @@
 package com.jdc.themis.dealer.service.rest;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
@@ -17,11 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
+import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
+import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.Vehicle;
+import com.jdc.themis.dealer.web.domain.CompletedEntryItem;
 import com.jdc.themis.dealer.web.domain.GeneralSaveResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
@@ -50,6 +57,17 @@ public class DealerIncomeEntryRestService {
 
 	@Autowired
 	private RefDataDAO refDataDAL;
+	
+	@Autowired
+	private IncomeJournalDAO incomeJournalDAL;
+
+	public IncomeJournalDAO getIncomeJournalDAL() {
+		return incomeJournalDAL;
+	}
+
+	public void setIncomeJournalDAL(IncomeJournalDAO incomeJournalDAL) {
+		this.incomeJournalDAL = incomeJournalDAL;
+	}
 
 	public RefDataDAO getRefDataDAL() {
 		return refDataDAL;
@@ -59,6 +77,12 @@ public class DealerIncomeEntryRestService {
 		this.refDataDAL = refDataDAL;
 	}
 
+	/**
+	 * Get menu item details by id. 
+	 * 
+	 * @param id
+	 * @return
+	 */
 	private MenuItem getMenuByID(Integer id) {
 		final Menu menu = refDataDAL.getMenu(id);
 		final MenuItem item = new MenuItem();
@@ -108,7 +132,7 @@ public class DealerIncomeEntryRestService {
 	 * @return
 	 */
 	@GET
-	@Path("/vehicle/all")
+	@Path("/vehicle")
 	@Produces({ "application/json" })
 	@Transactional(readOnly = true)
 	public Response getAllVehicles() {
@@ -236,13 +260,32 @@ public class DealerIncomeEntryRestService {
 	@Produces("application/json")
 	@Consumes("application/json")
 	@Path("/tax")
+	@Transactional
 	public Response saveIncomeTax(
 			final SaveTaxRequest request) {
-		final GeneralSaveResponse response = new GeneralSaveResponse();
-		response.setErrorMsg("");
-		response.setSuccess(true);
-		response.setTimestamp(Instant.millis(new Date().getTime()));
-		return Response.ok(response).build();
+		try {
+			final List<TaxJournal> journals = Lists.newArrayList();
+			final TaxJournal taxJournal = new TaxJournal();
+			taxJournal.setAmount(new BigDecimal(request.getTax()));
+			taxJournal.setDealerID(request.getDealerID());
+			taxJournal.setUpdateBy(request.getUpdateBy());
+			journals.add(taxJournal);
+			final Instant timestamp = incomeJournalDAL.saveTaxJournal(request.getDealerID(), journals);
+			if ( timestamp == null ) {
+				throw new RuntimeException("Database save returns null timestamp!");
+			}
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg("");
+			response.setSuccess(true);
+			response.setTimestamp(timestamp);
+			return Response.ok(response).build();
+		} catch (Exception e) {
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg(e.getMessage());
+			response.setSuccess(false);
+			response.setTimestamp(Instant.millis(new Date().getTime()));
+			return Response.ok(response).build();
+		} 
 	}
 
 	/**
@@ -260,9 +303,13 @@ public class DealerIncomeEntryRestService {
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("validDate") String validDate) {
 		final GetTaxResponse response = new GetTaxResponse();
-		response.setDealerID(dealerID);
-		response.setValidDate(LocalDate.parse(validDate));
-		response.setTax(1023432.00);
+		final Collection<TaxJournal> list = incomeJournalDAL.getTaxJournal(dealerID, LocalDate.parse(validDate));
+		
+		for (final TaxJournal journal : list) {
+			response.setDealerID(dealerID);
+			response.setValidDate(journal.getValidDate());
+			response.setTax(journal.getAmount().doubleValue());
+		}
 		
 		return Response.ok(response).build();
 	}
@@ -279,11 +326,29 @@ public class DealerIncomeEntryRestService {
 	@Path("/menu/entrystatus")
 	public Response saveDealerEntryItemStatus(
 			final SaveDealerEntryItemStatusRequest request) {
-		final GeneralSaveResponse response = new GeneralSaveResponse();
-		response.setErrorMsg("");
-		response.setSuccess(true);
-		response.setTimestamp(Instant.millis(new Date().getTime()));
-		return Response.ok(response).build();
+		try {
+			final List<DealerEntryItemStatus> journals = Lists.newArrayList();
+			final DealerEntryItemStatus journal = new DealerEntryItemStatus();
+			journal.setEntryItemID(request.getItemID());
+			journal.setDealerID(request.getDealerID());
+			journal.setUpdateBy(request.getUpdateBy());
+			journals.add(journal);
+			final Instant timestamp = incomeJournalDAL.saveDealerEntryItemStatus(request.getDealerID(), journals);
+			if ( timestamp == null ) {
+				throw new RuntimeException("Database save returns null timestamp!");
+			}
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg("");
+			response.setSuccess(true);
+			response.setTimestamp(timestamp);
+			return Response.ok(response).build();
+		} catch (Exception e) {
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg(e.getMessage());
+			response.setSuccess(false);
+			response.setTimestamp(Instant.millis(new Date().getTime()));
+			return Response.ok(response).build();
+		} 
 	}
 
 	/**
@@ -300,8 +365,16 @@ public class DealerIncomeEntryRestService {
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("validDate") String validDate) {
 		final GetDealerEntryItemStatusResponse response = new GetDealerEntryItemStatusResponse();
+		final Collection<DealerEntryItemStatus> list = incomeJournalDAL.getDealerEntryItemStatus(dealerID, LocalDate.parse(validDate));
+		
 		response.setDealerID(dealerID);
-		response.setValidDate(LocalDate.parse(validDate));
+		for (final DealerEntryItemStatus journal : list) {
+			final CompletedEntryItem status = new CompletedEntryItem();
+			status.setId(journal.getEntryItemID());
+			status.setName(refDataDAL.getMenu(status.getId()).getName());
+			status.setTimestamp(journal.getTimestamp());
+			response.getDetail().add(status);
+		}
 		
 		return Response.ok(response).build();
 	}

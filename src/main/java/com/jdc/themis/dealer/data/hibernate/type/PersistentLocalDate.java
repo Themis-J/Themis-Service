@@ -13,9 +13,14 @@ import javax.time.calendar.LocalDate;
 
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.EnhancedUserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jdc.themis.dealer.data.dao.hibernate.RefDataDAOImpl;
 
 public class PersistentLocalDate implements EnhancedUserType, Serializable {
 
+	private final static Logger logger = LoggerFactory.getLogger(RefDataDAOImpl.class);
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -51,7 +56,8 @@ public class PersistentLocalDate implements EnhancedUserType, Serializable {
 		}
 		final Calendar c = new GregorianCalendar();
 		c.setTime(date);
-		final Object value = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+		final Object value = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH));
+		logger.debug("Get date {} for field {}", value, name);
 		return value;
 	}
 
@@ -63,7 +69,8 @@ public class PersistentLocalDate implements EnhancedUserType, Serializable {
 		} else {
 			final LocalDate date = (LocalDate) value;
 			final Calendar c = new GregorianCalendar();
-			c.set(date.getYear(), date.getMonthOfYear().getValue(), date.getDayOfMonth());
+			c.set(date.getYear(), date.getMonthOfYear().getValue() - 1, date.getDayOfMonth());
+			logger.debug("Set date {} for field {}", c, index);
 			st.setDate(index, new java.sql.Date(c.getTimeInMillis()));
 		}
 	}

@@ -20,7 +20,7 @@ public class GetDealerEntryItemStatusResponse implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
 	private LocalDate validDate;
-	private List<CompletedEntryItem> status = Lists.newArrayList();
+	private final List<CompletedEntryItem> status = Lists.newArrayList();
 	
 	public Integer getDealerID() {
 		return dealerID;

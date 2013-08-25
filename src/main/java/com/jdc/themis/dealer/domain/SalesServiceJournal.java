@@ -49,6 +49,7 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 	@Type(type = "localdate")
 	private LocalDate validDate;
 
+	@Id
 	@Type(type="datetime")
 	public Instant getTimestamp() {
 		return timestamp;
@@ -67,6 +68,7 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 		this.timeEnd = timeEnd;
 	}
 
+	@Id
 	@Type(type="localdate")
 	public LocalDate getValidDate() {
 		return validDate;
@@ -77,18 +79,21 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 	}
 	
 	
+	@Id
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	@Id
 	public Integer getDealerID() {
 		return dealerID;
 	}
 	public void setDealerID(Integer dealerID) {
 		this.dealerID = dealerID;
 	}
+	@Id
 	public Integer getDepartmentID() {
 		return departmentID;
 	}

@@ -1,8 +1,8 @@
-insert into Menu values (1, 'DealerEntrySystem', 'DealerEntrySystemText', '#')
-insert into Menu values (2, 'DealerDataEntry', 'DealerDataEntryText', '#')
-insert into Menu values (3, 'DealerDataDisplay', 'DealerDataDisplayText', '#')
-insert into Menu values (4, 'Income', 'IncomeText', '#')
-insert into Menu values (5, 'Expense', 'ExpenseText', '#')
+insert into Menu values (1, 'DealerEntrySystem', 'DealerEntrySystemText')
+insert into Menu values (2, 'DealerDataEntry', 'DealerDataEntryText')
+insert into Menu values (3, 'DealerDataDisplay', 'DealerDataDisplayText')
+insert into Menu values (4, 'Income', 'IncomeText')
+insert into Menu values (5, 'Expense', 'ExpenseText')
 
 insert into MenuHierachy values (1, 2, 1)
 insert into MenuHierachy values (1, 3, 2)

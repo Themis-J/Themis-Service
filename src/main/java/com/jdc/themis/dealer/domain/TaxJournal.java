@@ -20,9 +20,15 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate;
 import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 
+/**
+ * Entity for tax journal.
+ * 
+ * @author Kai Chen
+ *
+ */
 @FilterDefs(
 		{
-			@org.hibernate.annotations.FilterDef(name="filter", 
+			@org.hibernate.annotations.FilterDef(name="taxJournalFilter", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
@@ -31,12 +37,14 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 		}
 		)
 @Filters( {
-    @Filter(name="filter", condition="validDate = :referenceDate and id = :id and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="taxJournalFilter", condition="validDate = :referenceDate and id = :id and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
 @Entity
 public class TaxJournal implements TemporalEntity, Serializable {
+	
+	public static String FILTER = "taxJournalFilter";
 
 	private static final long serialVersionUID = 1L;
 	@Id

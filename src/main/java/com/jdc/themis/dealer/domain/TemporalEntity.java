@@ -10,9 +10,6 @@ import javax.time.calendar.LocalDate;
  * 
  */
 public interface TemporalEntity {
-	
-	public static String REFTIME_FILER = "transactionTimeFilter";
-	public static String REFDATE_FILER = "validDateFilter";
 
 	public Instant getTimestamp();
 

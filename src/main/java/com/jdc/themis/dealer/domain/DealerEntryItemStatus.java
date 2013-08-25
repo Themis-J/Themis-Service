@@ -7,7 +7,9 @@ import javax.persistence.Id;
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
 
+import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
+import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -17,13 +19,23 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 
 @FilterDefs(
 		{
-			@org.hibernate.annotations.FilterDef(name="transactionTimeFilter", 
-					defaultCondition="timestamp < :referenceTime and timeEnd >= :referenceTime", 
-					parameters = {@org.hibernate.annotations.ParamDef(name="referenceTime", type="datetime")}), 
-			@org.hibernate.annotations.FilterDef(name="validDateFilter", defaultCondition="validDate = :referenceDate", 
-			parameters = {@org.hibernate.annotations.ParamDef(name="referenceDate", type="localdate")}), 
+			@org.hibernate.annotations.FilterDef(name="dealerEntryItemStatusFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
+					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="dealerEntryItemStatusFilterSingleEntryItem", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
+					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer"), 
+					@org.hibernate.annotations.ParamDef(name="entryItemID", type="integer")}), 
 		}
 		)
+@Filters( {
+    @Filter(name="dealerEntryItemStatusFilter", condition="validDate = :referenceDate and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"),
+    @Filter(name="dealerEntryItemStatusFilterSingleEntryItem", condition="entryItemID = :entryItemID and validDate = :referenceDate and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+} )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
 @Entity
@@ -31,7 +43,12 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	public static String FILTER = "dealerEntryItemStatusFilter";
+	public static String FILER_SINGLEENTRYITEM = "dealerEntryItemStatusFilterSingleEntryItem";
+
+	@Id
 	private Integer entryItemID;
+	@Id
 	private Integer dealerID;
 	private String updateBy;
 	@Id
@@ -44,6 +61,7 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 	private LocalDate validDate;
 
 	@Type(type="datetime")
+	@Id
 	public Instant getTimestamp() {
 		return timestamp;
 	}
@@ -62,6 +80,7 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 	}
 
 	@Type(type="localdate")
+	@Id
 	public LocalDate getValidDate() {
 		return validDate;
 	}

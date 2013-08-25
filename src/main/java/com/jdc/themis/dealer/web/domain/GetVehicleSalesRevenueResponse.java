@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.google.common.collect.Lists;
 import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarLocalDateAdaptor;
 
 import com.jdc.themis.common.json.adaptor.JsonCalendarLocalDateSerializer;
@@ -19,7 +20,7 @@ public class GetVehicleSalesRevenueResponse implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
 	private LocalDate validDate;
-	private List<VehicleSalesRevenueDetail> detail;
+	private final List<VehicleSalesRevenueDetail> detail = Lists.newArrayList();
 	
 	public Integer getDealerID() {
 		return dealerID;
@@ -37,9 +38,6 @@ public class GetVehicleSalesRevenueResponse implements Serializable{
 	}
 	public List<VehicleSalesRevenueDetail> getDetail() {
 		return detail;
-	}
-	public void setDetail(List<VehicleSalesRevenueDetail> detail) {
-		this.detail = detail;
 	}
 	
 }

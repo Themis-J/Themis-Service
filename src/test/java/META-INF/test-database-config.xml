@@ -27,6 +27,7 @@
 	<jdbc:embedded-database id="dataSource" type="H2">
 		<jdbc:script location="classpath:META-INF/com/jdc/themis/dealer/domain/schema/tables.sql" />
 		<jdbc:script location="classpath:META-INF/com/jdc/themis/dealer/domain/data/data_refdata.sql" />
+		<jdbc:script location="classpath:META-INF/com/jdc/themis/dealer/domain/data/data_others.sql" />
 	</jdbc:embedded-database>
     <!-- org.hibernate.dialect.H2Dialect -->
 	<!-- org.hibernate.dialect.HSQLDialect -->

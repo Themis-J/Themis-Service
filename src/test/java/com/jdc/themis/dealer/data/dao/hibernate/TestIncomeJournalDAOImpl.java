@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
+import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.TaxJournal;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -24,6 +25,49 @@ import com.jdc.themis.dealer.domain.TaxJournal;
 public class TestIncomeJournalDAOImpl {
 	@Autowired
 	private IncomeJournalDAO incomeJournalDAL;
+
+	@Test
+	public void getOneExistingTaxJournal() {
+		int hasJournal = 0;
+		for (final TaxJournal journal : incomeJournalDAL.getTaxJournal(2, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test0", journal.getUpdateBy());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void getNonExistingTaxJournal() {
+		int hasJournal = 0;
+		for (final TaxJournal journal : incomeJournalDAL.getTaxJournal(2, LocalDate.of(2013, 8, 2))) {
+			hasJournal++;
+			System.err.println(journal);
+		}
+		Assert.assertEquals(0, hasJournal);
+	} 
+	
+	@Test
+	public void insertOneTaxJournalForExistingDealer() {
+		final TaxJournal taxJournal = new TaxJournal();
+		taxJournal.setAmount(new BigDecimal("2234.01"));
+		taxJournal.setDealerID(2);
+		taxJournal.setId(1);
+		taxJournal.setValidDate(LocalDate.of(2013, 8, 1));
+		taxJournal.setUpdateBy("test");
+		incomeJournalDAL.saveTaxJournal(2, Lists.newArrayList(taxJournal));
+		
+		int hasJournal = 0;
+		for (final TaxJournal journal : incomeJournalDAL.getTaxJournal(2, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test", journal.getUpdateBy());
+			Assert.assertEquals(new BigDecimal("2234.01"), journal.getAmount());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
 	
 	@Test
 	public void insertOneTaxJournal() {
@@ -75,10 +119,58 @@ public class TestIncomeJournalDAOImpl {
 		hasJournal = 0;
 		for (final TaxJournal journal : incomeJournalDAL.getTaxJournal(1, LocalDate.of(2013, 8, 1))) {
 			hasJournal++;
-			System.out.println(journal);
+			System.err.println(journal);
 			Assert.assertNotNull(journal);
 			Assert.assertEquals("test2", journal.getUpdateBy());
+			Assert.assertEquals(new BigDecimal("1235.01"), journal.getAmount());
 		}
 		Assert.assertEquals(1, hasJournal);
 	} 
+	
+	@Test
+	public void insertOneDealerEntryItemStatus() {
+		final DealerEntryItemStatus status = new DealerEntryItemStatus();
+		status.setDealerID(1);
+		status.setEntryItemID(1);
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdateBy("test");
+		incomeJournalDAL.saveDealerEntryItemStatus(1, Lists.newArrayList(status));
+		
+		int hasJournal = 0;
+		for (final DealerEntryItemStatus journal : incomeJournalDAL.getDealerEntryItemStatus(1, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.out.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test", journal.getUpdateBy());
+			Assert.assertEquals(1, journal.getDealerID().intValue());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void insertTwoDealerEntryItemStatus() {
+		final DealerEntryItemStatus status1 = new DealerEntryItemStatus();
+		status1.setDealerID(1);
+		status1.setEntryItemID(1);
+		status1.setValidDate(LocalDate.of(2013, 8, 1));
+		status1.setUpdateBy("test2");
+		
+		final DealerEntryItemStatus status2 = new DealerEntryItemStatus();
+		status2.setDealerID(1);
+		status2.setEntryItemID(2);
+		status2.setValidDate(LocalDate.of(2013, 8, 1));
+		status2.setUpdateBy("test2");
+		incomeJournalDAL.saveDealerEntryItemStatus(1, Lists.newArrayList(status1, status2));
+		
+		int hasJournal = 0;
+		for (final DealerEntryItemStatus journal : incomeJournalDAL.getDealerEntryItemStatus(1, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test2", journal.getUpdateBy());
+			Assert.assertEquals(1, journal.getDealerID().intValue());
+		}
+		Assert.assertEquals(2, hasJournal);
+	} 
+	
 }

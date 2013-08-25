@@ -12,7 +12,7 @@ public class GetVehicleResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<VehicleItem> items = Lists.newArrayList();
+	private final List<VehicleItem> items = Lists.newArrayList();
 
 	public List<VehicleItem> getItems() {
 		return items;
