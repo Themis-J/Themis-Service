@@ -1,5 +1,6 @@
 package com.jdc.themis.dealer.data.dao.hibernate;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
+import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
+import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.utils.Utils;
 
 /**
@@ -240,6 +243,160 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 			
 		});
 		
+	}
+
+	@Override
+	public Instant saveVehicleSalesJournal(final Integer dealerID,
+			final Integer departmentID, final Collection<VehicleSalesJournal> journals) {
+		return executor.executeWithWriteLock(VehicleSalesJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (VehicleSalesJournal newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(VehicleSalesJournal.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<VehicleSalesJournal> list = session.createCriteria(VehicleSalesJournal.class).list();
+					for ( final VehicleSalesJournal oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(VehicleSalesJournal.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAmount() == null ) {
+						newJournal.setAmount(BigDecimal.ZERO);
+					}
+					if ( newJournal.getMargin() == null ) {
+						newJournal.setMargin(BigDecimal.ZERO);
+					}
+					if ( newJournal.getCount() == null ) {
+						newJournal.setCount(0);
+					}
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
+	}
+
+	private String makeSimpleKey(Integer dealerID, Integer deparmentID) {
+		return dealerID + "-" + deparmentID;
+	}
+	
+	@Override
+	public Collection<VehicleSalesJournal> getVehicleSalesJournal(
+			final Integer dealerID, final Integer departmentID, final LocalDate validDate) {
+		return executor.executeWithReadLock(VehicleSalesJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<VehicleSalesJournal>>() {
+
+			@Override
+			public Collection<VehicleSalesJournal> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(VehicleSalesJournal.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("departmentID", departmentID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<VehicleSalesJournal> list = session.createCriteria(VehicleSalesJournal.class).list();
+				session.disableFilter(VehicleSalesJournal.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
+	}
+
+	@Override
+	public Instant saveSalesServiceJournal(final Integer dealerID,
+			final Integer departmentID, final Collection<SalesServiceJournal> journals) {
+		return executor.executeWithWriteLock(SalesServiceJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (SalesServiceJournal newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(SalesServiceJournal.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<SalesServiceJournal> list = session.createCriteria(SalesServiceJournal.class).list();
+					for ( final SalesServiceJournal oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(SalesServiceJournal.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAmount() == null ) {
+						newJournal.setAmount(BigDecimal.ZERO);
+					}
+					if ( newJournal.getMargin() == null ) {
+						newJournal.setMargin(BigDecimal.ZERO);
+					}
+					if ( newJournal.getCount() == null ) {
+						newJournal.setCount(0);
+					}
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
+	}
+
+	@Override
+	public Collection<SalesServiceJournal> getSalesServiceJournal(
+			final Integer dealerID, final Integer departmentID, final LocalDate validDate) {
+		return executor.executeWithReadLock(SalesServiceJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<SalesServiceJournal>>() {
+
+			@Override
+			public Collection<SalesServiceJournal> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(SalesServiceJournal.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("departmentID", departmentID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<SalesServiceJournal> list = session.createCriteria(SalesServiceJournal.class).list();
+				session.disableFilter(SalesServiceJournal.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
 	}
 
 }

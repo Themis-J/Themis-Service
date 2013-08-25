@@ -52,7 +52,7 @@ public class TaxJournal implements TemporalEntity, Serializable {
 	@Id
 	private Integer dealerID;
 	private BigDecimal amount;
-	private String updateBy;
+	private String updatedBy;
 	@Id
 	@Type(type = "datetime")
 	private Instant timestamp;
@@ -109,18 +109,18 @@ public class TaxJournal implements TemporalEntity, Serializable {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
-	public String getUpdateBy() {
-		return updateBy;
+	public String getUpdatedBy() {
+		return updatedBy;
 	}
-	public void setUpdateBy(String updateBy) {
-		this.updateBy = updateBy;
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 	public String toString() {
 		return new ToStringBuilder(this).append("itemID", id)
 				.append("dealerID", dealerID)
 				.append("amount", amount)
-				.append("updatedBy", updateBy)
+				.append("updatedBy", updatedBy)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)
 				.append("validDate", validDate).getStringBuffer().toString();

@@ -43,4 +43,8 @@
 		</property>
 	</bean>
 
+	<bean id="refDataDAL" class="com.jdc.themis.dealer.data.dao.hibernate.RefDataDAOImpl">
+	</bean>
+	<bean id="incomeJournalDAL" class="com.jdc.themis.dealer.data.dao.hibernate.IncomeJournalDAOImpl">
+	</bean>
 </beans>

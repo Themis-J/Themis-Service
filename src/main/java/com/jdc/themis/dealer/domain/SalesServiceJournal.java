@@ -8,29 +8,39 @@ import javax.persistence.Id;
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
+import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
-import com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate;
-import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 
 @FilterDefs(
 		{
-			@org.hibernate.annotations.FilterDef(name="transactionTimeFilter", 
-					defaultCondition="timestamp < :referenceTime and timeEnd >= :referenceTime", 
-					parameters = {@org.hibernate.annotations.ParamDef(name="referenceTime", type="datetime")}), 
-			@org.hibernate.annotations.FilterDef(name="validDateFilter", defaultCondition="validDate = :referenceDate", 
-			parameters = {@org.hibernate.annotations.ParamDef(name="referenceDate", type="localdate")}), 
+			@org.hibernate.annotations.FilterDef(name="salesServiceFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
+					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
+					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="salesServiceFilterSingleItem", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
+					@org.hibernate.annotations.ParamDef(name="id", type="integer"), 
+					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
+					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
 		}
 		)
-@TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
-	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
+@Filters( {
+    @Filter(name="salesServiceFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="salesServiceFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+} )
 @Entity
 public class SalesServiceJournal implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
+	public static String FILTER = "salesServiceFilter";
+	public static String FILTER_SINGLEITEM = "salesServiceFilterSingleItem";
 
 	@Id
 	private Integer id;
@@ -48,6 +58,24 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 	@Id
 	@Type(type = "localdate")
 	private LocalDate validDate;
+	private String updatedBy;
+	private Integer count;
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
 	@Id
 	@Type(type="datetime")
@@ -113,4 +141,14 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 		this.margin = margin;
 	}
 	
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+				.append("dealerID", dealerID)
+				.append("amount", amount)
+				.append("margin", margin)
+				.append("updatedBy", updatedBy)
+				.append("timestamp", timestamp)
+				.append("timeEnd", timeEnd)
+				.append("validDate", validDate).getStringBuffer().toString();
+	}
 }

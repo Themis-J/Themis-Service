@@ -20,7 +20,7 @@ public class SalesServiceRevenueDetail implements Serializable {
 	private Integer itemID;
 	private String name;
 	private Instant timestamp;
-	private Long count;
+	private Integer count;
 	private Double amount;
 	private Double margin;
 	
@@ -45,10 +45,10 @@ public class SalesServiceRevenueDetail implements Serializable {
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}
-	public Long getCount() {
+	public Integer getCount() {
 		return count;
 	}
-	public void setCount(Long count) {
+	public void setCount(Integer count) {
 		this.count = count;
 	}
 	public Double getAmount() {

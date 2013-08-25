@@ -15,7 +15,4 @@
     http://cxf.apache.org/jaxrs
     http://cxf.apache.org/schemas/jaxrs.xsd">
 
-	<bean id="refDataDAL" class="com.jdc.themis.dealer.data.dao.hibernate.RefDataDAOImpl">
-	</bean>
-
 </beans>

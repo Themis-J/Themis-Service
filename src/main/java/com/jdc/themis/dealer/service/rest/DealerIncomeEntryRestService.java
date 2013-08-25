@@ -14,20 +14,27 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
+import com.jdc.themis.dealer.domain.SalesServiceJournal;
+import com.jdc.themis.dealer.domain.SalesServiceJournalCategory;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.Vehicle;
+import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.web.domain.CompletedEntryItem;
 import com.jdc.themis.dealer.web.domain.GeneralSaveResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
@@ -39,12 +46,14 @@ import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesRevenueResponse;
 import com.jdc.themis.dealer.web.domain.MenuItem;
 import com.jdc.themis.dealer.web.domain.MenuOrderItem;
+import com.jdc.themis.dealer.web.domain.SalesServiceRevenueDetail;
 import com.jdc.themis.dealer.web.domain.SalesServiceRevenueItem;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesRevenueRequest;
 import com.jdc.themis.dealer.web.domain.VehicleItem;
+import com.jdc.themis.dealer.web.domain.VehicleSalesRevenueDetail;
 
 /**
  * Main entry to dealer income entry system.
@@ -114,7 +123,7 @@ public class DealerIncomeEntryRestService {
 	 */
 	@GET
 	@Path("/menu")
-	@Produces({ "application/json" })
+	@Produces({ "application/json", "application/xml" })
 	@Transactional(readOnly = true)
 	public Response getAllMenu() {
 		final GetMenuResponse response = new GetMenuResponse();
@@ -125,7 +134,17 @@ public class DealerIncomeEntryRestService {
 		}
 		return Response.ok(response).build();
 	}
-	
+	private enum GetCategoryIDFunction implements Function<SalesServiceJournalCategory, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(SalesServiceJournalCategory item) {
+	        return item.getId();
+	    }
+	}
+	private String getSalesCategory(Integer id) {
+		return Maps.uniqueIndex(refDataDAL.getSalesServiceJournalCategoryList(), GetCategoryIDFunction.INSTANCE).get(id).getName();
+	}
 	/**
 	 * Get full list of vehicles. 
 	 * 
@@ -133,7 +152,7 @@ public class DealerIncomeEntryRestService {
 	 */
 	@GET
 	@Path("/vehicle")
-	@Produces({ "application/json" })
+	@Produces({ "application/json", "application/xml" })
 	@Transactional(readOnly = true)
 	public Response getAllVehicles() {
 		final GetVehicleResponse response = new GetVehicleResponse();
@@ -142,6 +161,7 @@ public class DealerIncomeEntryRestService {
 			final VehicleItem item = new VehicleItem();
 			item.setId(vehicle.getId());
 			item.setName(vehicle.getName());
+			item.setCategory(getSalesCategory(vehicle.getCategoryID()));
 			item.setTimestamp(vehicle.getTimestamp());
 			response.getItems().add(item);
 		}
@@ -155,7 +175,7 @@ public class DealerIncomeEntryRestService {
 	 */
 	@GET
 	@Path("/salesServiceRevenue/items")
-	@Produces({ "application/json" })
+	@Produces({ "application/json", "application/xml" })
 	@Transactional(readOnly = true)
 	public Response getAllSalesServiceRevenueItems() {
 		final GetSalesServiceRevenueItemResponse response = new GetSalesServiceRevenueItemResponse();
@@ -179,15 +199,60 @@ public class DealerIncomeEntryRestService {
 	@Produces("application/json")
 	@Consumes("application/json")
 	@Path("/vehicleSalesRevenue")
+	@Transactional
 	public Response saveVehicleSalesRevenue(
 			final SaveVehicleSalesRevenueRequest request) {
-		final GeneralSaveResponse response = new GeneralSaveResponse();
-		response.setErrorMsg("");
-		response.setSuccess(true);
-		response.setTimestamp(Instant.millis(new Date().getTime()));
-		return Response.ok(response).build();
+		try {
+			Preconditions.checkNotNull(request.getDealerID(), "dealer id can't be null");
+			Preconditions.checkNotNull(request.getValidDate(), "valid date can't be null");
+			Preconditions.checkNotNull(request.getDetail().size() == 0, "no detail is posted");
+			
+			final List<VehicleSalesJournal> journals = Lists.newArrayList();
+			final Integer requestedDeparmentID = request.getDepartmentID() == null ? DEFAULT_VEHICLE_DEPARTMENT_ID : request.getDepartmentID();
+			for ( final VehicleSalesRevenueDetail detail : request.getDetail() ) {
+				final VehicleSalesJournal journal = new VehicleSalesJournal();
+				journal.setAmount(new BigDecimal(detail.getAmount()));
+				journal.setMargin(new BigDecimal(detail.getMargin()));
+				journal.setCount(detail.getCount());
+				journal.setDealerID(request.getDealerID());
+				Preconditions.checkNotNull(detail.getVehicleID(), "vehicle id can't be null");
+				journal.setId(detail.getVehicleID());
+				journal.setDepartmentID(requestedDeparmentID);
+				journal.setUpdatedBy(request.getUpdateBy());
+				journal.setValidDate(LocalDate.parse(request.getValidDate()));
+				journals.add(journal);
+				
+			} 
+			final Instant timestamp = incomeJournalDAL.saveVehicleSalesJournal(request.getDealerID(), requestedDeparmentID, journals);
+			if ( timestamp == null ) {
+				throw new RuntimeException("Database save returns null timestamp!");
+			}
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg("");
+			response.setSuccess(true);
+			response.setTimestamp(timestamp);
+			return Response.ok(response).status(Status.CREATED).build();
+		} catch (Exception e) {
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg(e.getMessage());
+			response.setSuccess(false);
+			response.setTimestamp(Instant.millis(new Date().getTime()));
+			return Response.ok(response).status(Status.BAD_REQUEST).build();
+		} 
 	}
 
+	private final static Integer DEFAULT_VEHICLE_DEPARTMENT_ID = 1; // new vehicle department
+	private enum GetVehicleIDFunction implements Function<Vehicle, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(Vehicle item) {
+	        return item.getId();
+	    }
+	}
+	private String getVehicleName(Integer id) {
+		return Maps.uniqueIndex(refDataDAL.getVehicleList(), GetVehicleIDFunction.INSTANCE).get(id).getName();
+	}
 	/**
 	 * Get a list of vehicle sales revenue per vehicle type. 
 	 * 
@@ -197,15 +262,42 @@ public class DealerIncomeEntryRestService {
 	 */
 	@GET
 	@Path("/vehicleSalesRevenue")
-	@Produces({ "application/json" })
+	@Produces({ "application/json", "application/xml" })
+	@Transactional
 	public Response getVehicleSalesRevenue(
 			@QueryParam("dealerID") Integer dealerID,
+			@QueryParam("departmentID") Integer departmentID,
 			@QueryParam("validDate") String validDate) {
-		final GetVehicleSalesRevenueResponse response = new GetVehicleSalesRevenueResponse();
-		response.setDealerID(1);
-		response.setValidDate(LocalDate.parse(validDate));
-		
-		return Response.ok(response).build();
+		try {
+			Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+			Preconditions.checkNotNull(validDate, "valid date can't be null");
+			final GetVehicleSalesRevenueResponse response = new GetVehicleSalesRevenueResponse();
+			final Integer requestedDeparmentID = departmentID == null ? DEFAULT_VEHICLE_DEPARTMENT_ID : departmentID;
+			final Collection<VehicleSalesJournal> list = 
+					incomeJournalDAL.getVehicleSalesJournal(dealerID, requestedDeparmentID, LocalDate.parse(validDate));
+			
+			response.setDealerID(dealerID);
+			response.setDepartmentID(requestedDeparmentID);
+			response.setValidDate(LocalDate.parse(validDate));
+			for (final VehicleSalesJournal journal : list) {
+				final VehicleSalesRevenueDetail item = new VehicleSalesRevenueDetail();
+				item.setAmount(journal.getAmount().doubleValue());
+				item.setCount(journal.getCount());
+				item.setMargin(journal.getMargin().doubleValue());
+				item.setName(getVehicleName(journal.getId()));
+				item.setVehicleID(journal.getId());
+				item.setTimestamp(journal.getTimestamp());
+				response.getDetail().add(item);
+			}
+			
+			return Response.ok(response).build();
+		} catch (Exception e) {
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg(e.getMessage());
+			response.setSuccess(false);
+			response.setTimestamp(Instant.millis(new Date().getTime()));
+			return Response.ok(response).status(Status.BAD_REQUEST).build();
+		}
 	}
 
 	/**
@@ -215,18 +307,62 @@ public class DealerIncomeEntryRestService {
 	 * @return
 	 */
 	@POST
-	@Produces("application/json")
-	@Consumes("application/json")
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
 	@Path("/salesServiceRevenue")
+	@Transactional
 	public Response saveSalesServiceRevenue(
 			final SaveSalesServiceRevenueRequest request) {
-		final GeneralSaveResponse response = new GeneralSaveResponse();
-		response.setErrorMsg("");
-		response.setSuccess(true);
-		response.setTimestamp(Instant.millis(new Date().getTime()));
-		return Response.ok(response).build();
+		try {
+			Preconditions.checkNotNull(request.getDealerID(), "dealer id can't be null");
+			Preconditions.checkNotNull(request.getDepartmentID(), "department id can't be null");
+			Preconditions.checkNotNull(request.getValidDate(), "valid date can't be null");
+			Preconditions.checkNotNull(request.getDetail().size() == 0, "no detail is posted");
+			
+			final List<SalesServiceJournal> journals = Lists.newArrayList();
+			for ( final SalesServiceRevenueDetail detail : request.getDetail() ) {
+				final SalesServiceJournal journal = new SalesServiceJournal();
+				journal.setAmount(new BigDecimal(detail.getAmount()));
+				journal.setMargin(new BigDecimal(detail.getMargin()));
+				journal.setCount(detail.getCount());
+				journal.setDealerID(request.getDealerID());
+				Preconditions.checkNotNull(detail.getItemID(), "item id can't be null");
+				journal.setId(detail.getItemID());
+				journal.setDepartmentID(request.getDepartmentID());
+				journal.setUpdatedBy(request.getUpdateBy());
+				journal.setValidDate(LocalDate.parse(request.getValidDate()));
+				journals.add(journal);
+				
+			} 
+			final Instant timestamp = incomeJournalDAL.saveSalesServiceJournal(request.getDealerID(), request.getDepartmentID(), journals);
+			if ( timestamp == null ) {
+				throw new RuntimeException("Database save returns null timestamp!");
+			}
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg("");
+			response.setSuccess(true);
+			response.setTimestamp(timestamp);
+			return Response.ok(response).status(Status.CREATED).build();
+		} catch (Exception e) {
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg(e.getMessage());
+			response.setSuccess(false);
+			response.setTimestamp(Instant.millis(new Date().getTime()));
+			return Response.ok(response).status(Status.BAD_REQUEST).build();
+		} 
 	}
 
+	private enum GetSalesServiceIDFunction implements Function<SalesServiceJournalItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(SalesServiceJournalItem item) {
+	        return item.getId();
+	    }
+	}
+	private String getSalesServiceJournalItemName(Integer id) {
+		return Maps.uniqueIndex(refDataDAL.getSalesServiceJournalItemList(), GetSalesServiceIDFunction.INSTANCE).get(id).getName();
+	}
 	/**
 	 * Get a list sales & service revenue per sales item.
 	 * 
@@ -237,17 +373,42 @@ public class DealerIncomeEntryRestService {
 	 */
 	@GET
 	@Path("/salesServiceRevenue")
-	@Produces({ "application/json" })
+	@Produces({ "application/json", "application/xml" })
+	@Transactional
 	public Response getSalesServiceRevenue(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("departmentID") Integer departmentID,
 			@QueryParam("validDate") String validDate) {
-		final GetSalesServiceRevenueResponse response = new GetSalesServiceRevenueResponse();
-		response.setDealerID(dealerID);
-		response.setDepartmentID(departmentID);
-		response.setValidDate(LocalDate.parse(validDate));
-		
-		return Response.ok(response).build();
+		try {
+			Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+			Preconditions.checkNotNull(departmentID, "department id can't be null");
+			Preconditions.checkNotNull(validDate, "valid date can't be null");
+			final GetSalesServiceRevenueResponse response = new GetSalesServiceRevenueResponse();
+			final Collection<SalesServiceJournal> list = 
+					incomeJournalDAL.getSalesServiceJournal(dealerID, departmentID, LocalDate.parse(validDate));
+			
+			response.setDealerID(dealerID);
+			response.setDepartmentID(departmentID);
+			response.setValidDate(LocalDate.parse(validDate));
+			for (final SalesServiceJournal journal : list) {
+				final SalesServiceRevenueDetail item = new SalesServiceRevenueDetail();
+				item.setAmount(journal.getAmount().doubleValue());
+				item.setCount(journal.getCount());
+				item.setMargin(journal.getMargin().doubleValue());
+				item.setName(getSalesServiceJournalItemName(journal.getId()));
+				item.setItemID(journal.getId());
+				item.setTimestamp(journal.getTimestamp());
+				response.getDetail().add(item);
+			}
+			
+			return Response.ok(response).build();
+		} catch (Exception e) {
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg(e.getMessage());
+			response.setSuccess(false);
+			response.setTimestamp(Instant.millis(new Date().getTime()));
+			return Response.ok(response).status(Status.BAD_REQUEST).build();
+		}
 	}
 	
 	/**
@@ -264,11 +425,15 @@ public class DealerIncomeEntryRestService {
 	public Response saveIncomeTax(
 			final SaveTaxRequest request) {
 		try {
+			Preconditions.checkNotNull(request.getDealerID(), "dealer id can't be null");
+			Preconditions.checkNotNull(request.getValidDate(), "valid date can't be null");
+			Preconditions.checkNotNull(request.getTax(), "tax amount can't be null");
 			final List<TaxJournal> journals = Lists.newArrayList();
 			final TaxJournal taxJournal = new TaxJournal();
 			taxJournal.setAmount(new BigDecimal(request.getTax()));
 			taxJournal.setDealerID(request.getDealerID());
-			taxJournal.setUpdateBy(request.getUpdateBy());
+			taxJournal.setUpdatedBy(request.getUpdateBy());
+			taxJournal.setValidDate(LocalDate.parse(request.getValidDate()));
 			journals.add(taxJournal);
 			final Instant timestamp = incomeJournalDAL.saveTaxJournal(request.getDealerID(), journals);
 			if ( timestamp == null ) {
@@ -278,13 +443,13 @@ public class DealerIncomeEntryRestService {
 			response.setErrorMsg("");
 			response.setSuccess(true);
 			response.setTimestamp(timestamp);
-			return Response.ok(response).build();
+			return Response.ok(response).status(Status.CREATED).build();
 		} catch (Exception e) {
 			final GeneralSaveResponse response = new GeneralSaveResponse();
 			response.setErrorMsg(e.getMessage());
 			response.setSuccess(false);
 			response.setTimestamp(Instant.millis(new Date().getTime()));
-			return Response.ok(response).build();
+			return Response.ok(response).status(Status.BAD_REQUEST).build();
 		} 
 	}
 
@@ -298,20 +463,29 @@ public class DealerIncomeEntryRestService {
 	 */
 	@GET
 	@Path("/tax")
-	@Produces({ "application/json" })
+	@Produces({ "application/json", "application/xml" })
+	@Transactional
 	public Response getIncomeTax(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("validDate") String validDate) {
-		final GetTaxResponse response = new GetTaxResponse();
-		final Collection<TaxJournal> list = incomeJournalDAL.getTaxJournal(dealerID, LocalDate.parse(validDate));
-		
-		for (final TaxJournal journal : list) {
+		try {
+			final GetTaxResponse response = new GetTaxResponse();
+			final Collection<TaxJournal> list = incomeJournalDAL.getTaxJournal(dealerID, LocalDate.parse(validDate));
+			
 			response.setDealerID(dealerID);
-			response.setValidDate(journal.getValidDate());
-			response.setTax(journal.getAmount().doubleValue());
+			response.setValidDate(LocalDate.parse(validDate));
+			for (final TaxJournal journal : list) {
+				response.setTax(journal.getAmount().doubleValue());
+			}
+			
+			return Response.ok(response).build();
+		} catch (Exception e) {
+			final GeneralSaveResponse response = new GeneralSaveResponse();
+			response.setErrorMsg(e.getMessage());
+			response.setSuccess(false);
+			response.setTimestamp(Instant.millis(new Date().getTime()));
+			return Response.ok(response).status(Status.BAD_REQUEST).build();
 		}
-		
-		return Response.ok(response).build();
 	}
 	
 	/**
@@ -321,9 +495,10 @@ public class DealerIncomeEntryRestService {
 	 * @return
 	 */
 	@POST
-	@Produces("application/json")
-	@Consumes("application/json")
+	@Produces({"application/json", "application/xml" })
+	@Consumes({"application/json", "application/xml" })
 	@Path("/menu/entrystatus")
+	@Transactional
 	public Response saveDealerEntryItemStatus(
 			final SaveDealerEntryItemStatusRequest request) {
 		try {
@@ -332,6 +507,7 @@ public class DealerIncomeEntryRestService {
 			journal.setEntryItemID(request.getItemID());
 			journal.setDealerID(request.getDealerID());
 			journal.setUpdateBy(request.getUpdateBy());
+			journal.setValidDate(LocalDate.parse(request.getValidDate()));
 			journals.add(journal);
 			final Instant timestamp = incomeJournalDAL.saveDealerEntryItemStatus(request.getDealerID(), journals);
 			if ( timestamp == null ) {
@@ -341,13 +517,13 @@ public class DealerIncomeEntryRestService {
 			response.setErrorMsg("");
 			response.setSuccess(true);
 			response.setTimestamp(timestamp);
-			return Response.ok(response).build();
+			return Response.ok(response).status(Status.CREATED).build();
 		} catch (Exception e) {
 			final GeneralSaveResponse response = new GeneralSaveResponse();
 			response.setErrorMsg(e.getMessage());
 			response.setSuccess(false);
 			response.setTimestamp(Instant.millis(new Date().getTime()));
-			return Response.ok(response).build();
+			return Response.ok(response).status(Status.BAD_REQUEST).build();
 		} 
 	}
 
@@ -360,14 +536,18 @@ public class DealerIncomeEntryRestService {
 	 */
 	@GET
 	@Path("/menu/entrystatus")
-	@Produces({ "application/json" })
+	@Produces({ "application/json", "application/xml" })
+	@Transactional
 	public Response getDealerEntryItemStatus(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("validDate") String validDate) {
+		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		final GetDealerEntryItemStatusResponse response = new GetDealerEntryItemStatusResponse();
 		final Collection<DealerEntryItemStatus> list = incomeJournalDAL.getDealerEntryItemStatus(dealerID, LocalDate.parse(validDate));
 		
 		response.setDealerID(dealerID);
+		response.setValidDate(LocalDate.parse(validDate));
 		for (final DealerEntryItemStatus journal : list) {
 			final CompletedEntryItem status = new CompletedEntryItem();
 			status.setId(journal.getEntryItemID());

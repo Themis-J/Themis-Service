@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
 import org.hibernate.annotations.Filters;
@@ -108,6 +109,15 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 	}
 	public void setUpdateBy(String updateBy) {
 		this.updateBy = updateBy;
+	}
+	
+	public String toString() {
+		return new ToStringBuilder(this).append("itemID", entryItemID)
+				.append("dealerID", dealerID)
+				.append("updatedBy", updateBy)
+				.append("timestamp", timestamp)
+				.append("timeEnd", timeEnd)
+				.append("validDate", validDate).getStringBuffer().toString();
 	}
 
 }

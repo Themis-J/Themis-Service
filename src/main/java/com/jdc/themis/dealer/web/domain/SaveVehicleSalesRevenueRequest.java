@@ -3,7 +3,6 @@ package com.jdc.themis.dealer.web.domain;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.time.calendar.LocalDate;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.collect.Lists;
@@ -13,10 +12,17 @@ public class SaveVehicleSalesRevenueRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
-	private LocalDate validDate;
+	private String validDate;
 	private final List<VehicleSalesRevenueDetail> detail = Lists.newArrayList();
 	private String updateBy;
+	private Integer departmentID;
 	
+	public Integer getDepartmentID() {
+		return departmentID;
+	}
+	public void setDepartmentID(Integer departmentID) {
+		this.departmentID = departmentID;
+	}
 	public String getUpdateBy() {
 		return updateBy;
 	}
@@ -30,10 +36,10 @@ public class SaveVehicleSalesRevenueRequest implements Serializable{
 	public void setDealerID(Integer dealerID) {
 		this.dealerID = dealerID;
 	}
-	public LocalDate getValidDate() {
+	public String getValidDate() {
 		return validDate;
 	}
-	public void setValidDate(LocalDate validDate) {
+	public void setValidDate(String validDate) {
 		this.validDate = validDate;
 	}
 	public List<VehicleSalesRevenueDetail> getDetail() {

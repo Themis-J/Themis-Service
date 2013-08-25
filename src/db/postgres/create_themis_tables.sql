@@ -284,7 +284,6 @@ CREATE TABLE public.VehicleSalesJournal
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   vehicleID integer NOT NULL,
    amount double precision,
    margin double precision,
    count integer,

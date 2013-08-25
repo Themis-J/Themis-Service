@@ -19,6 +19,13 @@ public class GetVehicleSalesRevenueResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
+	private Integer departmentID;
+	public Integer getDepartmentID() {
+		return departmentID;
+	}
+	public void setDepartmentID(Integer departmentID) {
+		this.departmentID = departmentID;
+	}
 	private LocalDate validDate;
 	private final List<VehicleSalesRevenueDetail> detail = Lists.newArrayList();
 	

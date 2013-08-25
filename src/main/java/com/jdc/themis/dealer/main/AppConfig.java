@@ -29,7 +29,7 @@ public class AppConfig {
 				.createEndpoint(jaxRsApiApplication(),
 						JAXRSServerFactoryBean.class);
 		factory.setServiceBeans(Arrays.<Object>asList(dealerRestService()));
-		factory.setAddress("/" + factory.getAddress());
+		factory.setAddress(factory.getAddress());
 		factory.setProviders( Arrays.<Object>asList( jsonProvider() ) );
 		return factory.create();
 	}

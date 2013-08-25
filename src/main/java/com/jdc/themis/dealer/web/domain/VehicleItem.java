@@ -21,7 +21,14 @@ public class VehicleItem implements Serializable{
 	private Integer id;
 	private String name;
 	private Instant timestamp;
+	private String category;
 	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	@XmlJavaTypeAdapter(JaxbCalendarInstantAdaptor.class)
 	@JsonSerialize(using = JsonCalendarInstantSerializer.class)
 	public Instant getTimestamp() {
