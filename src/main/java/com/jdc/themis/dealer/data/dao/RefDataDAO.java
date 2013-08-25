@@ -3,6 +3,8 @@ package com.jdc.themis.dealer.data.dao;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Duration;
@@ -29,20 +31,27 @@ public interface RefDataDAO {
 
 	EnumValue getEnumValue(String enumType, Integer enumValue);
 	
+	@Cacheable("enumType")
 	List<EnumType> getEnumTypes();
 	
+	@Cacheable("enumValue")
 	List<EnumValue> getEnumValues();
 	
+	@Cacheable(value="menu")
 	List<Menu> getMenuList();
 	
+	@Cacheable(value="menuByID", key="#id")
 	Menu getMenu(Integer id);
 	
 	Integer getParentMenuID(Integer id);
 	
+	@Cacheable(value="childMenuByID", key="#id")
 	Collection<MenuHierachy> getChildMenus(Integer id);
 	
+	@Cacheable("menuHierachy")
 	List<MenuHierachy> getMenuHierachy();
 	
+	@Cacheable("vehicle")
 	List<Vehicle> getVehicleList();
 	
 	List<Dealer> getDealerList();

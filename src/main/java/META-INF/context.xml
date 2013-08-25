@@ -5,6 +5,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:hz="http://www.hazelcast.com/schema/spring"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
     http://www.springframework.org/schema/aop 
@@ -13,6 +15,9 @@
     http://www.springframework.org/schema/context/spring-context-3.2.xsd
     http://www.springframework.org/schema/tx 
     http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    http://www.hazelcast.com/schema/spring
+    http://www.hazelcast.com/schema/spring/hazelcast-spring-2.5.xsd
+    http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
     http://cxf.apache.org/jaxrs
 	http://cxf.apache.org/schemas/jaxrs.xsd">
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
@@ -20,6 +25,11 @@
 	<context:property-placeholder />
 	<context:annotation-config />
 	<aop:aspectj-autoproxy/>
+	<cache:annotation-driven cache-manager="cacheManager" />
+	<hz:hibernate-region-factory id="regionFactory" instance-ref="hazelcast" />
+	<bean id="cacheManager" class="com.hazelcast.spring.cache.HazelcastCacheManager">
+	    <constructor-arg ref="hazelcast"/>
+	</bean>
 	<context:component-scan base-package="com.jdc.themis.dealer.utils">
     	<context:include-filter type="annotation" expression="org.aspectj.lang.annotation.Aspect"/>
   	</context:component-scan>
@@ -34,4 +44,18 @@
 		</jaxrs:providers>
 	</jaxrs:server>
 	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+	
+	<hz:hazelcast id="hazelcast">
+        <hz:config>
+            <hz:group name="themis" password="themis123"/>
+            <hz:network port="5701" port-auto-increment="true">
+                <hz:join>
+                    <hz:multicast enabled="false" />
+                    <hz:tcp-ip enabled="true">
+                        <hz:members>localhost</hz:members>
+                    </hz:tcp-ip>
+                </hz:join>
+            </hz:network>
+        </hz:config>
+    </hz:hazelcast>
 </beans>

@@ -40,6 +40,7 @@
 		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
 		<jetty.plugin.version>6.1.25</jetty.plugin.version>
 		<javax.validation.version>1.1.0.CR3</javax.validation.version>
+		<hazelcast.version>2.6</hazelcast.version>
 	</properties>
 
 	<dependencies>
@@ -54,9 +55,19 @@
 			<version>20100212</version>
 		</dependency>
 		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-hibernate</artifactId>
+			<version>${hazelcast.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-spring</artifactId>
+			<version>${hazelcast.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -184,7 +195,7 @@
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast</artifactId>
-			<version>2.5</version>
+			<version>${hazelcast.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>

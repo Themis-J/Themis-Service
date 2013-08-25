@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -36,20 +35,20 @@ import com.jdc.themis.dealer.domain.TaxJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.utils.Performance;
 
-
 /**
- * Hibernate implementation for reference data access layer. 
+ * Hibernate implementation for reference data access layer.
  * 
  * @author Kai Chen
- *
+ * 
  */
 @Service
 public class RefDataDAOImpl implements RefDataDAO {
-	private final static Logger logger = LoggerFactory.getLogger(RefDataDAOImpl.class);
-	
+	private final static Logger logger = LoggerFactory
+			.getLogger(RefDataDAOImpl.class);
+
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
@@ -58,66 +57,63 @@ public class RefDataDAOImpl implements RefDataDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
-	private List<Menu> cachedMenuList;
-	
 	@Override
-	public synchronized List<Menu> getMenuList() {
+	public List<Menu> getMenuList() {
 		logger.info("Fetching menu list");
-		if ( cachedMenuList == null ) {
-			final Session session = sessionFactory.getCurrentSession();
-			@SuppressWarnings("unchecked")
-			final List<Menu> list = session.createCriteria(Menu.class).list();
-			cachedMenuList = ImmutableList.copyOf(list);
-		} 
-		return cachedMenuList;
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<Menu> list = session.createCriteria(Menu.class).list();
+		return ImmutableList.copyOf(list);
 	}
 
-	private List<MenuHierachy> cachedMenuHierachyList;
 	@Override
-	public synchronized List<MenuHierachy> getMenuHierachy() {
+	public List<MenuHierachy> getMenuHierachy() {
 		final Session session = sessionFactory.getCurrentSession();
-		if ( cachedMenuHierachyList == null ) {
-			@SuppressWarnings("unchecked")
-			final List<MenuHierachy> list = session.createCriteria(MenuHierachy.class).list();
-			cachedMenuHierachyList = ImmutableList.copyOf(list);
-		}
-		return cachedMenuHierachyList;
+		@SuppressWarnings("unchecked")
+		final List<MenuHierachy> list = session.createCriteria(
+				MenuHierachy.class).list();
+		return ImmutableList.copyOf(list);
 	}
 
 	private enum GetParentIDFunction implements Function<MenuHierachy, Integer> {
-	    INSTANCE;
+		INSTANCE;
 
-	    @Override
-	    public Integer apply(MenuHierachy hierachy) {
-	        return hierachy.getMenuHierachyID().getParentID();
-	    }
+		@Override
+		public Integer apply(MenuHierachy hierachy) {
+			return hierachy.getMenuHierachyID().getParentID();
+		}
 	}
+
 	private enum GetChildIDFunction implements Function<MenuHierachy, Integer> {
-	    INSTANCE;
+		INSTANCE;
 
-	    @Override
-	    public Integer apply(MenuHierachy hierachy) {
-	        return hierachy.getMenuHierachyID().getChildID();
-	    }
+		@Override
+		public Integer apply(MenuHierachy hierachy) {
+			return hierachy.getMenuHierachyID().getChildID();
+		}
 	}
-	
+
 	/*
 	 * child to parent menu mapping
 	 */
 	private Map<Integer, Integer> getChildMenuMapping() {
 		final List<MenuHierachy> menuHierachy = getMenuHierachy();
 		final Map<Integer, Integer> map = Maps.newHashMap();
-		final ImmutableListMultimap<Integer, MenuHierachy> parentIDToMenuHierachy = Multimaps.index(menuHierachy, GetChildIDFunction.INSTANCE);
-		
+		final ImmutableListMultimap<Integer, MenuHierachy> parentIDToMenuHierachy = Multimaps
+				.index(menuHierachy, GetChildIDFunction.INSTANCE);
+
 		for (final Integer key : parentIDToMenuHierachy.keySet()) {
-			final Iterator<Integer> parents = Collections2.transform(parentIDToMenuHierachy.get(key), GetParentIDFunction.INSTANCE).iterator();
-			if ( parents.hasNext() ) {
-				map.put(key, parents.next()); // there must be one child mapped to one parent
+			final Iterator<Integer> parents = Collections2.transform(
+					parentIDToMenuHierachy.get(key),
+					GetParentIDFunction.INSTANCE).iterator();
+			if (parents.hasNext()) {
+				map.put(key, parents.next()); // there must be one child mapped
+												// to one parent
 			}
 		}
 		return map;
 	}
-	
+
 	@Override
 	public Menu getMenu(Integer id) {
 		final Session session = sessionFactory.getCurrentSession();
@@ -150,7 +146,8 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<TaxJournalItem> getTaxJournalItemList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<TaxJournalItem> list = session.createCriteria(TaxJournalItem.class).list();
+		final List<TaxJournalItem> list = session.createCriteria(
+				TaxJournalItem.class).list();
 		return ImmutableList.copyOf(list);
 	}
 
@@ -158,15 +155,17 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<SalesServiceJournalItem> getSalesServiceJournalItemList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<SalesServiceJournalItem> list = session.createCriteria(SalesServiceJournalItem.class).list();
+		final List<SalesServiceJournalItem> list = session.createCriteria(
+				SalesServiceJournalItem.class).list();
 		return ImmutableList.copyOf(list);
 	}
-	
+
 	@Override
 	public List<SalesServiceJournalCategory> getSalesServiceJournalCategoryList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<SalesServiceJournalCategory> list = session.createCriteria(SalesServiceJournalCategory.class).list();
+		final List<SalesServiceJournalCategory> list = session.createCriteria(
+				SalesServiceJournalCategory.class).list();
 		return ImmutableList.copyOf(list);
 	}
 
@@ -175,10 +174,11 @@ public class RefDataDAOImpl implements RefDataDAO {
 	 */
 	private Collection<MenuHierachy> getParentMenuMapping(Integer id) {
 		final List<MenuHierachy> menuHierachy = getMenuHierachy();
-		final ImmutableListMultimap<Integer, MenuHierachy> parentIDToMenuHierachy = Multimaps.index(menuHierachy, GetParentIDFunction.INSTANCE);
+		final ImmutableListMultimap<Integer, MenuHierachy> parentIDToMenuHierachy = Multimaps
+				.index(menuHierachy, GetParentIDFunction.INSTANCE);
 		return parentIDToMenuHierachy.asMap().get(id);
 	}
-	
+
 	@Override
 	public Collection<MenuHierachy> getChildMenus(Integer id) {
 		return getParentMenuMapping(id);
@@ -188,42 +188,48 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<EnumType> getEnumTypes() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<EnumType> list = session.createCriteria(EnumType.class).list();
+		final List<EnumType> list = session.createCriteria(EnumType.class)
+				.list();
 		return ImmutableList.copyOf(list);
 	}
 
 	private enum GetEnumTypeIDFunction implements Function<EnumValue, Integer> {
-	    INSTANCE;
+		INSTANCE;
 
-	    @Override
-	    public Integer apply(EnumValue value) {
-	        return value.getTypeID();
-	    }
+		@Override
+		public Integer apply(EnumValue value) {
+			return value.getTypeID();
+		}
 	}
+
 	@Override
 	public List<EnumValue> getEnumValues() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<EnumValue> list = session.createCriteria(EnumValue.class).list();
+		final List<EnumValue> list = session.createCriteria(EnumValue.class)
+				.list();
 		return ImmutableList.copyOf(list);
 	}
 
 	private enum GetEnumTypeNameFunction implements Function<EnumType, String> {
-	    INSTANCE;
+		INSTANCE;
 
-	    @Override
-	    public String apply(EnumType type) {
-	        return type.getName();
-	    }
+		@Override
+		public String apply(EnumType type) {
+			return type.getName();
+		}
 	}
+
 	@Override
 	@Performance
 	public EnumValue getEnumValue(String enumType, Integer enumValue) {
-		final Map<String, EnumType> enumTypes = Maps.uniqueIndex(getEnumTypes(), GetEnumTypeNameFunction.INSTANCE);
+		final Map<String, EnumType> enumTypes = Maps.uniqueIndex(
+				getEnumTypes(), GetEnumTypeNameFunction.INSTANCE);
 		final EnumType type = enumTypes.get(enumType);
-		final ImmutableListMultimap<Integer, EnumValue> values = Multimaps.index(getEnumValues(), GetEnumTypeIDFunction.INSTANCE);
+		final ImmutableListMultimap<Integer, EnumValue> values = Multimaps
+				.index(getEnumValues(), GetEnumTypeIDFunction.INSTANCE);
 		for (final EnumValue ev : values.asMap().get(type.getId())) {
-			if ( ev.getValue().equals(enumValue) ) {
+			if (ev.getValue().equals(enumValue)) {
 				return ev;
 			}
 		}
@@ -234,7 +240,8 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<GeneralJournalItem> getGeneralJournalItemList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<GeneralJournalItem> list = session.createCriteria(GeneralJournalItem.class).list();
+		final List<GeneralJournalItem> list = session.createCriteria(
+				GeneralJournalItem.class).list();
 		return ImmutableList.copyOf(list);
 	}
 
@@ -242,7 +249,8 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<JobPosition> getJobPositionList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<JobPosition> list = session.createCriteria(JobPosition.class).list();
+		final List<JobPosition> list = session
+				.createCriteria(JobPosition.class).list();
 		return ImmutableList.copyOf(list);
 	}
 
@@ -250,7 +258,8 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<AccountReceivableDurationItem> getAccountReceivableItemList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<AccountReceivableDurationItem> list = session.createCriteria(AccountReceivableDurationItem.class).list();
+		final List<AccountReceivableDurationItem> list = session
+				.createCriteria(AccountReceivableDurationItem.class).list();
 		return ImmutableList.copyOf(list);
 	}
 
@@ -258,7 +267,8 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<Duration> getDurationList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<Duration> list = session.createCriteria(Duration.class).list();
+		final List<Duration> list = session.createCriteria(Duration.class)
+				.list();
 		return ImmutableList.copyOf(list);
 	}
 
@@ -266,7 +276,8 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<EmployeeFeeItem> getEmployeeFeeItemList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<EmployeeFeeItem> list = session.createCriteria(EmployeeFeeItem.class).list();
+		final List<EmployeeFeeItem> list = session.createCriteria(
+				EmployeeFeeItem.class).list();
 		return ImmutableList.copyOf(list);
 	}
 
@@ -274,7 +285,8 @@ public class RefDataDAOImpl implements RefDataDAO {
 	public List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItemList() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
-		final List<EmployeeFeeSummaryItem> list = session.createCriteria(EmployeeFeeSummaryItem.class).list();
+		final List<EmployeeFeeSummaryItem> list = session.createCriteria(
+				EmployeeFeeSummaryItem.class).list();
 		return ImmutableList.copyOf(list);
 	}
 
