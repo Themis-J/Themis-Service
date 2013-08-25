@@ -15,8 +15,7 @@ import org.springframework.context.annotation.ImportResource;
 import com.jdc.themis.dealer.service.rest.DealerIncomeEntryRestService;
 
 @Configuration
-@ImportResource({"classpath:META-INF/database-config.xml", 
-		"classpath:META-INF/context.xml"})
+@ImportResource({"classpath:META-INF/database-config.xml"})
 public class AppConfig {
 	@Bean(destroyMethod = "shutdown")
 	public SpringBus cxf() {

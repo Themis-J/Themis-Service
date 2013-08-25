@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
@@ -10,9 +10,22 @@
     http://www.springframework.org/schema/context/spring-context-3.2.xsd
     http://www.springframework.org/schema/tx 
     http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
-    http://cxf.apache.org/jaxws 
-    http://cxf.apache.org/schemas/jaxws.xsd
     http://cxf.apache.org/jaxrs
-    http://cxf.apache.org/schemas/jaxrs.xsd">
+	http://cxf.apache.org/schemas/jaxrs.xsd">
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+	<context:property-placeholder />
+	<context:annotation-config />
 
+	<bean id="dealerEntryService" class="com.jdc.themis.dealer.service.rest.DealerIncomeEntryRestService" />
+				
+	<jaxrs:server id="dealerEntryServer" address="/dealer">
+		<jaxrs:serviceBeans>
+      		<ref bean="dealerEntryService" />
+    	</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="jsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:server>
+	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
 </beans>

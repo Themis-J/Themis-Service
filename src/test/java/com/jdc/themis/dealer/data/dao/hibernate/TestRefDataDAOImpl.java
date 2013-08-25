@@ -29,7 +29,7 @@ public class TestRefDataDAOImpl {
 	public void getAllMenuAndCompareFirstMenuName() {
 		Assert.assertEquals(1, refDataDAO.getMenuList().get(0).getId().intValue());
 		Assert.assertEquals("DealerEntrySystem", refDataDAO.getMenuList().get(0).getName());
-		Assert.assertEquals("DealerEntrySystem", refDataDAO.getMenuList().get(0).getDisplayText());
+		Assert.assertEquals("DealerEntrySystemText", refDataDAO.getMenuList().get(0).getDisplayText());
 	}
 	
 	@Test

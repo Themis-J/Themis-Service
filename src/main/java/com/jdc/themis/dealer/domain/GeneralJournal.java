@@ -16,13 +16,13 @@ import org.hibernate.annotations.Type;
 
 @FilterDefs(
 		{
-			@org.hibernate.annotations.FilterDef(name="salesServiceFilter", 
+			@org.hibernate.annotations.FilterDef(name="generalFilter", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
-			@org.hibernate.annotations.FilterDef(name="salesServiceFilterSingleItem", 
+			@org.hibernate.annotations.FilterDef(name="generalFilterSingleItem", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
@@ -32,15 +32,15 @@ import org.hibernate.annotations.Type;
 		}
 		)
 @Filters( {
-    @Filter(name="salesServiceFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="salesServiceFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="generalFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="generalFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @Entity
-public class SalesServiceJournal implements TemporalEntity, Serializable {
+public class GeneralJournal implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "salesServiceFilter";
-	public static String FILTER_SINGLEITEM = "salesServiceFilterSingleItem";
+	public static String FILTER = "generalFilter";
+	public static String FILTER_SINGLEITEM = "generalFilterSingleItem";
 
 	@Id
 	private Integer id;
@@ -49,7 +49,6 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 	@Id
 	private Integer departmentID;
 	private BigDecimal amount;
-	private BigDecimal margin;
 	@Id
 	@Type(type = "datetime")
 	private Instant timestamp;
@@ -59,16 +58,7 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 	@Type(type = "localdate")
 	private LocalDate validDate;
 	private String updatedBy;
-	private Integer count;
-
-	public Integer getCount() {
-		return count;
-	}
-
-	public void setCount(Integer count) {
-		this.count = count;
-	}
-
+	
 	public String getUpdatedBy() {
 		return updatedBy;
 	}
@@ -134,20 +124,12 @@ public class SalesServiceJournal implements TemporalEntity, Serializable {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
-	public BigDecimal getMargin() {
-		return margin;
-	}
-	public void setMargin(BigDecimal margin) {
-		this.margin = margin;
-	}
 	
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id)
 				.append("dealerID", dealerID)
 				.append("departmentID", departmentID)
 				.append("amount", amount)
-				.append("count", count)
-				.append("margin", margin)
 				.append("updatedBy", updatedBy)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)
