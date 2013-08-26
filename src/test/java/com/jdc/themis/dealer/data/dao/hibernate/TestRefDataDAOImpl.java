@@ -22,14 +22,14 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getAllMenuAndCompareSize() {
-		Assert.assertEquals(5, refDataDAO.getMenuList().size());
+		Assert.assertEquals(5, refDataDAO.getMenus().size());
 	}
 
 	@Test
 	public void getAllMenuAndCompareFirstMenuName() {
-		Assert.assertEquals(1, refDataDAO.getMenuList().get(0).getId().intValue());
-		Assert.assertEquals("DealerEntrySystem", refDataDAO.getMenuList().get(0).getName());
-		Assert.assertEquals("DealerEntrySystemText", refDataDAO.getMenuList().get(0).getDisplayText());
+		Assert.assertEquals(1, refDataDAO.getMenus().get(0).getId().intValue());
+		Assert.assertEquals("DealerEntrySystem", refDataDAO.getMenus().get(0).getName());
+		Assert.assertEquals("DealerEntrySystemText", refDataDAO.getMenus().get(0).getDisplayText());
 	}
 	
 	@Test
@@ -54,6 +54,6 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getTaxJournalItemListSize() {
-		Assert.assertEquals(1, refDataDAO.getTaxJournalItemList().size());
+		Assert.assertEquals(1, refDataDAO.getTaxJournalItems().size());
 	}
 }

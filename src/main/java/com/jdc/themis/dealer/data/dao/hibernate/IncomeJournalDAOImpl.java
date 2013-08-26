@@ -23,7 +23,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
+import com.jdc.themis.dealer.domain.AccountReceivableDuration;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
+import com.jdc.themis.dealer.domain.EmployeeFee;
+import com.jdc.themis.dealer.domain.EmployeeFeeSummary;
+import com.jdc.themis.dealer.domain.GeneralJournal;
+import com.jdc.themis.dealer.domain.HumanResourceAllocation;
+import com.jdc.themis.dealer.domain.InventoryDuration;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
@@ -406,6 +412,90 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 			}
 			
 		});
+	}
+
+	@Override
+	public Instant saveGeneralJournal(Integer dealerID, Integer departmentID,
+			Collection<GeneralJournal> journals) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<GeneralJournal> getGeneralJournal(Integer dealerID,
+			Integer departmentID, LocalDate validDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Instant saveAccountReceivableDuration(Integer dealerID,
+			Collection<AccountReceivableDuration> journals) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<AccountReceivableDuration> getAccountReceivableDuration(
+			Integer dealerID, LocalDate validDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Instant saveHumanResourceAllocation(Integer dealerID,
+			Integer departmentID, Collection<HumanResourceAllocation> journals) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<HumanResourceAllocation> getHumanResourceAllocation(
+			Integer dealerID, Integer departmentID, LocalDate validDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Instant saveInventoryDuration(Integer dealerID,
+			Integer departmentID, Collection<InventoryDuration> journals) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<InventoryDuration> getInventoryDuration(Integer dealerID,
+			Integer departmentID, LocalDate validDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Instant saveEmployeeFee(Integer dealerID, Integer departmentID,
+			Collection<EmployeeFee> journals) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<EmployeeFee> getEmployeeFee(Integer dealerID,
+			Integer departmentID, LocalDate validDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Instant saveEmployeeFeeSummary(Integer dealerID,
+			Integer departmentID, Collection<EmployeeFeeSummary> journals) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<EmployeeFeeSummary> getEmployeeFeeSummary(
+			Integer dealerID, Integer departmentID, LocalDate validDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.ImportResource;
-import com.jdc.themis.dealer.service.rest.DealerIncomeEntryRestService;
+import com.jdc.themis.dealer.service.rest.DealerIncomeSystemRestService;
 
 @Configuration
 @ImportResource({"classpath:META-INF/database-config.xml"})
@@ -39,8 +39,8 @@ public class AppConfig {
 	}
 
 	@Bean
-	public DealerIncomeEntryRestService dealerRestService() {
-		return new DealerIncomeEntryRestService();
+	public DealerIncomeSystemRestService dealerRestService() {
+		return new DealerIncomeSystemRestService();
 	}
 		
 	@Bean

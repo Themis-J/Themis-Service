@@ -29,48 +29,54 @@ import com.jdc.themis.dealer.domain.Vehicle;
  */
 public interface RefDataDAO {
 
+	@Cacheable(value="enumValue")
 	EnumValue getEnumValue(String enumType, Integer enumValue);
 	
-	@Cacheable("enumType")
 	List<EnumType> getEnumTypes();
 	
-	@Cacheable("enumValue")
 	List<EnumValue> getEnumValues();
 	
-	@Cacheable(value="menu")
-	List<Menu> getMenuList();
+	List<Menu> getMenus();
 	
-	@Cacheable(value="menuByID", key="#id")
+	@Cacheable(value="menu")
 	Menu getMenu(Integer id);
 	
+	@Cacheable(value="parentMenu")
 	Integer getParentMenuID(Integer id);
 	
-	@Cacheable(value="childMenuByID", key="#id")
+	@Cacheable(value="childMenus")
 	Collection<MenuHierachy> getChildMenus(Integer id);
 	
-	@Cacheable("menuHierachy")
-	List<MenuHierachy> getMenuHierachy();
+	List<MenuHierachy> getMenuHierachys();
 	
-	@Cacheable("vehicle")
-	List<Vehicle> getVehicleList();
+	List<Vehicle> getVehicles();
 	
-	List<Dealer> getDealerList();
+	@Cacheable(value="vehicle")
+	Vehicle getVehicle(Integer id);
 	
-	List<TaxJournalItem> getTaxJournalItemList();
+	List<Dealer> getDealers();
+	
+	List<TaxJournalItem> getTaxJournalItems();
 
-	List<SalesServiceJournalItem> getSalesServiceJournalItemList();
+	List<SalesServiceJournalItem> getSalesServiceJournalItems();
 	
-	List<SalesServiceJournalCategory> getSalesServiceJournalCategoryList();
+	@Cacheable(value="salesServiceJournalItem")
+	SalesServiceJournalItem getSalesServiceJournalItem(Integer id);
 	
-	List<GeneralJournalItem> getGeneralJournalItemList();
+	List<SalesServiceJournalCategory> getSalesServiceJournalCategorys();
 	
-	List<JobPosition> getJobPositionList();
+	@Cacheable(value="salesServiceJournalCategory")
+	SalesServiceJournalCategory getSalesServiceJournalCategory(Integer id);
 	
-	List<AccountReceivableDurationItem> getAccountReceivableItemList();
+	List<GeneralJournalItem> getGeneralJournalItems();
 	
-	List<Duration> getDurationList();
+	List<JobPosition> getJobPositions();
 	
-	List<EmployeeFeeItem> getEmployeeFeeItemList();
+	List<AccountReceivableDurationItem> getAccountReceivableItems();
 	
-	List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItemList();
+	List<Duration> getDurations();
+	
+	List<EmployeeFeeItem> getEmployeeFeeItems();
+	
+	List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItems();
 }

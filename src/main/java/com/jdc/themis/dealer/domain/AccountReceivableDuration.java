@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
@@ -136,4 +135,5 @@ public class AccountReceivableDuration implements TemporalEntity, Serializable {
 				.append("timeEnd", timeEnd)
 				.append("validDate", validDate).getStringBuffer().toString();
 	}
+	
 }

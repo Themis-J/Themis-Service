@@ -20,40 +20,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
-import com.jdc.themis.dealer.domain.Menu;
-import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
-import com.jdc.themis.dealer.domain.SalesServiceJournalCategory;
-import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.TaxJournal;
-import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
+import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.web.domain.CompletedEntryItem;
 import com.jdc.themis.dealer.web.domain.GeneralSaveResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
-import com.jdc.themis.dealer.web.domain.GetMenuResponse;
-import com.jdc.themis.dealer.web.domain.GetSalesServiceRevenueItemResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceRevenueResponse;
 import com.jdc.themis.dealer.web.domain.GetTaxResponse;
-import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesRevenueResponse;
-import com.jdc.themis.dealer.web.domain.MenuItem;
-import com.jdc.themis.dealer.web.domain.MenuOrderItem;
 import com.jdc.themis.dealer.web.domain.SalesServiceRevenueDetail;
-import com.jdc.themis.dealer.web.domain.SalesServiceRevenueItem;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesRevenueRequest;
-import com.jdc.themis.dealer.web.domain.VehicleItem;
 import com.jdc.themis.dealer.web.domain.VehicleSalesRevenueDetail;
 
 /**
@@ -63,59 +50,17 @@ import com.jdc.themis.dealer.web.domain.VehicleSalesRevenueDetail;
  *
  */
 @Service
-public class DealerIncomeEntryRestService {
+public class DealerIncomeSystemRestService {
 
 	@Autowired
 	private RefDataDAO refDataDAL;
 	
 	@Autowired
 	private IncomeJournalDAO incomeJournalDAL;
-
-	public IncomeJournalDAO getIncomeJournalDAL() {
-		return incomeJournalDAL;
-	}
-
-	public void setIncomeJournalDAL(IncomeJournalDAO incomeJournalDAL) {
-		this.incomeJournalDAL = incomeJournalDAL;
-	}
-
-	public RefDataDAO getRefDataDAL() {
-		return refDataDAL;
-	}
-
-	public void setRefDataDAL(RefDataDAO refDataDAL) {
-		this.refDataDAL = refDataDAL;
-	}
-
-	/**
-	 * Get menu item details by id. 
-	 * 
-	 * @param id
-	 * @return
-	 */
-	private MenuItem getMenuByID(Integer id) {
-		final Menu menu = refDataDAL.getMenu(id);
-		final MenuItem item = new MenuItem();
-		item.setId(menu.getId());
-		item.setName(menu.getName());
-		item.setDisplayText(menu.getDisplayText());
-		item.setParentID(refDataDAL.getParentMenuID(id));
-		
-		final Collection<MenuHierachy> children = refDataDAL.getChildMenus(id);
-		if ( children != null ) {
-			for (final MenuHierachy child : children) {
-				item.getChildren().add(
-						new MenuOrderItem(
-								child.getMenuHierachyID().getChildID(), 
-								refDataDAL.getMenu(child.getMenuHierachyID().getChildID()).getName(), 
-								child.getItemOrder()));
-			}
-		}
-		return item;
-	}
 	
-	/* Services */
-	
+	@Autowired
+	private RefDataQueryService refDataQueryService;
+
 	/**
 	 * Get full list of menu. 
 	 * Each menu includes its parent id and child id list.
@@ -125,28 +70,10 @@ public class DealerIncomeEntryRestService {
 	@GET
 	@Path("/menu")
 	@Produces({ "application/json", "application/xml" })
-	@Transactional(readOnly = true)
-	@Performance
 	public Response getAllMenu() {
-		final GetMenuResponse response = new GetMenuResponse();
-
-		for (final Menu menu : refDataDAL.getMenuList()) {
-			final MenuItem item = getMenuByID(menu.getId());
-			response.getItems().add(item);
-		}
-		return Response.ok(response).build();
+		return Response.ok(this.refDataQueryService.getAllMenu()).build();
 	}
-	private enum GetCategoryIDFunction implements Function<SalesServiceJournalCategory, Integer> {
-	    INSTANCE;
-
-	    @Override
-	    public Integer apply(SalesServiceJournalCategory item) {
-	        return item.getId();
-	    }
-	}
-	private String getSalesCategory(Integer id) {
-		return Maps.uniqueIndex(refDataDAL.getSalesServiceJournalCategoryList(), GetCategoryIDFunction.INSTANCE).get(id).getName();
-	}
+	
 	/**
 	 * Get full list of vehicles. 
 	 * 
@@ -155,20 +82,8 @@ public class DealerIncomeEntryRestService {
 	@GET
 	@Path("/vehicle")
 	@Produces({ "application/json", "application/xml" })
-	@Transactional(readOnly = true)
-	@Performance
 	public Response getAllVehicles() {
-		final GetVehicleResponse response = new GetVehicleResponse();
-
-		for (final Vehicle vehicle : refDataDAL.getVehicleList()) {
-			final VehicleItem item = new VehicleItem();
-			item.setId(vehicle.getId());
-			item.setName(vehicle.getName());
-			item.setCategory(getSalesCategory(vehicle.getCategoryID()));
-			item.setTimestamp(vehicle.getTimestamp());
-			response.getItems().add(item);
-		}
-		return Response.ok(response).build();
+		return Response.ok(this.refDataQueryService.getAllVehicles()).build();
 	}
 	
 	/**
@@ -179,18 +94,8 @@ public class DealerIncomeEntryRestService {
 	@GET
 	@Path("/salesServiceRevenue/items")
 	@Produces({ "application/json", "application/xml" })
-	@Transactional(readOnly = true)
-	@Performance
 	public Response getAllSalesServiceRevenueItems() {
-		final GetSalesServiceRevenueItemResponse response = new GetSalesServiceRevenueItemResponse();
-
-		for (final SalesServiceJournalItem ssj : refDataDAL.getSalesServiceJournalItemList()) {
-			final SalesServiceRevenueItem item = new SalesServiceRevenueItem();
-			item.setId(ssj.getId());
-			item.setName(ssj.getName());
-			response.getItems().add(item);
-		}
-		return Response.ok(response).build();
+		return Response.ok(this.refDataQueryService.getAllSalesServiceRevenueItems()).build();
 	}
 	
 	/**
@@ -247,17 +152,7 @@ public class DealerIncomeEntryRestService {
 	}
 
 	private final static Integer DEFAULT_VEHICLE_DEPARTMENT_ID = 1; // new vehicle department
-	private enum GetVehicleIDFunction implements Function<Vehicle, Integer> {
-	    INSTANCE;
-
-	    @Override
-	    public Integer apply(Vehicle item) {
-	        return item.getId();
-	    }
-	}
-	private String getVehicleName(Integer id) {
-		return Maps.uniqueIndex(refDataDAL.getVehicleList(), GetVehicleIDFunction.INSTANCE).get(id).getName();
-	}
+	
 	/**
 	 * Get a list of vehicle sales revenue per vehicle type. 
 	 * 
@@ -290,7 +185,7 @@ public class DealerIncomeEntryRestService {
 				item.setAmount(journal.getAmount().doubleValue());
 				item.setCount(journal.getCount());
 				item.setMargin(journal.getMargin().doubleValue());
-				item.setName(getVehicleName(journal.getId()));
+				item.setName(refDataDAL.getVehicle(journal.getId()).getName());
 				item.setVehicleID(journal.getId());
 				item.setTimestamp(journal.getTimestamp());
 				response.getDetail().add(item);
@@ -359,17 +254,6 @@ public class DealerIncomeEntryRestService {
 		} 
 	}
 
-	private enum GetSalesServiceIDFunction implements Function<SalesServiceJournalItem, Integer> {
-	    INSTANCE;
-
-	    @Override
-	    public Integer apply(SalesServiceJournalItem item) {
-	        return item.getId();
-	    }
-	}
-	private String getSalesServiceJournalItemName(Integer id) {
-		return Maps.uniqueIndex(refDataDAL.getSalesServiceJournalItemList(), GetSalesServiceIDFunction.INSTANCE).get(id).getName();
-	}
 	/**
 	 * Get a list sales & service revenue per sales item.
 	 * 
@@ -403,7 +287,7 @@ public class DealerIncomeEntryRestService {
 				item.setAmount(journal.getAmount().doubleValue());
 				item.setCount(journal.getCount());
 				item.setMargin(journal.getMargin().doubleValue());
-				item.setName(getSalesServiceJournalItemName(journal.getId()));
+				item.setName(refDataDAL.getSalesServiceJournalItem(journal.getId()).getName());
 				item.setItemID(journal.getId());
 				item.setTimestamp(journal.getTimestamp());
 				response.getDetail().add(item);

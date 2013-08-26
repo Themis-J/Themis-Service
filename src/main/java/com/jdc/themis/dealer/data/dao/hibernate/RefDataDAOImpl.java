@@ -58,7 +58,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<Menu> getMenuList() {
+	public List<Menu> getMenus() {
 		logger.info("Fetching menu list");
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
@@ -67,7 +67,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<MenuHierachy> getMenuHierachy() {
+	public List<MenuHierachy> getMenuHierachys() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<MenuHierachy> list = session.createCriteria(
@@ -97,7 +97,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	 * child to parent menu mapping
 	 */
 	private Map<Integer, Integer> getChildMenuMapping() {
-		final List<MenuHierachy> menuHierachy = getMenuHierachy();
+		final List<MenuHierachy> menuHierachy = getMenuHierachys();
 		final Map<Integer, Integer> map = Maps.newHashMap();
 		final ImmutableListMultimap<Integer, MenuHierachy> parentIDToMenuHierachy = Multimaps
 				.index(menuHierachy, GetChildIDFunction.INSTANCE);
@@ -127,7 +127,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<Vehicle> getVehicleList() {
+	public List<Vehicle> getVehicles() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<Vehicle> list = session.createCriteria(Vehicle.class).list();
@@ -135,7 +135,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<Dealer> getDealerList() {
+	public List<Dealer> getDealers() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<Dealer> list = session.createCriteria(Dealer.class).list();
@@ -143,7 +143,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<TaxJournalItem> getTaxJournalItemList() {
+	public List<TaxJournalItem> getTaxJournalItems() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<TaxJournalItem> list = session.createCriteria(
@@ -152,7 +152,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<SalesServiceJournalItem> getSalesServiceJournalItemList() {
+	public List<SalesServiceJournalItem> getSalesServiceJournalItems() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<SalesServiceJournalItem> list = session.createCriteria(
@@ -161,7 +161,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<SalesServiceJournalCategory> getSalesServiceJournalCategoryList() {
+	public List<SalesServiceJournalCategory> getSalesServiceJournalCategorys() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<SalesServiceJournalCategory> list = session.createCriteria(
@@ -173,7 +173,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	 * parent to child menu mapping
 	 */
 	private Collection<MenuHierachy> getParentMenuMapping(Integer id) {
-		final List<MenuHierachy> menuHierachy = getMenuHierachy();
+		final List<MenuHierachy> menuHierachy = getMenuHierachys();
 		final ImmutableListMultimap<Integer, MenuHierachy> parentIDToMenuHierachy = Multimaps
 				.index(menuHierachy, GetParentIDFunction.INSTANCE);
 		return parentIDToMenuHierachy.asMap().get(id);
@@ -237,7 +237,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<GeneralJournalItem> getGeneralJournalItemList() {
+	public List<GeneralJournalItem> getGeneralJournalItems() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<GeneralJournalItem> list = session.createCriteria(
@@ -246,7 +246,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<JobPosition> getJobPositionList() {
+	public List<JobPosition> getJobPositions() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<JobPosition> list = session
@@ -255,7 +255,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<AccountReceivableDurationItem> getAccountReceivableItemList() {
+	public List<AccountReceivableDurationItem> getAccountReceivableItems() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<AccountReceivableDurationItem> list = session
@@ -264,7 +264,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<Duration> getDurationList() {
+	public List<Duration> getDurations() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<Duration> list = session.createCriteria(Duration.class)
@@ -273,7 +273,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<EmployeeFeeItem> getEmployeeFeeItemList() {
+	public List<EmployeeFeeItem> getEmployeeFeeItems() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<EmployeeFeeItem> list = session.createCriteria(
@@ -282,12 +282,51 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItemList() {
+	public List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItems() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<EmployeeFeeSummaryItem> list = session.createCriteria(
 				EmployeeFeeSummaryItem.class).list();
 		return ImmutableList.copyOf(list);
+	}
+	private enum GetVehicleIDFunction implements Function<Vehicle, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(Vehicle item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public Vehicle getVehicle(Integer id) {
+		return Maps.uniqueIndex(getVehicles(), GetVehicleIDFunction.INSTANCE).get(id);
+	}
+	private enum GetSalesServiceIDFunction implements Function<SalesServiceJournalItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(SalesServiceJournalItem item) {
+	        return item.getId();
+	    }
+	}
+	
+	@Override
+	public SalesServiceJournalItem getSalesServiceJournalItem(Integer id) {
+		return Maps.uniqueIndex(getSalesServiceJournalItems(), GetSalesServiceIDFunction.INSTANCE).get(id);
+	}
+
+	private enum GetCategoryIDFunction implements Function<SalesServiceJournalCategory, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(SalesServiceJournalCategory item) {
+	        return item.getId();
+	    }
+	}
+	
+	@Override
+	public SalesServiceJournalCategory getSalesServiceJournalCategory(Integer id) {
+		return Maps.uniqueIndex(getSalesServiceJournalCategorys(), GetCategoryIDFunction.INSTANCE).get(id);
 	}
 
 }
