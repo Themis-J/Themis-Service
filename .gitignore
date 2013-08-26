@@ -1,11 +1,16 @@
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
-.project
-.classpath
-.settings/
+target/
+bin/
+*.log
+*.log.*
+*.iml
+*.ipr
+*.iws
+.DS_Store
 .idea/
-.DS_STORE
+.classpath
+.project
+.settings/
+*.pyc
+*.dat
+*.lck
+*.ctrl
