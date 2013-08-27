@@ -2,6 +2,7 @@ CREATE TABLE Menu (id integer PRIMARY KEY, name varchar(100) NOT NULL, displayTe
 CREATE TABLE MenuHierachy (parentID integer, childID integer, itemOrder integer) 
 
 CREATE TABLE TaxJournalItem (id integer, name varchar(100), timestamp timestamp)
+CREATE TABLE SalesServiceJournalItem (id integer, name varchar(100), categoryID integer, timestamp timestamp)
 
 CREATE TABLE TaxJournal (timestamp timestamp, timeEnd timestamp, validDate date, dealerID integer, id integer, amount double, updatedBy varchar(50))
 ALTER TABLE TaxJournal ALTER COLUMN timestamp SET NOT NULL

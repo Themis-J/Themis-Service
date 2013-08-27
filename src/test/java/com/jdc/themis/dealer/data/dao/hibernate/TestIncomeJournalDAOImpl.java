@@ -20,6 +20,7 @@ import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({
     "/META-INF/test-database-config.xml" })
