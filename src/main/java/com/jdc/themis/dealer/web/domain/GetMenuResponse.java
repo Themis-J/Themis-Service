@@ -12,9 +12,9 @@ public class GetMenuResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final List<MenuItem> items = Lists.newArrayList();
+	private final List<MenuDetail> items = Lists.newArrayList();
 
-	public List<MenuItem> getItems() {
+	public List<MenuDetail> getItems() {
 		return items;
 	}
 

@@ -12,30 +12,31 @@ import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarInstantAdaptor;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
 /**
- * Response to show the save operation result. 
+ * Detail about a general income journal. 
  * 
  * @author Kai Chen
  *
  */
 @XmlRootElement
-public class GeneralSaveResponse implements Serializable{
-
-	private static final long serialVersionUID = 1L;
-	private Instant timestamp;
-	private Boolean success;
-	private String errorMsg;
+public class EmployeeFeeSummaryDetail implements Serializable { 
 	
-	public Boolean getSuccess() {
-		return success;
+	private static final long serialVersionUID = 1L;
+	private Integer itemID;
+	private String name;
+	private Instant timestamp;
+	private Double amount;
+	
+	public Integer getItemID() {
+		return itemID;
 	}
-	public void setSuccess(Boolean success) {
-		this.success = success;
+	public void setItemID(Integer itemID) {
+		this.itemID = itemID;
 	}
-	public String getErrorMsg() {
-		return errorMsg;
+	public String getName() {
+		return name;
 	}
-	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
+	public void setName(String name) {
+		this.name = name;
 	}
 	@XmlJavaTypeAdapter(JaxbCalendarInstantAdaptor.class)
 	@JsonSerialize(using = JsonCalendarInstantSerializer.class)
@@ -44,5 +45,12 @@ public class GeneralSaveResponse implements Serializable{
 	}
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
+	}
+	
+	public Double getAmount() {
+		return amount;
+	}
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 }

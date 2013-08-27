@@ -7,12 +7,14 @@ import org.springframework.cache.annotation.Cacheable;
 
 import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
+import com.jdc.themis.dealer.domain.Department;
 import com.jdc.themis.dealer.domain.Duration;
 import com.jdc.themis.dealer.domain.EmployeeFeeItem;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
 import com.jdc.themis.dealer.domain.EnumType;
 import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
+import com.jdc.themis.dealer.domain.InventoryDurationItem;
 import com.jdc.themis.dealer.domain.JobPosition;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
@@ -56,6 +58,14 @@ public interface RefDataDAO {
 	
 	List<Dealer> getDealers();
 	
+	@Cacheable(value="dealer")
+	Dealer getDealer(Integer dealerID);
+	
+	List<Department> getDepartments();
+	
+	@Cacheable(value="department")
+	Department getDepartment(Integer departmentID);
+	
 	List<TaxJournalItem> getTaxJournalItems();
 
 	List<SalesServiceJournalItem> getSalesServiceJournalItems();
@@ -72,11 +82,31 @@ public interface RefDataDAO {
 	
 	List<JobPosition> getJobPositions();
 	
-	List<AccountReceivableDurationItem> getAccountReceivableItems();
+	@Cacheable(value="jobPosition")
+	JobPosition getJobPosition(Integer positionID);
+	
+	List<AccountReceivableDurationItem> getAccountReceivableDurationItems();
+	
+	@Cacheable(value="inventoryDurationItem")
+	InventoryDurationItem getInventoryDurationItem(Integer itemID);
+	
+	List<InventoryDurationItem> getInventoryDurationItems();
+	
+	@Cacheable(value="accountReceivableDurationItem")
+	AccountReceivableDurationItem getAccountReceivableItem(Integer itemID);
 	
 	List<Duration> getDurations();
 	
+	@Cacheable(value="duration")
+	Duration getDuration(Integer durationID);
+	
 	List<EmployeeFeeItem> getEmployeeFeeItems();
 	
+	@Cacheable(value="employeeFeeItem")
+	EmployeeFeeItem getEmployeeFeeItem(Integer itemID);
+	
 	List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItems();
+	
+	@Cacheable(value="employeeFeeSummarysItem")
+	EmployeeFeeSummaryItem getEmployeeFeeSummaryItem(Integer itemID);
 }

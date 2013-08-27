@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class GetSalesServiceRevenueItemResponse implements Serializable{
+public class GetSalesServiceJournalItemResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private final List<SalesServiceRevenueItem> items = Lists.newArrayList();
+	private final List<SalesServiceJournalItemDetail> items = Lists.newArrayList();
 	
-	public List<SalesServiceRevenueItem> getItems() {
+	public List<SalesServiceJournalItemDetail> getItems() {
 		return items;
 	}
 }

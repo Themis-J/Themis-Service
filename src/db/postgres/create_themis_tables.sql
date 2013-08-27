@@ -145,7 +145,8 @@ CREATE TABLE public.JobPosition
    id integer, 
    name character varying(100),
    timestamp timestamp without time zone, 
-   CONSTRAINT JobPosition_PK PRIMARY KEY (id)
+   CONSTRAINT JobPosition_PK PRIMARY KEY (id), 
+   CONSTRAINT JobPosition_Unique UNIQUE (name)
 ) 
 WITH (
   OIDS = FALSE
@@ -199,6 +200,7 @@ CREATE TABLE public.GeneralJournalItem
    categoryID integer, 
    timestamp timestamp without time zone, 
    CONSTRAINT GJI_PK PRIMARY KEY (id), 
+   CONSTRAINT GJI_Unique UNIQUE (name),
    CONSTRAINT GJI_FK FOREIGN KEY (categoryID) REFERENCES GeneralJournalCategory (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 ) 
 WITH (
@@ -239,7 +241,8 @@ CREATE TABLE public.SalesServiceJournalItem
    categoryID integer,
    timestamp timestamp without time zone, 
    CONSTRAINT SSJLI_PK PRIMARY KEY (id),
-   CONSTRAINT SSJI_FK FOREIGN KEY (categoryID) REFERENCES SalesServiceJournalCategory (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+   CONSTRAINT SSJLI_Unique UNIQUE (name),
+   CONSTRAINT SSJLI_FK FOREIGN KEY (categoryID) REFERENCES SalesServiceJournalCategory (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 ) 
 WITH (
   OIDS = FALSE
@@ -325,7 +328,8 @@ CREATE TABLE public.AccountReceivableDurationItem
    id integer, 
    name character varying(100) NOT NULL, 
    timestamp timestamp without time zone NOT NULL, 
-   CONSTRAINT ARDI_PK PRIMARY KEY (id)
+   CONSTRAINT ARDI_PK PRIMARY KEY (id),
+   CONSTRAINT ARDI_Unique UNIQUE (name)
 ) 
 WITH (
   OIDS = FALSE
@@ -367,7 +371,7 @@ CREATE TABLE public.EmployeeFee
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   feeTypeID NOT NULL, 
+   feeTypeID integer NOT NULL, 
    amount double precision,
    updatedBy character varying(20) NOT NULL, 
    CONSTRAINT EF_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, feeTypeID)

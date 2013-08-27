@@ -2,18 +2,17 @@ package com.jdc.themis.dealer.web.domain;
 
 import java.io.Serializable;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.collect.Lists;
 
 @XmlRootElement
-public class SaveVehicleSalesRevenueRequest implements Serializable{
+public class SaveGeneralIncomeRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
 	private String validDate;
-	private final List<VehicleSalesRevenueDetail> detail = Lists.newArrayList();
+	private final List<GeneralJournalDetail> detail = Lists.newArrayList();
 	private String updateBy;
 	private Integer departmentID;
 	
@@ -42,7 +41,7 @@ public class SaveVehicleSalesRevenueRequest implements Serializable{
 	public void setValidDate(String validDate) {
 		this.validDate = validDate;
 	}
-	public List<VehicleSalesRevenueDetail> getDetail() {
+	public List<GeneralJournalDetail> getDetail() {
 		return detail;
 	}
 	

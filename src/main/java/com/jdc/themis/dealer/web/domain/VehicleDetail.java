@@ -11,31 +11,21 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarInstantAdaptor;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
-/**
- * Response to show the save operation result. 
- * 
- * @author Kai Chen
- *
- */
 @XmlRootElement
-public class GeneralSaveResponse implements Serializable{
+public class VehicleDetail implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+
+	private Integer id;
+	private String name;
 	private Instant timestamp;
-	private Boolean success;
-	private String errorMsg;
+	private String category;
 	
-	public Boolean getSuccess() {
-		return success;
+	public String getCategory() {
+		return category;
 	}
-	public void setSuccess(Boolean success) {
-		this.success = success;
-	}
-	public String getErrorMsg() {
-		return errorMsg;
-	}
-	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	@XmlJavaTypeAdapter(JaxbCalendarInstantAdaptor.class)
 	@JsonSerialize(using = JsonCalendarInstantSerializer.class)
@@ -45,4 +35,18 @@ public class GeneralSaveResponse implements Serializable{
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 }

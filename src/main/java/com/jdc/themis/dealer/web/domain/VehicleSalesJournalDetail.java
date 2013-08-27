@@ -5,28 +5,27 @@ import java.io.Serializable;
 import javax.time.Instant;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarInstantAdaptor;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
 @XmlRootElement
-public class SalesServiceRevenueDetail implements Serializable { 
+public class VehicleSalesJournalDetail implements Serializable { 
 	
 	private static final long serialVersionUID = 1L;
-	private Integer itemID;
+	private Integer vehicleID;
 	private String name;
 	private Instant timestamp;
 	private Integer count;
 	private Double amount;
 	private Double margin;
 	
-	public Integer getItemID() {
-		return itemID;
+	public Integer getVehicleID() {
+		return vehicleID;
 	}
-	public void setItemID(Integer itemID) {
-		this.itemID = itemID;
+	public void setVehicleID(Integer vehicleID) {
+		this.vehicleID = vehicleID;
 	}
 	public String getName() {
 		return name;

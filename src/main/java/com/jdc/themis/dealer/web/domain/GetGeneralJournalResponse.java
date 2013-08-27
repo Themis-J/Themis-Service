@@ -15,20 +15,20 @@ import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarLocalDateAdaptor;
 import com.jdc.themis.common.json.adaptor.JsonCalendarLocalDateSerializer;
 
 @XmlRootElement
-public class GetVehicleSalesRevenueResponse implements Serializable{
+public class GetGeneralJournalResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
+	private LocalDate validDate;
+	private final List<GeneralJournalDetail> detail = Lists.newArrayList();
 	private Integer departmentID;
+	
 	public Integer getDepartmentID() {
 		return departmentID;
 	}
 	public void setDepartmentID(Integer departmentID) {
 		this.departmentID = departmentID;
 	}
-	private LocalDate validDate;
-	private final List<VehicleSalesRevenueDetail> detail = Lists.newArrayList();
-	
 	public Integer getDealerID() {
 		return dealerID;
 	}
@@ -43,7 +43,7 @@ public class GetVehicleSalesRevenueResponse implements Serializable{
 	public void setValidDate(LocalDate validDate) {
 		this.validDate = validDate;
 	}
-	public List<VehicleSalesRevenueDetail> getDetail() {
+	public List<GeneralJournalDetail> getDetail() {
 		return detail;
 	}
 	

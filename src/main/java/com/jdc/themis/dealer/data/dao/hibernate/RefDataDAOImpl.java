@@ -20,12 +20,14 @@ import com.google.common.collect.Multimaps;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
+import com.jdc.themis.dealer.domain.Department;
 import com.jdc.themis.dealer.domain.Duration;
 import com.jdc.themis.dealer.domain.EmployeeFeeItem;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
 import com.jdc.themis.dealer.domain.EnumType;
 import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
+import com.jdc.themis.dealer.domain.InventoryDurationItem;
 import com.jdc.themis.dealer.domain.JobPosition;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
@@ -255,7 +257,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<AccountReceivableDurationItem> getAccountReceivableItems() {
+	public List<AccountReceivableDurationItem> getAccountReceivableDurationItems() {
 		final Session session = sessionFactory.getCurrentSession();
 		@SuppressWarnings("unchecked")
 		final List<AccountReceivableDurationItem> list = session
@@ -327,6 +329,126 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public SalesServiceJournalCategory getSalesServiceJournalCategory(Integer id) {
 		return Maps.uniqueIndex(getSalesServiceJournalCategorys(), GetCategoryIDFunction.INSTANCE).get(id);
+	}
+
+	private enum GetDealerIDFunction implements Function<Dealer, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(Dealer item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public Dealer getDealer(Integer dealerID) {
+		return Maps.uniqueIndex(getDealers(), GetDealerIDFunction.INSTANCE).get(dealerID);
+	}
+
+	@Override
+	public List<Department> getDepartments() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<Department> list = session.createCriteria(
+				Department.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	private enum GetDepartmentIDFunction implements Function<Department, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(Department item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public Department getDepartment(Integer departmentID) {
+		return Maps.uniqueIndex(getDepartments(), GetDepartmentIDFunction.INSTANCE).get(departmentID);
+	}
+
+	private enum GetJobPositionIDFunction implements Function<JobPosition, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(JobPosition item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public JobPosition getJobPosition(Integer positionID) {
+		return Maps.uniqueIndex(getJobPositions(), GetJobPositionIDFunction.INSTANCE).get(positionID);
+	}
+
+	private enum GetAccountReceivableDurationItemIDFunction implements Function<AccountReceivableDurationItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(AccountReceivableDurationItem item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public AccountReceivableDurationItem getAccountReceivableItem(Integer itemID) {
+		return Maps.uniqueIndex(getAccountReceivableDurationItems(), GetAccountReceivableDurationItemIDFunction.INSTANCE).get(itemID);
+	}
+
+	private enum GetDurationIDFunction implements Function<Duration, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(Duration item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public Duration getDuration(Integer durationID) {
+		return Maps.uniqueIndex(getDurations(), GetDurationIDFunction.INSTANCE).get(durationID);
+	}
+	private enum GetEmployeeFeeItemIDFunction implements Function<EmployeeFeeItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(EmployeeFeeItem item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public EmployeeFeeItem getEmployeeFeeItem(Integer itemID) {
+		return Maps.uniqueIndex(getEmployeeFeeItems(), GetEmployeeFeeItemIDFunction.INSTANCE).get(itemID);
+	}
+	private enum GetEmployeeFeeSummaryItemIDFunction implements Function<EmployeeFeeSummaryItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(EmployeeFeeSummaryItem item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public EmployeeFeeSummaryItem getEmployeeFeeSummaryItem(Integer itemID) {
+		return Maps.uniqueIndex(getEmployeeFeeSummaryItems(), GetEmployeeFeeSummaryItemIDFunction.INSTANCE).get(itemID);
+	}
+
+	@Override
+	public List<InventoryDurationItem> getInventoryDurationItems() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<InventoryDurationItem> list = session.createCriteria(
+				InventoryDurationItem.class).list();
+		return ImmutableList.copyOf(list);
+	}
+
+	private enum GetInventoryDurationItemIDFunction implements Function<InventoryDurationItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(InventoryDurationItem item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public InventoryDurationItem getInventoryDurationItem(Integer itemID) {
+		return Maps.uniqueIndex(getInventoryDurationItems(), GetInventoryDurationItemIDFunction.INSTANCE).get(itemID);
 	}
 
 }

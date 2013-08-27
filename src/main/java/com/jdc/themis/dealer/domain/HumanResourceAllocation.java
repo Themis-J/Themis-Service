@@ -118,7 +118,7 @@ public class HumanResourceAllocation implements TemporalEntity, Serializable {
 	public void setDepartmentID(Integer departmentID) {
 		this.departmentID = departmentID;
 	}
-	public BigDecimal getallocation() {
+	public BigDecimal getAllocation() {
 		return allocation;
 	}
 	public void setAllocation(BigDecimal allocation) {

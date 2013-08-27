@@ -14,20 +14,21 @@ import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarLocalDateAdaptor;
 
 import com.jdc.themis.common.json.adaptor.JsonCalendarLocalDateSerializer;
 
-/**
- * Response of getting dealer entry item complete status. 
- * 
- * @author Kai Chen
- *
- */
 @XmlRootElement
-public class GetDealerEntryItemStatusResponse implements Serializable{
+public class GetEmployeeFeeSummaryResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
 	private LocalDate validDate;
-	private final List<DealerEntryItemStatusDetail> status = Lists.newArrayList();
+	private final List<SalesServiceJournalDetail> detail = Lists.newArrayList();
+	private Integer departmentID;
 	
+	public Integer getDepartmentID() {
+		return departmentID;
+	}
+	public void setDepartmentID(Integer departmentID) {
+		this.departmentID = departmentID;
+	}
 	public Integer getDealerID() {
 		return dealerID;
 	}
@@ -42,8 +43,8 @@ public class GetDealerEntryItemStatusResponse implements Serializable{
 	public void setValidDate(LocalDate validDate) {
 		this.validDate = validDate;
 	}
-	public List<DealerEntryItemStatusDetail> getDetail() {
-		return status;
+	public List<SalesServiceJournalDetail> getDetail() {
+		return detail;
 	}
 	
 }

@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.google.common.collect.Lists;
 
 @XmlRootElement
-public class MenuItem implements Serializable{
+public class MenuDetail implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

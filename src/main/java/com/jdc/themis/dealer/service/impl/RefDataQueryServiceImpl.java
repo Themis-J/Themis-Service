@@ -4,37 +4,47 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.Performance;
+import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
+import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
-import com.jdc.themis.dealer.web.domain.GetSalesServiceRevenueItemResponse;
+import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
-import com.jdc.themis.dealer.web.domain.MenuItem;
+import com.jdc.themis.dealer.web.domain.MenuDetail;
 import com.jdc.themis.dealer.web.domain.MenuOrderItem;
-import com.jdc.themis.dealer.web.domain.SalesServiceRevenueItem;
-import com.jdc.themis.dealer.web.domain.VehicleItem;
+import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
+import com.jdc.themis.dealer.web.domain.VehicleDetail;
 
 @Service
 public class RefDataQueryServiceImpl implements RefDataQueryService {
 	
 	@Autowired
 	private RefDataDAO refDataDAL;
+	
+	public RefDataDAO getRefDataDAL() {
+		return refDataDAL;
+	}
+
+	public void setRefDataDAL(RefDataDAO refDataDAL) {
+		this.refDataDAL = refDataDAL;
+	}
+
 	/**
 	 * Get menu item details by id. 
 	 * 
 	 * @param id
 	 * @return
 	 */
-	private MenuItem getMenuByID(Integer id) {
+	private MenuDetail getMenuByID(Integer id) {
 		final Menu menu = refDataDAL.getMenu(id);
-		final MenuItem item = new MenuItem();
+		final MenuDetail item = new MenuDetail();
 		item.setId(menu.getId());
 		item.setName(menu.getName());
 		item.setDisplayText(menu.getDisplayText());
@@ -67,7 +77,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		final GetMenuResponse response = new GetMenuResponse();
 
 		for (final Menu menu : refDataDAL.getMenus()) {
-			final MenuItem item = getMenuByID(menu.getId());
+			final MenuDetail item = getMenuByID(menu.getId());
 			response.getItems().add(item);
 		}
 		return response;
@@ -78,13 +88,12 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	 * 
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	@Performance
 	public GetVehicleResponse getAllVehicles() {
 		final GetVehicleResponse response = new GetVehicleResponse();
 
 		for (final Vehicle vehicle : refDataDAL.getVehicles()) {
-			final VehicleItem item = new VehicleItem();
+			final VehicleDetail item = new VehicleDetail();
 			item.setId(vehicle.getId());
 			item.setName(vehicle.getName());
 			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).getName());
@@ -99,15 +108,27 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	 * 
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	@Performance
-	public GetSalesServiceRevenueItemResponse getAllSalesServiceRevenueItems() {
-		final GetSalesServiceRevenueItemResponse response = new GetSalesServiceRevenueItemResponse();
+	public GetSalesServiceJournalItemResponse getAllSalesServiceRevenueItems() {
+		final GetSalesServiceJournalItemResponse response = new GetSalesServiceJournalItemResponse();
 
 		for (final SalesServiceJournalItem ssj : refDataDAL.getSalesServiceJournalItems()) {
-			final SalesServiceRevenueItem item = new SalesServiceRevenueItem();
+			final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
 			item.setId(ssj.getId());
 			item.setName(ssj.getName());
+			response.getItems().add(item);
+		}
+		return response;
+	}
+
+	@Override
+	public GetGeneralJournalItemResponse getAllGeneralIncomeItems() {
+		final GetGeneralJournalItemResponse response = new GetGeneralJournalItemResponse();
+
+		for (final GeneralJournalItem gji : refDataDAL.getGeneralJournalItems()) {
+			final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
+			item.setId(gji.getId());
+			item.setName(gji.getName());
 			response.getItems().add(item);
 		}
 		return response;

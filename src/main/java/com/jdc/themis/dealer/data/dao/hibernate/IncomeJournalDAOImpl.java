@@ -415,87 +415,420 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
-	public Instant saveGeneralJournal(Integer dealerID, Integer departmentID,
-			Collection<GeneralJournal> journals) {
-		// TODO Auto-generated method stub
-		return null;
+	public Instant saveGeneralJournal(final Integer dealerID, final Integer departmentID,
+			final Collection<GeneralJournal> journals) {
+		return executor.executeWithWriteLock(GeneralJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (GeneralJournal newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(GeneralJournal.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<GeneralJournal> list = session.createCriteria(GeneralJournal.class).list();
+					for ( final GeneralJournal oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(GeneralJournal.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAmount() == null ) {
+						newJournal.setAmount(BigDecimal.ZERO);
+					}
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
 	}
 
 	@Override
-	public Collection<GeneralJournal> getGeneralJournal(Integer dealerID,
-			Integer departmentID, LocalDate validDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<GeneralJournal> getGeneralJournal(final Integer dealerID,
+			final Integer departmentID, final LocalDate validDate) {
+		return executor.executeWithReadLock(GeneralJournal.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<GeneralJournal>>() {
+
+			@Override
+			public Collection<GeneralJournal> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(GeneralJournal.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("departmentID", departmentID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<GeneralJournal> list = session.createCriteria(GeneralJournal.class).list();
+				session.disableFilter(GeneralJournal.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
 	}
 
 	@Override
-	public Instant saveAccountReceivableDuration(Integer dealerID,
-			Collection<AccountReceivableDuration> journals) {
-		// TODO Auto-generated method stub
-		return null;
+	public Instant saveAccountReceivableDuration(final Integer dealerID,
+			final Collection<AccountReceivableDuration> journals) {
+		return executor.executeWithWriteLock(AccountReceivableDuration.class.getName(), dealerID.toString(), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (AccountReceivableDuration newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(AccountReceivableDuration.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<AccountReceivableDuration> list = session.createCriteria(AccountReceivableDuration.class).list();
+					for ( final AccountReceivableDuration oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(AccountReceivableDuration.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAmount() == null ) {
+						newJournal.setAmount(BigDecimal.ZERO);
+					}
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
 	}
 
 	@Override
 	public Collection<AccountReceivableDuration> getAccountReceivableDuration(
-			Integer dealerID, LocalDate validDate) {
-		// TODO Auto-generated method stub
-		return null;
+			final Integer dealerID, final LocalDate validDate) {
+		return executor.executeWithReadLock(AccountReceivableDuration.class.getName(), dealerID.toString(), new JournalRunnable<Collection<AccountReceivableDuration>>() {
+
+			@Override
+			public Collection<AccountReceivableDuration> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(AccountReceivableDuration.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<AccountReceivableDuration> list = session.createCriteria(AccountReceivableDuration.class).list();
+				session.disableFilter(AccountReceivableDuration.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
 	}
 
 	@Override
-	public Instant saveHumanResourceAllocation(Integer dealerID,
-			Integer departmentID, Collection<HumanResourceAllocation> journals) {
-		// TODO Auto-generated method stub
-		return null;
+	public Instant saveHumanResourceAllocation(final Integer dealerID,
+			final Integer departmentID, final Collection<HumanResourceAllocation> journals) {
+		return executor.executeWithWriteLock(HumanResourceAllocation.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (HumanResourceAllocation newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(HumanResourceAllocation.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<HumanResourceAllocation> list = session.createCriteria(HumanResourceAllocation.class).list();
+					for ( final HumanResourceAllocation oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(HumanResourceAllocation.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAllocation() == null ) {
+						newJournal.setAllocation(BigDecimal.ZERO);
+					}
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
 	}
 
 	@Override
 	public Collection<HumanResourceAllocation> getHumanResourceAllocation(
-			Integer dealerID, Integer departmentID, LocalDate validDate) {
-		// TODO Auto-generated method stub
-		return null;
+			final Integer dealerID, final Integer departmentID, final LocalDate validDate) {
+		return executor.executeWithReadLock(HumanResourceAllocation.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<HumanResourceAllocation>>() {
+
+			@Override
+			public Collection<HumanResourceAllocation> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(HumanResourceAllocation.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("departmentID", departmentID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<HumanResourceAllocation> list = session.createCriteria(HumanResourceAllocation.class).list();
+				session.disableFilter(HumanResourceAllocation.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
 	}
 
 	@Override
-	public Instant saveInventoryDuration(Integer dealerID,
-			Integer departmentID, Collection<InventoryDuration> journals) {
-		// TODO Auto-generated method stub
-		return null;
+	public Instant saveInventoryDuration(final Integer dealerID,
+			final Integer departmentID, final Collection<InventoryDuration> journals) {
+		return executor.executeWithWriteLock(InventoryDuration.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (InventoryDuration newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(InventoryDuration.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<InventoryDuration> list = session.createCriteria(InventoryDuration.class).list();
+					for ( final InventoryDuration oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(InventoryDuration.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAmount() == null ) {
+						newJournal.setAmount(BigDecimal.ZERO);
+					}
+					if ( newJournal.getCount() == null ) {
+						newJournal.setCount(0);
+					}
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
 	}
 
 	@Override
-	public Collection<InventoryDuration> getInventoryDuration(Integer dealerID,
-			Integer departmentID, LocalDate validDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<InventoryDuration> getInventoryDuration(final Integer dealerID,
+			final Integer departmentID, final LocalDate validDate) {
+		return executor.executeWithReadLock(InventoryDuration.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<InventoryDuration>>() {
+
+			@Override
+			public Collection<InventoryDuration> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(InventoryDuration.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("departmentID", departmentID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<InventoryDuration> list = session.createCriteria(InventoryDuration.class).list();
+				session.disableFilter(InventoryDuration.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
 	}
 
 	@Override
-	public Instant saveEmployeeFee(Integer dealerID, Integer departmentID,
-			Collection<EmployeeFee> journals) {
-		// TODO Auto-generated method stub
-		return null;
+	public Instant saveEmployeeFee(final Integer dealerID, final Integer departmentID,
+			final Collection<EmployeeFee> journals) {
+		return executor.executeWithWriteLock(EmployeeFee.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (EmployeeFee newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(EmployeeFee.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<EmployeeFee> list = session.createCriteria(EmployeeFee.class).list();
+					for ( final EmployeeFee oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(EmployeeFee.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAmount() == null ) {
+						newJournal.setAmount(BigDecimal.ZERO);
+					}
+
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
 	}
 
 	@Override
-	public Collection<EmployeeFee> getEmployeeFee(Integer dealerID,
-			Integer departmentID, LocalDate validDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<EmployeeFee> getEmployeeFee(final Integer dealerID,
+			final Integer departmentID, final LocalDate validDate) {
+		return executor.executeWithReadLock(EmployeeFee.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<EmployeeFee>>() {
+
+			@Override
+			public Collection<EmployeeFee> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(EmployeeFee.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("departmentID", departmentID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<EmployeeFee> list = session.createCriteria(EmployeeFee.class).list();
+				session.disableFilter(EmployeeFee.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
 	}
 
 	@Override
-	public Instant saveEmployeeFeeSummary(Integer dealerID,
-			Integer departmentID, Collection<EmployeeFeeSummary> journals) {
-		// TODO Auto-generated method stub
-		return null;
+	public Instant saveEmployeeFeeSummary(final Integer dealerID,
+			final Integer departmentID, final Collection<EmployeeFeeSummary> journals) {
+		return executor.executeWithWriteLock(EmployeeFeeSummary.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Instant>() {
+
+			@Override
+			public Instant run() {
+				final Session session = sessionFactory.getCurrentSession();
+				Instant currentTimestamp = null;
+				for (EmployeeFeeSummary newJournal: journals) {
+					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					currentTimestamp = Utils.currentTimestamp();
+					
+					// check whether this journal has been inserted before
+					session.enableFilter(EmployeeFeeSummary.FILTER_SINGLEITEM)
+						.setParameter("id", newJournal.getId())
+						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("referenceDate", newJournal.getValidDate())
+						.setParameter("referenceTime", currentTimestamp);
+					@SuppressWarnings("unchecked")
+					final List<EmployeeFeeSummary> list = session.createCriteria(EmployeeFeeSummary.class).list();
+					for ( final EmployeeFeeSummary oldJournal : list ) {
+						if ( oldJournal.getTimeEnd().isBefore(INFINITE_TIMEEND) ) {
+							logger.warn("TimeEnd of the one in database is closed already. {}, {}", oldJournal, currentTimestamp);
+						} else {
+							oldJournal.setTimeEnd(currentTimestamp);
+							session.saveOrUpdate(oldJournal);
+						} 	
+					} 
+					session.disableFilter(EmployeeFeeSummary.FILTER_SINGLEITEM);
+					newJournal.setTimestamp(currentTimestamp);
+					if ( newJournal.getAmount() == null ) {
+						newJournal.setAmount(BigDecimal.ZERO);
+					}
+					
+					newJournal.setTimeEnd(INFINITE_TIMEEND);
+					session.save(newJournal);
+					session.flush();
+				}
+				return currentTimestamp;
+			}
+			
+		});
 	}
 
 	@Override
 	public Collection<EmployeeFeeSummary> getEmployeeFeeSummary(
-			Integer dealerID, Integer departmentID, LocalDate validDate) {
-		// TODO Auto-generated method stub
-		return null;
+			final Integer dealerID, final Integer departmentID, final LocalDate validDate) {
+		return executor.executeWithReadLock(EmployeeFeeSummary.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<EmployeeFeeSummary>>() {
+
+			@Override
+			public Collection<EmployeeFeeSummary> run() {
+				final Session session = sessionFactory.getCurrentSession();
+				final Instant currentTimestamp = Instant.millis(new Date().getTime());
+				session.enableFilter(EmployeeFeeSummary.FILTER)
+					.setParameter("dealerID", dealerID)
+					.setParameter("departmentID", departmentID)
+					.setParameter("referenceDate", validDate)
+					.setParameter("referenceTime", currentTimestamp);
+				@SuppressWarnings("unchecked")
+				final List<EmployeeFeeSummary> list = session.createCriteria(EmployeeFeeSummary.class).list();
+				session.disableFilter(EmployeeFeeSummary.FILTER);
+				
+				return ImmutableList.copyOf(list);
+			}
+			
+		});
 	}
 
 }

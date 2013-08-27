@@ -235,56 +235,237 @@
 
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12</version>
-				<configuration>
-					<!--http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#testFailureIgnore -->
-					<testFailureIgnore>true</testFailureIgnore>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>${jetty.plugin.version}</version>
-				<configuration>
-					<scanIntervalSeconds>2</scanIntervalSeconds>
-					<stopKey>foo</stopKey>
-					<stopPort>9999</stopPort>
-					<webApp>${basedir}/target/dealerEntryService.war</webApp>
-					<webAppConfig>
-						<contextPath>/</contextPath>
-					</webAppConfig>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-
-	</build>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<!-- Dev profile is active by default -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Specifies the build profile id, which is used to find out the correct 
+					properties file. This is not actually necessary for this example, but it 
+					can be used for other purposes. -->
+				<build.profile.id>dev</build.profile.id>
+			</properties>
+			<build>
+				<filters>
+					<filter>src/main/filters/configuration/${build.profile.id}/tokens.properties</filter>
+				</filters>
+				<resources>
+					<!-- Placeholders found from files located in the configured resource 
+						directories are replaced with values found from the profile specific configuration 
+						files. -->
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources</directory>
+						<!-- You can also include only specific files found from the configured 
+							directory or exclude files. This can be done by uncommenting following sections 
+							and adding the configuration under includes and excludes tags. -->
+						<!-- <includes> <include></include> </includes> <excludes> <exclude></exclude> 
+							</excludes> -->
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.0</version>
+						<configuration>
+							<source>1.6</source>
+							<target>1.6</target>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.12</version>
+						<configuration>
+							<!--http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#testFailureIgnore -->
+							<testFailureIgnore>true</testFailureIgnore>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>maven-jetty-plugin</artifactId>
+						<version>${jetty.plugin.version}</version>
+						<configuration>
+							<scanIntervalSeconds>2</scanIntervalSeconds>
+							<stopKey>foo</stopKey>
+							<stopPort>9999</stopPort>
+							<webApp>${basedir}/target/dealerEntryService.war</webApp>
+							<webAppConfig>
+								<contextPath>/</contextPath>
+							</webAppConfig>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.1</version>
+						<configuration>
+							<archive>
+								<manifest>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>qa</id>
+			<properties>
+				<!-- Specifies the build profile id, which is used to find out the correct 
+					properties file. This is not actually necessary for this example, but it 
+					can be used for other purposes. -->
+				<build.profile.id>qa</build.profile.id>
+			</properties>
+			<build>
+				<filters>
+					<filter>src/main/filters/configuration/${build.profile.id}/tokens.properties</filter>
+				</filters>
+				<resources>
+					<!-- Placeholders found from files located in the configured resource 
+						directories are replaced with values found from the profile specific configuration 
+						files. -->
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources</directory>
+						<!-- You can also include only specific files found from the configured 
+							directory or exclude files. This can be done by uncommenting following sections 
+							and adding the configuration under includes and excludes tags. -->
+						<!-- <includes> <include></include> </includes> <excludes> <exclude></exclude> 
+							</excludes> -->
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.0</version>
+						<configuration>
+							<source>1.6</source>
+							<target>1.6</target>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.12</version>
+						<configuration>
+							<!--http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#testFailureIgnore -->
+							<testFailureIgnore>true</testFailureIgnore>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>maven-jetty-plugin</artifactId>
+						<version>${jetty.plugin.version}</version>
+						<configuration>
+							<scanIntervalSeconds>2</scanIntervalSeconds>
+							<stopKey>foo</stopKey>
+							<stopPort>9999</stopPort>
+							<webApp>${basedir}/target/dealerEntryService.war</webApp>
+							<webAppConfig>
+								<contextPath>/</contextPath>
+							</webAppConfig>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.1</version>
+						<configuration>
+							<archive>
+								<manifest>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<!-- Specifies the build profile id, which is used to find out the correct 
+					properties file. This is not actually necessary for this example, but it 
+					can be used for other purposes. -->
+				<build.profile.id>prod</build.profile.id>
+			</properties>
+			<build>
+				<filters>
+					<filter>src/main/filters/configuration/${build.profile.id}/tokens.properties</filter>
+				</filters>
+				<resources>
+					<!-- Placeholders found from files located in the configured resource 
+						directories are replaced with values found from the profile specific configuration 
+						files. -->
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/resources</directory>
+						<!-- You can also include only specific files found from the configured 
+							directory or exclude files. This can be done by uncommenting following sections 
+							and adding the configuration under includes and excludes tags. -->
+						<!-- <includes> <include></include> </includes> <excludes> <exclude></exclude> 
+							</excludes> -->
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.0</version>
+						<configuration>
+							<source>1.6</source>
+							<target>1.6</target>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.12</version>
+						<configuration>
+							<!--http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#testFailureIgnore -->
+							<testFailureIgnore>true</testFailureIgnore>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>maven-jetty-plugin</artifactId>
+						<version>${jetty.plugin.version}</version>
+						<configuration>
+							<scanIntervalSeconds>2</scanIntervalSeconds>
+							<stopKey>foo</stopKey>
+							<stopPort>9999</stopPort>
+							<webApp>${basedir}/target/dealerEntryService.war</webApp>
+							<webAppConfig>
+								<contextPath>/</contextPath>
+							</webAppConfig>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.1</version>
+						<configuration>
+							<archive>
+								<manifest>
+									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>onejar-maven-plugin.googlecode.com</id>

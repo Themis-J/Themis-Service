@@ -11,21 +11,32 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarInstantAdaptor;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
+/**
+ * Detail about a general income journal. 
+ * 
+ * @author Kai Chen
+ *
+ */
 @XmlRootElement
-public class VehicleItem implements Serializable{
-
+public class EmployeeFeeDetail implements Serializable { 
+	
 	private static final long serialVersionUID = 1L;
-
-	private Integer id;
+	private Integer itemID;
 	private String name;
 	private Instant timestamp;
-	private String category;
+	private Double amount;
 	
-	public String getCategory() {
-		return category;
+	public Integer getItemID() {
+		return itemID;
 	}
-	public void setCategory(String category) {
-		this.category = category;
+	public void setItemID(Integer itemID) {
+		this.itemID = itemID;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	@XmlJavaTypeAdapter(JaxbCalendarInstantAdaptor.class)
 	@JsonSerialize(using = JsonCalendarInstantSerializer.class)
@@ -35,18 +46,11 @@ public class VehicleItem implements Serializable{
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	
-	
+	public Double getAmount() {
+		return amount;
+	}
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
 }

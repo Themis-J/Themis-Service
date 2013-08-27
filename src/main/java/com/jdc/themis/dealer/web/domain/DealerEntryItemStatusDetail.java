@@ -10,9 +10,14 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarInstantAdaptor;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
-
+/**
+ * The item has been marked to be 'completed' status. 
+ * 
+ * @author Kai Chen
+ *
+ */
 @XmlRootElement
-public class CompletedEntryItem implements Serializable{
+public class DealerEntryItemStatusDetail implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

@@ -56,4 +56,34 @@ public class TestRefDataDAOImpl {
 	public void getTaxJournalItemListSize() {
 		Assert.assertEquals(1, refDataDAO.getTaxJournalItems().size());
 	}
+	
+	@Test
+	public void getSalesServiceJournalItemList() {
+		Assert.assertEquals(2, refDataDAO.getSalesServiceJournalItems().size());
+	}
+	
+	@Test
+	public void getGeneralJournalItemList() {
+		Assert.assertEquals(2, refDataDAO.getGeneralJournalItems().size());
+	}
+	
+	@Test
+	public void getAccountReceivableDurationItemList() {
+		Assert.assertEquals(2, refDataDAO.getAccountReceivableDurationItems().size());
+	}
+	
+	@Test
+	public void getInventoryDurationItemList() {
+		Assert.assertEquals(3, refDataDAO.getInventoryDurationItems().size());
+	}
+	
+	@Test
+	public void getEmployeeFeeItemList() {
+		Assert.assertEquals(1, refDataDAO.getEmployeeFeeItems().size());
+	}
+	
+	@Test
+	public void getEmployeeFeeSummaryItemList() {
+		Assert.assertEquals(2, refDataDAO.getEmployeeFeeSummaryItems().size());
+	}
 }

@@ -5,27 +5,32 @@ import java.io.Serializable;
 import javax.time.Instant;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.jdc.themis.common.jaxb.adaptor.JaxbCalendarInstantAdaptor;
 import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
 
+/**
+ * Detail about a general income journal. 
+ * 
+ * @author Kai Chen
+ *
+ */
 @XmlRootElement
-public class VehicleSalesRevenueDetail implements Serializable { 
+public class AccountReceivableDurationDetail implements Serializable { 
 	
 	private static final long serialVersionUID = 1L;
-	private Integer vehicleID;
+	private Integer itemID;
 	private String name;
 	private Instant timestamp;
-	private Integer count;
 	private Double amount;
-	private Double margin;
 	
-	public Integer getVehicleID() {
-		return vehicleID;
+	public Integer getItemID() {
+		return itemID;
 	}
-	public void setVehicleID(Integer vehicleID) {
-		this.vehicleID = vehicleID;
+	public void setItemID(Integer itemID) {
+		this.itemID = itemID;
 	}
 	public String getName() {
 		return name;
@@ -41,23 +46,11 @@ public class VehicleSalesRevenueDetail implements Serializable {
 	public void setTimestamp(Instant timestamp) {
 		this.timestamp = timestamp;
 	}
-	public Integer getCount() {
-		return count;
-	}
-	public void setCount(Integer count) {
-		this.count = count;
-	}
+	
 	public Double getAmount() {
 		return amount;
 	}
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-	public Double getMargin() {
-		return margin;
-	}
-	public void setMargin(Double margin) {
-		this.margin = margin;
-	}
-
 }

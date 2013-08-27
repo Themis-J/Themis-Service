@@ -4,8 +4,14 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * The item of the general income journal. 
+ * 
+ * @author Kai Chen
+ *
+ */
 @XmlRootElement
-public class SalesServiceRevenueItem implements Serializable{
+public class GeneralJournalItemDetail implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,6 +30,5 @@ public class SalesServiceRevenueItem implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 	
 }
