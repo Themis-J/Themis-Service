@@ -44,6 +44,22 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Autowired
 	private IncomeJournalDAO incomeJournalDAL;
 
+	public RefDataDAO getRefDataDAL() {
+		return refDataDAL;
+	}
+
+	public void setRefDataDAL(RefDataDAO refDataDAL) {
+		this.refDataDAL = refDataDAL;
+	}
+
+	public IncomeJournalDAO getIncomeJournalDAL() {
+		return incomeJournalDAL;
+	}
+
+	public void setIncomeJournalDAL(IncomeJournalDAO incomeJournalDAL) {
+		this.incomeJournalDAL = incomeJournalDAL;
+	}
+
 	/**
 	 * Save a list of vehicle sales revenue.
 	 * 
@@ -58,7 +74,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getValidDate(),
 				"valid date can't be null");
-		Preconditions.checkNotNull(request.getDetail().size() == 0,
+		Preconditions.checkArgument(request.getDetail().size() != 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
 				refDataDAL.getDealer(request.getDealerID()) != null,
@@ -69,9 +85,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 				: request.getDepartmentID();
 		for (final VehicleSalesJournalDetail detail : request.getDetail()) {
 			final VehicleSalesJournal journal = new VehicleSalesJournal();
-			journal.setAmount(new BigDecimal(detail.getAmount()));
-			journal.setMargin(new BigDecimal(detail.getMargin()));
-			journal.setCount(detail.getCount());
+			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
+			journal.setMargin(detail.getMargin() != null ? new BigDecimal(detail.getMargin()) : BigDecimal.ZERO);
+			journal.setCount(detail.getCount() != null ? detail.getCount() : 0);
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getVehicleID(),
 					"vehicle id can't be null");
@@ -159,9 +175,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		final List<SalesServiceJournal> journals = Lists.newArrayList();
 		for (final SalesServiceJournalDetail detail : request.getDetail()) {
 			final SalesServiceJournal journal = new SalesServiceJournal();
-			journal.setAmount(new BigDecimal(detail.getAmount()));
-			journal.setMargin(new BigDecimal(detail.getMargin()));
-			journal.setCount(detail.getCount());
+			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
+			journal.setMargin(detail.getMargin() != null ? new BigDecimal(detail.getMargin()) : BigDecimal.ZERO);
+			journal.setCount(detail.getCount() != null ? detail.getCount() : 0);
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
@@ -364,7 +380,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		final List<GeneralJournal> journals = Lists.newArrayList();
 		for (final GeneralJournalDetail detail : request.getDetail()) {
 			final GeneralJournal journal = new GeneralJournal();
-			journal.setAmount(new BigDecimal(detail.getAmount()));
+			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");

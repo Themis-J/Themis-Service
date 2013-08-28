@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS public.EnumType CASCADE;
 CREATE TABLE public.EnumType
 (
    id integer, 
-   name character varying(100), 
+   name varchar(100), 
    CONSTRAINT EnumType_PK PRIMARY KEY (id), 
    CONSTRAINT EnumType_Unique UNIQUE (name)
 ) 
@@ -16,7 +16,7 @@ WITH (
 CREATE TABLE public.EnumValue
 (
    typeID integer, 
-   name character varying(100), 
+   name varchar(100), 
    value integer, 
    CONSTRAINT EnumValue_PK PRIMARY KEY (typeID, value), 
    CONSTRAINT EnumValue_FK FOREIGN KEY (typeID) REFERENCES EnumType (id) ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -26,15 +26,53 @@ WITH (
 )
 ;
 
+DROP TABLE IF EXISTS public.UserRole CASCADE;
+DROP TABLE IF EXISTS public.EntitlementResource CASCADE;
+DROP TABLE IF EXISTS public.UserEntitlement CASCADE;
 DROP TABLE IF EXISTS public.UserInfo CASCADE;
 DROP TABLE IF EXISTS public.Dealer CASCADE;
 DROP TABLE IF EXISTS public.UserDealer CASCADE;
 
+CREATE TABLE public.UserRole
+(
+   id integer, 
+   name varchar(20),  
+   timestamp timestamp NOT NULL, 
+   CONSTRAINT UserRoleID_PK PRIMARY KEY (id), 
+   CONSTRAINT UserRoleName_Unique UNIQUE (name)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE public.EntitlementResource
+(
+   id integer, 
+   name varchar(20),  
+   resourceType integer, 
+   timestamp timestamp NOT NULL, 
+   CONSTRAINT ERID_PK PRIMARY KEY (id), 
+   CONSTRAINT ERN_Unique UNIQUE (name, resourceType)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE public.UserRoleEntitlement
+(
+   roleID integer, 
+   resourceID integer, 
+   CONSTRAINT URE_PK PRIMARY KEY (roleID, resourceID)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
 CREATE TABLE public.UserInfo
 (
    id integer, 
-   username character varying(20), 
-   password character varying(50), 
+   username varchar(20), 
+   password varchar(50), 
    userType integer, 
    active boolean, 
    timestamp timestamp without time zone NOT NULL, 
@@ -49,10 +87,10 @@ WITH (
 CREATE TABLE public.Dealer
 (
    id integer, 
-   name character varying(100) NOT NULL, 
-   fullName character varying(250) NOT NULL, 
-   code character varying(10) NOT NULL, 
-   city character varying(20), 
+   name varchar(100) NOT NULL, 
+   fullName varchar(250) NOT NULL, 
+   code varchar(10) NOT NULL, 
+   city varchar(20), 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT Dealer_PK PRIMARY KEY (id), 
    CONSTRAINT DealerName_Unique UNIQUE (name), 
@@ -81,7 +119,7 @@ DROP TABLE IF EXISTS public.Department CASCADE;
 CREATE TABLE public.Department
 (
    id integer, 
-   name character varying(100), 
+   name varchar(100), 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT Department_PK PRIMARY KEY (id), 
    CONSTRAINT Department_Unique UNIQUE (name)
@@ -97,8 +135,8 @@ DROP TABLE IF EXISTS public.Menu CASCADE;
 CREATE TABLE public.Menu
 (
    id integer, 
-   name character varying(100) NOT NULL, 
-   displayText character varying(100), 
+   name varchar(100) NOT NULL, 
+   displayText varchar(100), 
    CONSTRAINT Menu_PK PRIMARY KEY (id)
 ) 
 WITH (
@@ -128,7 +166,7 @@ CREATE TABLE public.DealerEntryItemStatus
    validDate date, 
    dealerID integer, 
    entryItemID integer NOT NULL, 
-   updateBy character varying(100),
+   updateBy varchar(100),
    CONSTRAINT DEIS_Unique UNIQUE (dealerID, entryItemID, validDate)
 ) 
 WITH (
@@ -143,7 +181,7 @@ DROP TABLE IF EXISTS public.JobPosition CASCADE;
 CREATE TABLE public.JobPosition
 (
    id integer, 
-   name character varying(100),
+   name varchar(100),
    timestamp timestamp without time zone, 
    CONSTRAINT JobPosition_PK PRIMARY KEY (id), 
    CONSTRAINT JobPosition_Unique UNIQUE (name)
@@ -161,7 +199,7 @@ CREATE TABLE public.HumanResourceAllocation
    departmentID integer NOT NULL,
    id integer NOT NULL,
    allocation double precision,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT HRA_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
 ) 
 WITH (
@@ -183,7 +221,7 @@ DROP TABLE IF EXISTS public.Vehicle CASCADE;
 CREATE TABLE public.GeneralJournalCategory
 (
    id integer, 
-   name character varying(100), 
+   name varchar(100), 
    categoryType integer, 
    timestamp timestamp without time zone, 
    CONSTRAINT GJC_PK PRIMARY KEY (id)
@@ -196,7 +234,7 @@ WITH (
 CREATE TABLE public.GeneralJournalItem
 (
    id integer, 
-   name character varying(100), 
+   name varchar(100), 
    categoryID integer, 
    timestamp timestamp without time zone, 
    CONSTRAINT GJI_PK PRIMARY KEY (id), 
@@ -216,7 +254,7 @@ CREATE TABLE public.GeneralJournal
    departmentID integer NOT NULL,
    id integer NOT NULL,
    amount double precision,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT GeneralJournal_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
 ) 
 WITH (
@@ -226,7 +264,7 @@ WITH (
 CREATE TABLE public.SalesServiceJournalCategory
 (
    id integer, 
-   name character varying(100), 
+   name varchar(100), 
    timestamp timestamp without time zone, 
    CONSTRAINT SSJI_PK PRIMARY KEY (id)
 ) 
@@ -237,7 +275,7 @@ WITH (
 CREATE TABLE public.SalesServiceJournalItem
 (
    id integer, 
-   name character varying(100), 
+   name varchar(100), 
    categoryID integer,
    timestamp timestamp without time zone, 
    CONSTRAINT SSJLI_PK PRIMARY KEY (id),
@@ -251,7 +289,7 @@ WITH (
 CREATE TABLE public.Vehicle
 (
    id integer, 
-   name character varying(100) NOT NULL, 
+   name varchar(100) NOT NULL, 
    categoryID integer NOT NULL, 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT Vehicle_PK PRIMARY KEY (id), 
@@ -272,7 +310,7 @@ CREATE TABLE public.SalesServiceJournal
    amount double precision,
    margin double precision,
    count integer,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT SSJ_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
 ) 
 WITH (
@@ -290,7 +328,7 @@ CREATE TABLE public.VehicleSalesJournal
    amount double precision,
    margin double precision,
    count integer,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT VSJ_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
 ) 
 WITH (
@@ -326,7 +364,7 @@ WITH (
 CREATE TABLE public.AccountReceivableDurationItem
 (
    id integer, 
-   name character varying(100) NOT NULL, 
+   name varchar(100) NOT NULL, 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT ARDI_PK PRIMARY KEY (id),
    CONSTRAINT ARDI_Unique UNIQUE (name)
@@ -345,7 +383,7 @@ CREATE TABLE public.AccountReceivableDuration
    durationID integer NOT NULL,
    id integer NOT NULL,
    amount double precision,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT ARDuration_Unique UNIQUE (timestamp, validDate, dealerID, durationID, id)
 ) 
 WITH (
@@ -355,7 +393,7 @@ WITH (
 CREATE TABLE public.EmployeeFeeItem
 (
    id integer, 
-   name character varying(100) NOT NULL, 
+   name varchar(100) NOT NULL, 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT EFI_PK PRIMARY KEY (id)
 ) 
@@ -373,7 +411,7 @@ CREATE TABLE public.EmployeeFee
    id integer NOT NULL,
    feeTypeID integer NOT NULL, 
    amount double precision,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT EF_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, feeTypeID)
 ) 
 WITH (
@@ -384,7 +422,7 @@ WITH (
 CREATE TABLE public.EmployeeFeeSummaryItem
 (
    id integer, 
-   name character varying(100) NOT NULL, 
+   name varchar(100) NOT NULL, 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT EFSI_PK PRIMARY KEY (id)
 ) 
@@ -401,7 +439,7 @@ CREATE TABLE public.EmployeeFeeSummary
    departmentID integer NOT NULL,
    id integer NOT NULL,
    amount double precision,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT EFS_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
 ) 
 WITH (
@@ -411,7 +449,7 @@ WITH (
 CREATE TABLE public.InventoryDurationItem
 (
    id integer, 
-   name character varying(100) NOT NULL, 
+   name varchar(100) NOT NULL, 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT IDI_PK PRIMARY KEY (id)
 ) 
@@ -431,7 +469,7 @@ CREATE TABLE public.InventoryDuration
    id integer NOT NULL,
    amount double precision,
    count integer,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT ID_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, durationID, id)
 ) 
 WITH (
@@ -444,7 +482,7 @@ DROP TABLE IF EXISTS public.TaxJournal CASCADE;
 CREATE TABLE public.TaxJournalItem
 (
    id integer, 
-   name character varying(100) NOT NULL, 
+   name varchar(100) NOT NULL, 
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT TaxJI_PK PRIMARY KEY (id)
 ) 
@@ -460,7 +498,7 @@ CREATE TABLE public.TaxJournal
    dealerID integer NOT NULL,
    id integer NOT NULL,
    amount double precision,
-   updatedBy character varying(20) NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
    CONSTRAINT TaxJ_Unique UNIQUE (timestamp, validDate, dealerID, id)
 ) 
 WITH (

@@ -388,7 +388,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	    }
 	}
 	@Override
-	public AccountReceivableDurationItem getAccountReceivableItem(Integer itemID) {
+	public AccountReceivableDurationItem getAccountReceivableDurationItem(Integer itemID) {
 		return Maps.uniqueIndex(getAccountReceivableDurationItems(), GetAccountReceivableDurationItemIDFunction.INSTANCE).get(itemID);
 	}
 
@@ -449,6 +449,19 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public InventoryDurationItem getInventoryDurationItem(Integer itemID) {
 		return Maps.uniqueIndex(getInventoryDurationItems(), GetInventoryDurationItemIDFunction.INSTANCE).get(itemID);
+	}
+
+	private enum GetGeneralJournalItemIDFunction implements Function<GeneralJournalItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(GeneralJournalItem item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public GeneralJournalItem getGeneralJournalItem(Integer id) {
+		return Maps.uniqueIndex(getGeneralJournalItems(), GetGeneralJournalItemIDFunction.INSTANCE).get(id);
 	}
 
 }

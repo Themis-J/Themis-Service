@@ -80,6 +80,9 @@ public interface RefDataDAO {
 	
 	List<GeneralJournalItem> getGeneralJournalItems();
 	
+	@Cacheable(value="generalJournalItem")
+	GeneralJournalItem getGeneralJournalItem(Integer id);
+	
 	List<JobPosition> getJobPositions();
 	
 	@Cacheable(value="jobPosition")
@@ -93,7 +96,7 @@ public interface RefDataDAO {
 	List<InventoryDurationItem> getInventoryDurationItems();
 	
 	@Cacheable(value="accountReceivableDurationItem")
-	AccountReceivableDurationItem getAccountReceivableItem(Integer itemID);
+	AccountReceivableDurationItem getAccountReceivableDurationItem(Integer itemID);
 	
 	List<Duration> getDurations();
 	
