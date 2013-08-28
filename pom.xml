@@ -35,7 +35,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cxf.version>2.7.5</cxf.version>
+		<cxf.version>2.3.0</cxf.version>
 		<org.eclipse.jetty.version>8.1.8.v20121106</org.eclipse.jetty.version>
 		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
 		<jetty.plugin.version>6.1.25</jetty.plugin.version>
@@ -249,6 +249,7 @@
 				<build.profile.id>dev</build.profile.id>
 			</properties>
 			<build>
+			    <finalName>themis</finalName>
 				<filters>
 					<filter>src/main/filters/configuration/${build.profile.id}/tokens.properties</filter>
 				</filters>
