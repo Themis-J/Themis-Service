@@ -3,12 +3,7 @@ Themis-Service
 
 Web services of Themis
 
-Currently, you can run "com.jdc.themis.main.Starter" to start a jetty http server. 
+Run mvn jetty:run -P dev to start a web server with maven embeded jetty server. 
 
-You call call below url to test the menu service:
-http://localhost:8080/dealer/menu/all
-Or
-http://localhost:8080/dealer/menu?id=1
-
-
-
+i.e.
+http://localhost:8080/themis/dealer/menu
