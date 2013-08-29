@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.Department;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
@@ -12,7 +13,9 @@ import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.Performance;
+import com.jdc.themis.dealer.web.domain.DepartmentDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
+import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
@@ -129,6 +132,19 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 			final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 			item.setId(gji.getId());
 			item.setName(gji.getName());
+			response.getItems().add(item);
+		}
+		return response;
+	}
+
+	@Override
+	public GetDepartmentResponse getAllDepartments() {
+		final GetDepartmentResponse response = new GetDepartmentResponse();
+
+		for (final Department department : refDataDAL.getDepartments()) {
+			final DepartmentDetail item = new DepartmentDetail();
+			item.setId(department.getId());
+			item.setName(department.getName());
 			response.getItems().add(item);
 		}
 		return response;

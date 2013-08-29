@@ -30,7 +30,7 @@ import com.jdc.themis.dealer.web.domain.GetTaxResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesJournalResponse;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalDetail;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
-import com.jdc.themis.dealer.web.domain.SaveGeneralIncomeRequest;
+import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
@@ -124,6 +124,14 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			Integer dealerID, Integer departmentID, String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		if ( departmentID != null ) {
+			Preconditions.checkArgument(
+				refDataDAL.getDepartment(departmentID) != null,
+				"unknown department id " + departmentID);
+		}
 		final GetVehicleSalesJournalResponse response = new GetVehicleSalesJournalResponse();
 		final Integer requestedDeparmentID = departmentID == null ? DEFAULT_VEHICLE_DEPARTMENT_ID
 				: departmentID;
@@ -215,6 +223,13 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(departmentID, "department id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(departmentID) != null,
+				"unknown department id " + departmentID);
+		
 		final GetSalesServiceJournalResponse response = new GetSalesServiceJournalResponse();
 		final Collection<SalesServiceJournal> list = incomeJournalDAL
 				.getSalesServiceJournal(dealerID, departmentID,
@@ -286,6 +301,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetTaxResponse getIncomeTax(Integer dealerID, String validDate) {
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		
 		final GetTaxResponse response = new GetTaxResponse();
 		final Collection<TaxJournal> list = incomeJournalDAL.getTaxJournal(
 				dealerID, LocalDate.parse(validDate));
@@ -342,6 +361,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			Integer dealerID, String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+
 		final GetDealerEntryItemStatusResponse response = new GetDealerEntryItemStatusResponse();
 		final Collection<DealerEntryItemStatus> list = incomeJournalDAL
 				.getDealerEntryItemStatus(dealerID, LocalDate.parse(validDate));
@@ -360,7 +383,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Override
 	@Performance
-	public Instant saveGeneralIncome(SaveGeneralIncomeRequest request) {
+	public Instant saveGeneralIncome(SaveGeneralJournalRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getDepartmentID(),
@@ -384,6 +407,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
+			Preconditions.checkNotNull(refDataDAL.getGeneralJournalItem(detail.getItemID()) != null,
+					"unknown item id " + detail.getItemID());
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
@@ -406,6 +431,12 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(departmentID, "department id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(departmentID) != null,
+				"unknown department id " + departmentID);
 		
 		final GetGeneralJournalResponse response = new GetGeneralJournalResponse();
 		final Collection<GeneralJournal> list = incomeJournalDAL
@@ -418,7 +449,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		for (final GeneralJournal journal : list) {
 			final GeneralJournalDetail item = new GeneralJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());
-			item.setName(refDataDAL.getSalesServiceJournalItem(journal.getId())
+			item.setName(refDataDAL.getGeneralJournalItem(journal.getId())
 					.getName());
 			item.setItemID(journal.getId());
 			item.setTimestamp(journal.getTimestamp());

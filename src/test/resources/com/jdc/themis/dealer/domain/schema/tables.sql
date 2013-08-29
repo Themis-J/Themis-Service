@@ -1,6 +1,8 @@
 CREATE TABLE Menu (id integer PRIMARY KEY, name varchar(100) NOT NULL, displayText varchar(100)) 
 CREATE TABLE MenuHierachy (parentID integer, childID integer, itemOrder integer) 
 
+CREATE TABLE Department (   id integer,    name varchar(100),    timestamp timestamp)
+   
 CREATE TABLE TaxJournalItem (id integer, name varchar(100), timestamp timestamp)
 CREATE TABLE SalesServiceJournalItem (id integer, name varchar(100), categoryID integer, timestamp timestamp)
 
@@ -44,7 +46,7 @@ CREATE TABLE GeneralJournalCategory (   id integer,    name varchar(100),    cat
 CREATE TABLE GeneralJournalItem (   id integer,    name varchar(100),    categoryID integer, timestamp timestamp ) 
 
 CREATE TABLE GeneralJournal (timestamp timestamp, timeEnd timestamp, validDate date, dealerID integer, departmentID integer, id integer, amount double, updatedBy varchar(40)) 
-   ALTER TABLE GeneralJournal ALTER COLUMN timestamp SET NOT NULL
+ALTER TABLE GeneralJournal ALTER COLUMN timestamp SET NOT NULL
 ALTER TABLE GeneralJournal ALTER COLUMN timeEnd SET NOT NULL
 ALTER TABLE GeneralJournal ALTER COLUMN validDate SET NOT NULL
 ALTER TABLE GeneralJournal ALTER COLUMN dealerID SET NOT NULL

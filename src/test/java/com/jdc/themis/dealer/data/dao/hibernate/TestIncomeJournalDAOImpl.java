@@ -350,4 +350,17 @@ public class TestIncomeJournalDAOImpl {
 		Assert.assertEquals(1, hasJournal);
 	} 
 	
+	@Test
+	public void getOneExistingGeneralJournal() {
+		int hasJournal = 0;
+		for (final GeneralJournal journal : incomeJournalDAL.getGeneralJournal(2, 4, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test2", journal.getUpdatedBy());
+			Assert.assertEquals(2, journal.getId().intValue());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
 }

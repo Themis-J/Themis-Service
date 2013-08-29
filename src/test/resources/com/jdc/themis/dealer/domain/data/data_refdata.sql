@@ -9,6 +9,11 @@ insert into MenuHierachy values (1, 3, 2)
 insert into MenuHierachy values (2, 4, 3)
 insert into MenuHierachy values (3, 5, 4)
 
+insert into Department values (1, 'Department1', {ts '2012-09-17 18:47:52.69'})
+insert into Department values (2, 'Department2', {ts '2012-09-17 18:47:52.69'})
+insert into Department values (3, 'Department3', {ts '2012-09-17 18:47:52.69'})
+insert into Department values (4, 'Department4', {ts '2012-09-17 18:47:52.69'})
+
 insert into TaxJournalItem values (1, 'IncomeTax', {ts '2012-09-17 18:47:52.69'})
 
 insert into SalesServiceJournalItem values (1, 'SalesServiceJournalItem1', 1, {ts '2012-09-17 18:47:52.69'})

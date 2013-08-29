@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.google.common.collect.Lists;
 
 @XmlRootElement
-public class SaveGeneralIncomeRequest implements Serializable{
+public class SaveGeneralJournalRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;

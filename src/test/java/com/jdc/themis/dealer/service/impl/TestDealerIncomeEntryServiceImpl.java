@@ -1,5 +1,13 @@
 package com.jdc.themis.dealer.service.impl;
 
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.util.Collection;
+
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
@@ -9,17 +17,23 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Mock;
+
+import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.Dealer;
+import com.jdc.themis.dealer.domain.Department;
+import com.jdc.themis.dealer.domain.GeneralJournal;
+import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
+import com.jdc.themis.dealer.web.domain.GeneralJournalDetail;
+import com.jdc.themis.dealer.web.domain.GetGeneralJournalResponse;
+import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
 import com.jdc.themis.dealer.web.domain.VehicleSalesJournalDetail;
-
-import static org.mockito.Mockito.*;
 
 public class TestDealerIncomeEntryServiceImpl {
 
@@ -128,5 +142,73 @@ public class TestDealerIncomeEntryServiceImpl {
 		service.saveVehicleSalesRevenue(request);
 		
 		Assert.fail("it should not success");
+	}
+	
+	@Test
+	public void saveGeneralJournalSuccessfully() {
+		final Dealer dealer = new Dealer();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final Department department = new Department();
+		department.setId(4);
+		department.setName("Department4");
+		when(refDataDAL.getDepartment(4)).thenReturn(department);
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		when(dal.saveGeneralJournal(eq(2), eq(4), anyCollectionOf(GeneralJournal.class))).thenReturn(timestamp);
+		
+		final SaveGeneralJournalRequest request = new SaveGeneralJournalRequest();
+		request.setDealerID(2);
+		request.setDepartmentID(4);
+		request.setValidDate(LocalDate.of(2013, 6, 1).toString());
+		
+		final GeneralJournalDetail detail = new GeneralJournalDetail();
+		detail.setAmount(123.4);
+		detail.setItemID(3);
+		request.getDetail().add(detail);
+		
+		final Instant result = service.saveGeneralIncome(request);
+		
+		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.toString());
+	}
+	
+	@Test
+	public void getGeneralJournalSuccessfully() {
+		final Dealer dealer = new Dealer();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final Department department = new Department();
+		department.setId(4);
+		department.setName("Department4");
+		when(refDataDAL.getDepartment(4)).thenReturn(department);
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
+		final GeneralJournal journal1 = new GeneralJournal();
+		journal1.setDealerID(2);
+		journal1.setDepartmentID(4);
+		journal1.setId(5);
+		journal1.setAmount(new BigDecimal("21023.343"));
+		journal1.setTimestamp(timestamp);
+		journal1.setTimeEnd(timeEnd);
+		
+		final Collection<GeneralJournal> list = Lists.newArrayList();
+		list.add(journal1);
+		
+		final GeneralJournalItem item = new GeneralJournalItem();
+		item.setId(5);
+		item.setName("GJ Item 5");
+		when(refDataDAL.getGeneralJournalItem(eq(5))).thenReturn(item);
+		
+		when(dal.getGeneralJournal(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
+		
+		final GetGeneralJournalResponse result = service.getGeneralIncome(2, 4, LocalDate.of(2013, 6, 1).toString());
+		
+		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.getDetail().get(0).getTimestamp().toString());
+		Assert.assertEquals(new BigDecimal("21023.343").doubleValue(), result.getDetail().get(0).getAmount());
 	}
 }

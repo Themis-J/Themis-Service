@@ -116,4 +116,14 @@ public class TestRefDataDAOImpl {
 	public void getEmployeeFeeSummaryItem() {
 		Assert.assertEquals("EmployeeFeeSummaryItem1", refDataDAO.getEmployeeFeeSummaryItem(1).getName());
 	}
+	
+	@Test
+	public void getDepartmentList() {
+		Assert.assertEquals(4, refDataDAO.getDepartments().size());
+	}
+	
+	@Test
+	public void getDepartment() {
+		Assert.assertEquals("Department1", refDataDAO.getDepartment(1).getName());
+	}
 }

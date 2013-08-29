@@ -9,7 +9,7 @@ import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetTaxResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesJournalResponse;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
-import com.jdc.themis.dealer.web.domain.SaveGeneralIncomeRequest;
+import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
@@ -122,7 +122,7 @@ public interface DealerIncomeEntryService {
 	 */
 	@Transactional
 	public Instant saveGeneralIncome(
-			final SaveGeneralIncomeRequest request);
+			final SaveGeneralJournalRequest request);
 
 	/**
 	 * Get a list of general income journals.

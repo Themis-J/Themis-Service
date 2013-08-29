@@ -18,7 +18,7 @@ import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
  *
  */
 @XmlRootElement
-public class GeneralSaveResponse implements Serializable{
+public class GeneralResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Instant timestamp;
