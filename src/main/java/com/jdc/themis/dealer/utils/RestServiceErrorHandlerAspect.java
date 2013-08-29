@@ -19,7 +19,7 @@ public class RestServiceErrorHandlerAspect {
 	private final static Logger logger = LoggerFactory.getLogger(RestServiceErrorHandlerAspect.class);
 	
 	@Around("@annotation(com.jdc.themis.dealer.utils.RestServiceErrorHandler)")
-	public Object doBasicProfiling(ProceedingJoinPoint pjp) throws Throwable {
+	public Object proceed(ProceedingJoinPoint pjp) throws Throwable {
 		try {
 			Object retVal = pjp.proceed();
 			return retVal;

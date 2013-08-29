@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
+import com.jdc.themis.dealer.domain.AccountReceivableDuration;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.GeneralJournal;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
@@ -363,4 +364,70 @@ public class TestIncomeJournalDAOImpl {
 		Assert.assertEquals(1, hasJournal);
 	} 
 	
+	@Test
+	public void insertOneAcctReceivableDuration() {
+		final AccountReceivableDuration status = new AccountReceivableDuration();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setAmount(new BigDecimal("1234.343"));
+		status.setDurationID(1);
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveAccountReceivableDuration(10, Lists.newArrayList(status));
+		
+		int hasJournal = 0;
+		for (final AccountReceivableDuration journal : incomeJournalDAL.getAccountReceivableDuration(10, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.out.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(1, journal.getDurationID().intValue());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		} 
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void insertTwoAcctReceivableDuration() {
+		final AccountReceivableDuration status = new AccountReceivableDuration();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setAmount(new BigDecimal("1234.343"));
+		status.setDurationID(1);
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveAccountReceivableDuration(10, Lists.newArrayList(status));
+		
+		final AccountReceivableDuration status2 = new AccountReceivableDuration();
+		status2.setDealerID(10);
+		status2.setId(1);
+		status2.setAmount(new BigDecimal("5234.343"));
+		status2.setDurationID(1);
+		status2.setValidDate(LocalDate.of(2013, 8, 1));
+		status2.setUpdatedBy("test2");
+		incomeJournalDAL.saveAccountReceivableDuration(10, Lists.newArrayList(status2));
+		
+		int hasJournal = 0;
+		for (final AccountReceivableDuration journal : incomeJournalDAL.getAccountReceivableDuration(10, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test2", journal.getUpdatedBy());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void getOneExistingAcctReceivableDuration() {
+		int hasJournal = 0;
+		for (final AccountReceivableDuration journal : incomeJournalDAL.getAccountReceivableDuration(2, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test2", journal.getUpdatedBy());
+			Assert.assertEquals(2, journal.getId().intValue());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
 }

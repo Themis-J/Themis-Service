@@ -25,7 +25,21 @@ public class AccountReceivableDurationDetail implements Serializable {
 	private String name;
 	private Instant timestamp;
 	private Double amount;
+	private Integer durationID;
+	private String durationDesc;
 	
+	public Integer getDurationID() {
+		return durationID;
+	}
+	public void setDurationID(Integer durationID) {
+		this.durationID = durationID;
+	}
+	public String getDurationDesc() {
+		return durationDesc;
+	}
+	public void setDurationDesc(String durationDesc) {
+		this.durationDesc = durationDesc;
+	}
 	public Integer getItemID() {
 		return itemID;
 	}

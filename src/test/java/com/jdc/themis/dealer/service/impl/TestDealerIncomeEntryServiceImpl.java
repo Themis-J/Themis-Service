@@ -24,13 +24,20 @@ import org.mockito.MockitoAnnotations;
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.AccountReceivableDuration;
+import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Department;
+import com.jdc.themis.dealer.domain.Duration;
+import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.domain.GeneralJournal;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
+import com.jdc.themis.dealer.web.domain.AccountReceivableDurationDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalDetail;
+import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalResponse;
+import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
 import com.jdc.themis.dealer.web.domain.VehicleSalesJournalDetail;
@@ -207,6 +214,84 @@ public class TestDealerIncomeEntryServiceImpl {
 		when(dal.getGeneralJournal(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		
 		final GetGeneralJournalResponse result = service.getGeneralIncome(2, 4, LocalDate.of(2013, 6, 1).toString());
+		
+		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.getDetail().get(0).getTimestamp().toString());
+		Assert.assertEquals(new BigDecimal("21023.343").doubleValue(), result.getDetail().get(0).getAmount());
+	}
+	
+	@Test
+	public void saveAcctReceivableDurationSuccessfully() {
+		final Dealer dealer = new Dealer();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final Duration duration = new Duration();
+		duration.setId(1);
+		duration.setLowerBound(0);
+		duration.setUnit(1);
+		duration.setUpperBound(30);
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		when(dal.saveAccountReceivableDuration(eq(2), anyCollectionOf(AccountReceivableDuration.class))).thenReturn(timestamp);
+		
+		final SaveAccountReceivableDurationRequest request = new SaveAccountReceivableDurationRequest();
+		request.setDealerID(2);
+		request.setValidDate(LocalDate.of(2013, 6, 1).toString());
+		
+		final AccountReceivableDurationDetail detail = new AccountReceivableDurationDetail();
+		detail.setAmount(123.4);
+		detail.setItemID(3);
+		detail.setDurationID(1);
+		detail.setName("AcctDesc");
+		request.getDetail().add(detail);
+		
+		final Instant result = service.saveAccountReceivableDuration(request);
+		
+		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.toString());
+	}
+	
+	@Test
+	public void getAcctReceivableDurationSuccessfully() {
+		final Dealer dealer = new Dealer();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final Duration duration = new Duration();
+		duration.setId(1);
+		duration.setUnit(1);
+		duration.setLowerBound(0);
+		duration.setUpperBound(null);
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
+		final AccountReceivableDuration journal1 = new AccountReceivableDuration();
+		journal1.setDealerID(2);
+		journal1.setDurationID(1);
+		journal1.setId(5);
+		journal1.setAmount(new BigDecimal("21023.343"));
+		journal1.setTimestamp(timestamp);
+		journal1.setTimeEnd(timeEnd);
+		
+		final Collection<AccountReceivableDuration> list = Lists.newArrayList();
+		list.add(journal1);
+		
+		final AccountReceivableDurationItem item = new AccountReceivableDurationItem();
+		item.setId(5);
+		item.setName("GJ Item 5");
+		when(refDataDAL.getAccountReceivableDurationItem(eq(5))).thenReturn(item);
+		
+		when(dal.getAccountReceivableDuration(eq(2), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
+		final EnumValue enumValue = new EnumValue();
+		enumValue.setTypeID(1);
+		enumValue.setValue(1);
+		enumValue.setName("Days");
+		when(refDataDAL.getEnumValue("DurationUnit", 1)).thenReturn(enumValue);
+		
+		final GetAccountReceivableDurationResponse result = service.getAccountReceivableDuration(2, LocalDate.of(2013, 6, 1).toString());
 		
 		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.getDetail().get(0).getTimestamp().toString());
 		Assert.assertEquals(new BigDecimal("21023.343").doubleValue(), result.getDetail().get(0).getAmount());

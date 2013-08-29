@@ -499,6 +499,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 					// check whether this journal has been inserted before
 					session.enableFilter(AccountReceivableDuration.FILTER_SINGLEITEM)
 						.setParameter("id", newJournal.getId())
+						.setParameter("durationID", newJournal.getDurationID())
 						.setParameter("dealerID", newJournal.getDealerID())
 						.setParameter("referenceDate", newJournal.getValidDate())
 						.setParameter("referenceTime", currentTimestamp);

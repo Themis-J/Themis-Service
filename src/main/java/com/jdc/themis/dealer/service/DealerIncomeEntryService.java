@@ -3,11 +3,13 @@ package com.jdc.themis.dealer.service;
 import javax.time.Instant;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetTaxResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesJournalResponse;
+import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
@@ -139,6 +141,32 @@ public interface DealerIncomeEntryService {
 	public GetGeneralJournalResponse getGeneralIncome(
 			Integer dealerID,
 			Integer departmentID,
+			String validDate);
+	
+	/**
+	 * Save a list of account receivable durations.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@Transactional
+	public Instant saveAccountReceivableDuration(
+			final SaveAccountReceivableDurationRequest request);
+
+	/**
+	 * Get a list of general income journals.
+	 * 
+	 * @param dealerID
+	 *            Dealer company id
+	 * @param departmentID
+	 *            Department id
+	 * @param validDate
+	 *            Date to query report
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public GetAccountReceivableDurationResponse getAccountReceivableDuration(
+			Integer dealerID,
 			String validDate);
 
 }

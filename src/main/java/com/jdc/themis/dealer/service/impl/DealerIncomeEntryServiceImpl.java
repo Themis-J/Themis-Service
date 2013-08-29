@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.AccountReceivableDuration;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.GeneralJournal;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
@@ -21,14 +22,18 @@ import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.service.DealerIncomeEntryService;
 import com.jdc.themis.dealer.utils.Performance;
+import com.jdc.themis.dealer.utils.Utils;
+import com.jdc.themis.dealer.web.domain.AccountReceivableDurationDetail;
 import com.jdc.themis.dealer.web.domain.DealerEntryItemStatusDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalDetail;
+import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetTaxResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesJournalResponse;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalDetail;
+import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
@@ -452,6 +457,76 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			item.setName(refDataDAL.getGeneralJournalItem(journal.getId())
 					.getName());
 			item.setItemID(journal.getId());
+			item.setTimestamp(journal.getTimestamp());
+			response.getDetail().add(item);
+		}
+
+		return response;
+	}
+
+	@Override
+	public Instant saveAccountReceivableDuration (
+			SaveAccountReceivableDurationRequest request) {
+		Preconditions.checkNotNull(request.getDealerID(),
+				"dealer id can't be null");
+		Preconditions.checkNotNull(request.getValidDate(),
+				"valid date can't be null");
+		Preconditions.checkNotNull(request.getDetail().size() == 0,
+				"no detail is posted");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(request.getDealerID()) != null,
+				"unknown dealer id " + request.getDealerID());
+		
+		final List<AccountReceivableDuration> journals = Lists.newArrayList();
+		for (final AccountReceivableDurationDetail detail : request.getDetail()) {
+			final AccountReceivableDuration journal = new AccountReceivableDuration();
+			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
+			journal.setDealerID(request.getDealerID());
+			Preconditions.checkNotNull(detail.getItemID(),
+					"item id can't be null");
+			Preconditions.checkNotNull(refDataDAL.getAccountReceivableDurationItem(detail.getItemID()) != null,
+					"unknown item id " + detail.getItemID());
+			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()) != null,
+					"unknown duration id " + detail.getDurationID());
+			journal.setId(detail.getItemID());
+			journal.setDurationID(detail.getDurationID());
+			journal.setUpdatedBy(request.getUpdateBy());
+			journal.setValidDate(LocalDate.parse(request.getValidDate()));
+			journals.add(journal);
+		}
+		final Instant timestamp = incomeJournalDAL.saveAccountReceivableDuration(
+				request.getDealerID(), journals);
+		if (timestamp == null) {
+			throw new RuntimeException("Database save returns null timestamp!");
+		}
+
+		return timestamp;
+	}
+
+	@Override
+	public GetAccountReceivableDurationResponse getAccountReceivableDuration(
+			Integer dealerID, String validDate) {
+		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+
+		final GetAccountReceivableDurationResponse response = new GetAccountReceivableDurationResponse();
+		final Collection<AccountReceivableDuration> list = incomeJournalDAL
+				.getAccountReceivableDuration(dealerID, 
+						LocalDate.parse(validDate));
+
+		response.setDealerID(dealerID);
+		response.setValidDate(LocalDate.parse(validDate));
+		for (final AccountReceivableDuration journal : list) {
+			final AccountReceivableDurationDetail item = new AccountReceivableDurationDetail();
+			item.setAmount(journal.getAmount().doubleValue());
+			item.setName(refDataDAL.getAccountReceivableDurationItem(journal.getId())
+					.getName());
+			item.setItemID(journal.getId());
+			item.setDurationID(journal.getDurationID());
+			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()), refDataDAL));
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
