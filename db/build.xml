@@ -18,7 +18,7 @@
 	<target name='init'>
 		<!--<fail unless='dbuser'>dbuser variable must be set!</fail>-->
 		<fail unless='envType'>envType must be defined; e.g. -DenvType=dev</fail>
-		<property name='envFile' location='${envDir}/${envType}/env-${envType}.properties'/>
+		<property name='envFile' location='${envDir}/${envType}/db.properties'/>
 		<echo>using environment file:  ${envFile}</echo>
 		<property file='${envFile}'/>
 
@@ -31,6 +31,7 @@
 		<property name='url' value='${postgres_url}'/>
 		<property name='username' value='${postgres_username}'/>
 		<property name='password' value='${postgres_password}'/>
+		<property name='defaultSchema' value='public'/>
 	</target>
 
 	<target name="populateEnv" depends='init'>
@@ -38,8 +39,8 @@
 		<fail unless="username">database username not set</fail>
 		<fail unless="password">database password not set</fail>
 
-		<property name='populateEnvXml' location='${basedir}/env/${envType}/db.changelog.${envType}.xml'/>
-		<property name="schema" value="${username}" />
+		<property name='populateEnvXml' location='${basedir}/liquibase/db.changelog-master.xml'/>
+		<property name="schema" value="${schema}" />
 
 		<echo>env XML:  ${populateEnvXml}</echo>
 		<echo>basedir:  ${basedir}</echo>
@@ -48,7 +49,7 @@
             driver="${driver}"
             url="${url}"
             username="${username}"
-			defaultSchemaName="${username}"
+			defaultSchemaName="${defaultSchema}"
             password="${password}"
 			classpathref="classpath">
 			<changeLogProperty name="schema" value="${schema}"/>
@@ -61,7 +62,7 @@
 		<fail unless="password">database password not set</fail>
 
 		<property name='masterXml' location='${basedir}/liquibase/db.changelog-master.xml'/>
-		<property name="schema" value="${username}" />
+		<property name="schema" value="${schema}" />
 
 		<echo>master XML:  ${masterXml}</echo>
 		<echo>basedir:  ${basedir}</echo>
@@ -70,7 +71,7 @@
             driver="${driver}"
             url="${url}"
             username="${username}"
-			defaultSchemaName="${username}"
+			defaultSchemaName="${defaultSchema}"
             password="${password}"
 			classpathref="classpath">
 			<changeLogProperty name="schema" value="${schema}"/>
@@ -82,7 +83,7 @@
 		<fail unless="username">database username not set</fail>
 		<fail unless="password">database password not set</fail>
 
-		<property name="schema" value="${username}" />
+		<property name="schema" value="${schema}" />
 		<echo>schema:  ${schema}</echo>
 		<fail message="prod database cannot be call dropAll">
 			<condition>
@@ -95,7 +96,7 @@
 			url="${url}"
 			username="${username}"
 			password="${password}"
-			defaultSchemaName="${schema}"
+			defaultSchemaName="${defaultSchema}"
  			classpathref="classpath"/>
 	</target>
 </project>
