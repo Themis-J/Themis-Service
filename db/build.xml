@@ -31,7 +31,6 @@
 		<property name='url' value='${postgres_url}'/>
 		<property name='username' value='${postgres_username}'/>
 		<property name='password' value='${postgres_password}'/>
-		<property name='defaultSchema' value='public'/>
 	</target>
 
 	<target name="populateEnv" depends='init'>
@@ -49,7 +48,7 @@
             driver="${driver}"
             url="${url}"
             username="${username}"
-			defaultSchemaName="${defaultSchema}"
+			defaultSchemaName="${schema}"
             password="${password}"
 			classpathref="classpath">
 			<changeLogProperty name="schema" value="${schema}"/>
@@ -71,7 +70,7 @@
             driver="${driver}"
             url="${url}"
             username="${username}"
-			defaultSchemaName="${defaultSchema}"
+			defaultSchemaName="${schema}"
             password="${password}"
 			classpathref="classpath">
 			<changeLogProperty name="schema" value="${schema}"/>
@@ -96,7 +95,7 @@
 			url="${url}"
 			username="${username}"
 			password="${password}"
-			defaultSchemaName="${defaultSchema}"
+			defaultSchemaName="${schema}"
  			classpathref="classpath"/>
 	</target>
 </project>
