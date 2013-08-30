@@ -112,4 +112,5 @@ public interface RefDataDAO {
 	
 	@Cacheable(value="employeeFeeSummarysItem")
 	EmployeeFeeSummaryItem getEmployeeFeeSummaryItem(Integer itemID);
+	
 }

@@ -47,6 +47,11 @@
 				current_session_context_class=thread
 				hibernate.cache.use_query_cache=true
 				hibernate.cache.provider_class=com.hazelcast.hibernate.provider.HazelcastCacheProvider
+				hibernate.c3p0.min_size=5
+				hibernate.c3p0.max_size=10
+				hibernate.c3p0.timeout=300
+				hibernate.c3p0.max_statements=50
+				hibernate.c3p0.idle_test_period=3000
 			</value>
 		</property>
 	</bean>

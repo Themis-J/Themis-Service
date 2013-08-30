@@ -20,7 +20,6 @@ import org.hibernate.annotations.Type;
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
-					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
 			@org.hibernate.annotations.FilterDef(name="hrFilterSingleItem", 
 					parameters = {
@@ -33,7 +32,7 @@ import org.hibernate.annotations.Type;
 		)
 @Filters( {
     @Filter(name="hrFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="hrFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="hrFilter", condition="validDate = :referenceDate and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @Entity
 public class HumanResourceAllocation implements TemporalEntity, Serializable {

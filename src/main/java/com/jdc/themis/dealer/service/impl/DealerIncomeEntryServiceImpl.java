@@ -16,7 +16,11 @@ import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDuration;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
+import com.jdc.themis.dealer.domain.EmployeeFee;
+import com.jdc.themis.dealer.domain.EmployeeFeeSummary;
 import com.jdc.themis.dealer.domain.GeneralJournal;
+import com.jdc.themis.dealer.domain.HumanResourceAllocation;
+import com.jdc.themis.dealer.domain.InventoryDuration;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
@@ -25,17 +29,29 @@ import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.utils.Utils;
 import com.jdc.themis.dealer.web.domain.AccountReceivableDurationDetail;
 import com.jdc.themis.dealer.web.domain.DealerEntryItemStatusDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalDetail;
 import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalResponse;
+import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationResponse;
+import com.jdc.themis.dealer.web.domain.GetInventoryDurationResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetTaxResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleSalesJournalResponse;
+import com.jdc.themis.dealer.web.domain.HumanResourceAllocationDetail;
+import com.jdc.themis.dealer.web.domain.InventoryDurationDetail;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalDetail;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
+import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
+import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeSummaryRequest;
 import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
+import com.jdc.themis.dealer.web.domain.SaveHumanResourceAllocationRequest;
+import com.jdc.themis.dealer.web.domain.SaveInventoryDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
@@ -527,6 +543,305 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			item.setItemID(journal.getId());
 			item.setDurationID(journal.getDurationID());
 			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()), refDataDAL));
+			item.setTimestamp(journal.getTimestamp());
+			response.getDetail().add(item);
+		}
+
+		return response;
+	}
+
+	@Override
+	public Instant saveInventoryDuration(SaveInventoryDurationRequest request) {
+		Preconditions.checkNotNull(request.getDealerID(),
+				"dealer id can't be null");
+		Preconditions.checkNotNull(request.getValidDate(),
+				"valid date can't be null");
+		Preconditions.checkNotNull(request.getDetail().size() == 0,
+				"no detail is posted");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(request.getDealerID()) != null,
+				"unknown dealer id " + request.getDealerID());
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				"unknown department id " + request.getDepartmentID());
+		
+		final List<InventoryDuration> journals = Lists.newArrayList();
+		for (final InventoryDurationDetail detail : request.getDetail()) {
+			final InventoryDuration journal = new InventoryDuration();
+			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
+			journal.setDealerID(request.getDealerID());
+			Preconditions.checkNotNull(detail.getItemID(),
+					"item id can't be null");
+			Preconditions.checkNotNull(refDataDAL.getInventoryDurationItem(detail.getItemID()) != null,
+					"unknown item id " + detail.getItemID());
+			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()) != null,
+					"unknown duration id " + detail.getDurationID());
+			journal.setId(detail.getItemID());
+			journal.setDepartmentID(request.getDepartmentID());
+			journal.setDurationID(detail.getDurationID());
+			journal.setUpdatedBy(request.getUpdateBy());
+			journal.setValidDate(LocalDate.parse(request.getValidDate()));
+			journals.add(journal);
+		}
+		final Instant timestamp = incomeJournalDAL.saveInventoryDuration(
+				request.getDealerID(), request.getDepartmentID(), journals);
+		if (timestamp == null) {
+			throw new RuntimeException("Database save returns null timestamp!");
+		}
+
+		return timestamp;
+	}
+
+	@Override
+	public GetInventoryDurationResponse getInventoryDuration(Integer dealerID,
+			Integer departmentID, String validDate) {
+		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(departmentID) != null,
+				"unknown department id " + departmentID);
+		
+		final GetInventoryDurationResponse response = new GetInventoryDurationResponse();
+		final Collection<InventoryDuration> list = incomeJournalDAL
+				.getInventoryDuration(dealerID, departmentID,
+						LocalDate.parse(validDate));
+
+		response.setDealerID(dealerID);
+		response.setDeparmentID(departmentID);
+		response.setValidDate(LocalDate.parse(validDate));
+		for (final InventoryDuration journal : list) {
+			final InventoryDurationDetail item = new InventoryDurationDetail();
+			item.setAmount(journal.getAmount().doubleValue());
+			item.setName(refDataDAL.getInventoryDurationItem(journal.getId())
+					.getName());
+			item.setItemID(journal.getId());
+			item.setDurationID(journal.getDurationID());
+			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()), refDataDAL));
+			item.setTimestamp(journal.getTimestamp());
+			response.getDetail().add(item);
+		}
+
+		return response;
+	}
+
+	@Override
+	public Instant saveEmployeeFee(SaveEmployeeFeeRequest request) {
+		Preconditions.checkNotNull(request.getDealerID(),
+				"dealer id can't be null");
+		Preconditions.checkNotNull(request.getValidDate(),
+				"valid date can't be null");
+		Preconditions.checkNotNull(request.getDetail().size() == 0,
+				"no detail is posted");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(request.getDealerID()) != null,
+				"unknown dealer id " + request.getDealerID());
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				"unknown department id " + request.getDepartmentID());
+		
+		final List<EmployeeFee> journals = Lists.newArrayList();
+		for (final EmployeeFeeDetail detail : request.getDetail()) {
+			final EmployeeFee journal = new EmployeeFee();
+			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
+			journal.setDealerID(request.getDealerID());
+			Preconditions.checkNotNull(detail.getItemID(),
+					"item id can't be null");
+			Preconditions.checkArgument(
+					refDataDAL.getEmployeeFeeItem(detail.getItemID()) != null,
+					"unknown item id " + detail.getItemID());
+			Preconditions.checkArgument(
+					refDataDAL.getEnumValue("FeeType", detail.getFeeTypeID()) != null,
+					"unknown fee type id " + detail.getFeeTypeID());
+			journal.setId(detail.getItemID());
+			journal.setFeeTypeID(detail.getFeeTypeID());
+			journal.setDepartmentID(request.getDepartmentID());
+			journal.setUpdatedBy(request.getUpdateBy());
+			journal.setValidDate(LocalDate.parse(request.getValidDate()));
+			journals.add(journal);
+		}
+		final Instant timestamp = incomeJournalDAL.saveEmployeeFee(
+				request.getDealerID(), request.getDepartmentID(), journals);
+		if (timestamp == null) {
+			throw new RuntimeException("Database save returns null timestamp!");
+		}
+
+		return timestamp;
+	}
+
+	@Override
+	public GetEmployeeFeeResponse getEmployeeFee(Integer dealerID,
+			Integer departmentID, String validDate) {
+		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(departmentID) != null,
+				"unknown department id " + departmentID);
+		
+		final GetEmployeeFeeResponse response = new GetEmployeeFeeResponse();
+		final Collection<EmployeeFee> list = incomeJournalDAL
+				.getEmployeeFee(dealerID, departmentID,
+						LocalDate.parse(validDate));
+
+		response.setDealerID(dealerID);
+		response.setDepartmentID(departmentID);
+		response.setValidDate(LocalDate.parse(validDate));
+		for (final EmployeeFee journal : list) {
+			final EmployeeFeeDetail item = new EmployeeFeeDetail();
+			item.setAmount(journal.getAmount().doubleValue());
+			item.setName(refDataDAL.getEmployeeFeeItem(journal.getId())
+					.getName());
+			item.setItemID(journal.getId());
+			item.setFeeTypeID(journal.getFeeTypeID());
+			item.setFeeType(refDataDAL.getEnumValue("FeeType", journal.getFeeTypeID()).getName());
+			item.setTimestamp(journal.getTimestamp());
+			response.getDetail().add(item);
+		}
+
+		return response;
+	}
+
+	@Override
+	public Instant saveEmployeeFeeSummary(SaveEmployeeFeeSummaryRequest request) {
+		Preconditions.checkNotNull(request.getDealerID(),
+				"dealer id can't be null");
+		Preconditions.checkNotNull(request.getValidDate(),
+				"valid date can't be null");
+		Preconditions.checkNotNull(request.getDetail().size() == 0,
+				"no detail is posted");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(request.getDealerID()) != null,
+				"unknown dealer id " + request.getDealerID());
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				"unknown department id " + request.getDepartmentID());
+		
+		final List<EmployeeFeeSummary> journals = Lists.newArrayList();
+		for (final EmployeeFeeSummaryDetail detail : request.getDetail()) {
+			final EmployeeFeeSummary journal = new EmployeeFeeSummary();
+			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
+			journal.setDealerID(request.getDealerID());
+			Preconditions.checkNotNull(detail.getItemID(),
+					"item id can't be null");
+			Preconditions.checkArgument(
+					refDataDAL.getEmployeeFeeSummaryItem(detail.getItemID()) != null,
+					"unknown item id " + detail.getItemID());
+			journal.setId(detail.getItemID());
+			journal.setDepartmentID(request.getDepartmentID());
+			journal.setUpdatedBy(request.getUpdateBy());
+			journal.setValidDate(LocalDate.parse(request.getValidDate()));
+			journals.add(journal);
+		}
+		final Instant timestamp = incomeJournalDAL.saveEmployeeFeeSummary(
+				request.getDealerID(), request.getDepartmentID(), journals);
+		if (timestamp == null) {
+			throw new RuntimeException("Database save returns null timestamp!");
+		}
+
+		return timestamp;
+	}
+
+	@Override
+	public GetEmployeeFeeSummaryResponse getEmployeeFeeSummary(
+			Integer dealerID, Integer departmentID, String validDate) {
+		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(departmentID) != null,
+				"unknown department id " + departmentID);
+		
+		final GetEmployeeFeeSummaryResponse response = new GetEmployeeFeeSummaryResponse();
+		final Collection<EmployeeFeeSummary> list = incomeJournalDAL
+				.getEmployeeFeeSummary(dealerID, departmentID,
+						LocalDate.parse(validDate));
+
+		response.setDealerID(dealerID);
+		response.setDepartmentID(departmentID);
+		response.setValidDate(LocalDate.parse(validDate));
+		for (final EmployeeFeeSummary journal : list) {
+			final EmployeeFeeSummaryDetail item = new EmployeeFeeSummaryDetail();
+			item.setAmount(journal.getAmount().doubleValue());
+			item.setName(refDataDAL.getEmployeeFeeSummaryItem(journal.getId())
+					.getName());
+			item.setItemID(journal.getId());
+			item.setTimestamp(journal.getTimestamp());
+			response.getDetail().add(item);
+		}
+
+		return response;
+	}
+
+	@Override
+	public Instant saveHumanResourceAllocation(
+			SaveHumanResourceAllocationRequest request) {
+		Preconditions.checkNotNull(request.getDealerID(),
+				"dealer id can't be null");
+		Preconditions.checkNotNull(request.getValidDate(),
+				"valid date can't be null");
+		Preconditions.checkNotNull(request.getDetail().size() == 0,
+				"no detail is posted");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(request.getDealerID()) != null,
+				"unknown dealer id " + request.getDealerID());
+		Preconditions.checkArgument(
+				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				"unknown department id " + request.getDepartmentID());
+		
+		final List<HumanResourceAllocation> journals = Lists.newArrayList();
+		for (final HumanResourceAllocationDetail detail : request.getDetail()) {
+			final HumanResourceAllocation journal = new HumanResourceAllocation();
+			journal.setAllocation(detail.getAllocation() != null ? new BigDecimal(detail.getAllocation()) : BigDecimal.ZERO);
+			journal.setDealerID(request.getDealerID());
+			Preconditions.checkNotNull(detail.getItemID(),
+					"item id can't be null");
+			Preconditions.checkArgument(
+					refDataDAL.getJobPosition(detail.getItemID()) != null,
+					"unknown job position id " + detail.getItemID());
+			journal.setId(detail.getItemID());
+			journal.setDepartmentID(request.getDepartmentID());
+			journal.setUpdatedBy(request.getUpdateBy());
+			journal.setValidDate(LocalDate.parse(request.getValidDate()));
+			journals.add(journal);
+		}
+		final Instant timestamp = incomeJournalDAL.saveHumanResourceAllocation(
+				request.getDealerID(), request.getDepartmentID(), journals);
+		if (timestamp == null) {
+			throw new RuntimeException("Database save returns null timestamp!");
+		}
+
+		return timestamp;
+	}
+
+	@Override
+	public GetHumanResourceAllocationResponse getHumanResourceAllocation(
+			Integer dealerID, String validDate) {
+		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+		Preconditions.checkNotNull(validDate, "valid date can't be null");
+		Preconditions.checkArgument(
+				refDataDAL.getDealer(dealerID) != null,
+				"unknown dealer id " + dealerID);
+		
+		final GetHumanResourceAllocationResponse response = new GetHumanResourceAllocationResponse();
+		final Collection<HumanResourceAllocation> list = incomeJournalDAL
+				.getHumanResourceAllocation(dealerID, 
+						LocalDate.parse(validDate));
+
+		response.setDealerID(dealerID);
+		response.setValidDate(LocalDate.parse(validDate));
+		for (final HumanResourceAllocation journal : list) {
+			final HumanResourceAllocationDetail item = new HumanResourceAllocationDetail();
+			item.setAllocation(journal.getAllocation().doubleValue());
+			item.setName(refDataDAL.getJobPosition(journal.getId())
+					.getName());
+			item.setItemID(journal.getId());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}

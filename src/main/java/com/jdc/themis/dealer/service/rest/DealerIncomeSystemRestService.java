@@ -16,8 +16,13 @@ import com.jdc.themis.dealer.service.DealerIncomeEntryService;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.RestServiceErrorHandler;
 import com.jdc.themis.dealer.web.domain.GeneralResponse;
+import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
+import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
+import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeSummaryRequest;
 import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
+import com.jdc.themis.dealer.web.domain.SaveHumanResourceAllocationRequest;
+import com.jdc.themis.dealer.web.domain.SaveInventoryDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
@@ -49,6 +54,19 @@ public class DealerIncomeSystemRestService {
 	@RestServiceErrorHandler
 	public Response getAllMenu() {
 		return Response.ok(this.refDataQueryService.getAllMenu()).build();
+	}
+	
+	/**
+	 * Get all deparment details.
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/department")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getAllDepartments() {
+		return Response.ok(this.refDataQueryService.getAllDepartments()).build();
 	}
 
 	/**
@@ -308,5 +326,213 @@ public class DealerIncomeSystemRestService {
 				dealerIncomeEntryService.getGeneralIncome(dealerID,
 						departmentID, validDate)).build();
 	}
+	
+	/**
+	 * Save a list of account receivable duration.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/accountReceivable/duration")
+	@RestServiceErrorHandler
+	public Response saveAccountReceivableDuration(final SaveAccountReceivableDurationRequest request) {
+		final GeneralResponse response = new GeneralResponse();
+		response.setErrorMsg("");
+		response.setSuccess(true);
+		response.setTimestamp(dealerIncomeEntryService
+				.saveAccountReceivableDuration(request));
+		return Response.ok(response).status(Status.CREATED).build();
+	}
 
+	/**
+	 * Get a list account receivable duration.
+	 * 
+	 * @param dealerID
+	 *            Dealer company id
+	 * @param validDate
+	 *            Date to query report
+	 * @return
+	 */
+	@GET
+	@Path("/accountReceivable/duration")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getAccountReceivableDuration(@QueryParam("dealerID") Integer dealerID,
+			@QueryParam("validDate") String validDate) {
+		return Response.ok(
+				dealerIncomeEntryService.getAccountReceivableDuration(dealerID,
+						validDate)).build();
+	}
+
+	/**
+	 * Save a list of inventory duration.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/inventory/duration")
+	@RestServiceErrorHandler
+	public Response saveInventoryDuration(final SaveInventoryDurationRequest request) {
+		final GeneralResponse response = new GeneralResponse();
+		response.setErrorMsg("");
+		response.setSuccess(true);
+		response.setTimestamp(dealerIncomeEntryService
+				.saveInventoryDuration(request));
+		return Response.ok(response).status(Status.CREATED).build();
+	}
+
+	/**
+	 * Get a list inventory duration.
+	 * 
+	 * @param dealerID
+	 *            Dealer company id
+	 * @param validDate
+	 *            Date to query report
+	 * @return
+	 */
+	@GET
+	@Path("/inventory/duration")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getInventoryDuration(@QueryParam("dealerID") Integer dealerID,
+			@QueryParam("departmentID") Integer departmentID,
+			@QueryParam("validDate") String validDate) {
+		return Response.ok(
+				dealerIncomeEntryService.getInventoryDuration(dealerID, departmentID,
+						validDate)).build();
+	}
+	
+	/**
+	 * Save a list of employee fee.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/employee/fee")
+	@RestServiceErrorHandler
+	public Response saveEmployeeFee(final SaveEmployeeFeeRequest request) {
+		final GeneralResponse response = new GeneralResponse();
+		response.setErrorMsg("");
+		response.setSuccess(true);
+		response.setTimestamp(dealerIncomeEntryService
+				.saveEmployeeFee(request));
+		return Response.ok(response).status(Status.CREATED).build();
+
+	}
+
+	/**
+	 * Get a list employee fee.
+	 * 
+	 * @param dealerID
+	 *            Dealer company id
+	 * @param departmentID
+	 *            Department id
+	 * @param validDate
+	 *            Date to query report
+	 * @return
+	 */
+	@GET
+	@Path("/employee/fee")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getEmployeeFee(@QueryParam("dealerID") Integer dealerID,
+			@QueryParam("departmentID") Integer departmentID,
+			@QueryParam("validDate") String validDate) {
+		return Response.ok(
+				dealerIncomeEntryService.getEmployeeFee(dealerID,
+						departmentID, validDate)).build();
+	}
+	
+	/**
+	 * Save a list of employee fee summary.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/employee/feeSummary")
+	@RestServiceErrorHandler
+	public Response saveEmployeeFeeSummary(final SaveEmployeeFeeSummaryRequest request) {
+		final GeneralResponse response = new GeneralResponse();
+		response.setErrorMsg("");
+		response.setSuccess(true);
+		response.setTimestamp(dealerIncomeEntryService
+				.saveEmployeeFeeSummary(request));
+		return Response.ok(response).status(Status.CREATED).build();
+
+	}
+
+	/**
+	 * Get a list employee fee summary.
+	 * 
+	 * @param dealerID
+	 *            Dealer company id
+	 * @param departmentID
+	 *            Department id
+	 * @param validDate
+	 *            Date to query report
+	 * @return
+	 */
+	@GET
+	@Path("/employee/feeSummary")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getEmployeeFeeSummary(@QueryParam("dealerID") Integer dealerID,
+			@QueryParam("departmentID") Integer departmentID,
+			@QueryParam("validDate") String validDate) {
+		return Response.ok(
+				dealerIncomeEntryService.getEmployeeFeeSummary(dealerID,
+						departmentID, validDate)).build();
+	}
+	
+	/**
+	 * Save a list of human resource allocations.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/hr/allocation")
+	@RestServiceErrorHandler
+	public Response saveHumanResourceAllocation(final SaveHumanResourceAllocationRequest request) {
+		final GeneralResponse response = new GeneralResponse();
+		response.setErrorMsg("");
+		response.setSuccess(true);
+		response.setTimestamp(dealerIncomeEntryService
+				.saveHumanResourceAllocation(request));
+		return Response.ok(response).status(Status.CREATED).build();
+
+	}
+
+	/**
+	 * Get a list human resource allocations.
+	 * 
+	 * @param dealerID
+	 *            Dealer company id
+	 * @param validDate
+	 *            Date to query report
+	 * @return
+	 */
+	@GET
+	@Path("/hr/allocation")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getHumanResourceAllocation(@QueryParam("dealerID") Integer dealerID,
+			@QueryParam("validDate") String validDate) {
+		return Response.ok(
+				dealerIncomeEntryService.getHumanResourceAllocation(dealerID, validDate)).build();
+	}
 }

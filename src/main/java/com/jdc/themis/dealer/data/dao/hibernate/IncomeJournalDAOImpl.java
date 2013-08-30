@@ -268,6 +268,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				Instant currentTimestamp = null;
 				for (VehicleSalesJournal newJournal: journals) {
 					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					Preconditions.checkArgument(departmentID.equals(newJournal.getDepartmentID()), "DepartmentID doesn't match what in the journal");
 					currentTimestamp = Utils.currentTimestamp();
 					
 					// check whether this journal has been inserted before
@@ -349,6 +350,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				Instant currentTimestamp = null;
 				for (SalesServiceJournal newJournal: journals) {
 					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					Preconditions.checkArgument(departmentID.equals(newJournal.getDepartmentID()), "DepartmentID doesn't match what in the journal");
 					currentTimestamp = Utils.currentTimestamp();
 					
 					// check whether this journal has been inserted before
@@ -425,6 +427,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				Instant currentTimestamp = null;
 				for (GeneralJournal newJournal: journals) {
 					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					Preconditions.checkArgument(departmentID.equals(newJournal.getDepartmentID()), "DepartmentID doesn't match what in the journal");
 					currentTimestamp = Utils.currentTimestamp();
 					
 					// check whether this journal has been inserted before
@@ -562,6 +565,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				Instant currentTimestamp = null;
 				for (HumanResourceAllocation newJournal: journals) {
 					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					Preconditions.checkArgument(departmentID.equals(newJournal.getDepartmentID()), "DepartmentID doesn't match what in the journal");
 					currentTimestamp = Utils.currentTimestamp();
 					
 					// check whether this journal has been inserted before
@@ -598,8 +602,8 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 
 	@Override
 	public Collection<HumanResourceAllocation> getHumanResourceAllocation(
-			final Integer dealerID, final Integer departmentID, final LocalDate validDate) {
-		return executor.executeWithReadLock(HumanResourceAllocation.class.getName(), makeSimpleKey(dealerID, departmentID), new JournalRunnable<Collection<HumanResourceAllocation>>() {
+			final Integer dealerID, final LocalDate validDate) {
+		return executor.executeWithReadLock(HumanResourceAllocation.class.getName(), dealerID.toString(), new JournalRunnable<Collection<HumanResourceAllocation>>() {
 
 			@Override
 			public Collection<HumanResourceAllocation> run() {
@@ -607,7 +611,6 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				final Instant currentTimestamp = Instant.millis(new Date().getTime());
 				session.enableFilter(HumanResourceAllocation.FILTER)
 					.setParameter("dealerID", dealerID)
-					.setParameter("departmentID", departmentID)
 					.setParameter("referenceDate", validDate)
 					.setParameter("referenceTime", currentTimestamp);
 				@SuppressWarnings("unchecked")
@@ -631,12 +634,14 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				Instant currentTimestamp = null;
 				for (InventoryDuration newJournal: journals) {
 					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					Preconditions.checkArgument(departmentID.equals(newJournal.getDepartmentID()), "DepartmentID doesn't match what in the journal");
 					currentTimestamp = Utils.currentTimestamp();
 					
 					// check whether this journal has been inserted before
 					session.enableFilter(InventoryDuration.FILTER_SINGLEITEM)
 						.setParameter("id", newJournal.getId())
 						.setParameter("dealerID", newJournal.getDealerID())
+						.setParameter("durationID", newJournal.getDurationID())
 						.setParameter("departmentID", newJournal.getDepartmentID())
 						.setParameter("referenceDate", newJournal.getValidDate())
 						.setParameter("referenceTime", currentTimestamp);
@@ -703,6 +708,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				Instant currentTimestamp = null;
 				for (EmployeeFee newJournal: journals) {
 					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					Preconditions.checkArgument(departmentID.equals(newJournal.getDepartmentID()), "DepartmentID doesn't match what in the journal");
 					currentTimestamp = Utils.currentTimestamp();
 					
 					// check whether this journal has been inserted before
@@ -710,6 +716,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 						.setParameter("id", newJournal.getId())
 						.setParameter("dealerID", newJournal.getDealerID())
 						.setParameter("departmentID", newJournal.getDepartmentID())
+						.setParameter("feeTypeID", newJournal.getFeeTypeID())
 						.setParameter("referenceDate", newJournal.getValidDate())
 						.setParameter("referenceTime", currentTimestamp);
 					@SuppressWarnings("unchecked")
@@ -773,6 +780,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 				Instant currentTimestamp = null;
 				for (EmployeeFeeSummary newJournal: journals) {
 					Preconditions.checkArgument(dealerID.equals(newJournal.getDealerID()), "DealerID doesn't match what in the journal");
+					Preconditions.checkArgument(departmentID.equals(newJournal.getDepartmentID()), "DepartmentID doesn't match what in the journal");
 					currentTimestamp = Utils.currentTimestamp();
 					
 					// check whether this journal has been inserted before

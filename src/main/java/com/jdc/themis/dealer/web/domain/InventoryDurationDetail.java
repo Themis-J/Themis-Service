@@ -18,27 +18,27 @@ import com.jdc.themis.common.json.adaptor.JsonCalendarInstantSerializer;
  *
  */
 @XmlRootElement
-public class EmployeeFeeDetail implements Serializable { 
+public class InventoryDurationDetail implements Serializable { 
 	
 	private static final long serialVersionUID = 1L;
 	private Integer itemID;
 	private String name;
 	private Instant timestamp;
 	private Double amount;
-	private Integer feeTypeID;
-	public Integer getFeeTypeID() {
-		return feeTypeID;
-	}
-	public void setFeeTypeID(Integer feeTypeID) {
-		this.feeTypeID = feeTypeID;
-	}
-	private String feeType;
+	private Integer durationID;
+	private String durationDesc;
 	
-	public String getFeeType() {
-		return feeType;
+	public Integer getDurationID() {
+		return durationID;
 	}
-	public void setFeeType(String feeType) {
-		this.feeType = feeType;
+	public void setDurationID(Integer durationID) {
+		this.durationID = durationID;
+	}
+	public String getDurationDesc() {
+		return durationDesc;
+	}
+	public void setDurationDesc(String durationDesc) {
+		this.durationDesc = durationDesc;
 	}
 	public Integer getItemID() {
 		return itemID;

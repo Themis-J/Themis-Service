@@ -50,7 +50,7 @@ public interface IncomeJournalDAO {
 	
 	Instant saveHumanResourceAllocation(Integer dealerID, Integer departmentID, Collection<HumanResourceAllocation> journals);
 	
-	Collection<HumanResourceAllocation> getHumanResourceAllocation(Integer dealerID, Integer departmentID, LocalDate validDate);
+	Collection<HumanResourceAllocation> getHumanResourceAllocation(Integer dealerID, LocalDate validDate);
 	
 	Instant saveInventoryDuration(Integer dealerID, Integer departmentID, Collection<InventoryDuration> journals);
 	
