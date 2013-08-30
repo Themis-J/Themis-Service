@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"
+		logicalFilePath="db.changelog-themis-init">
+
+	<changeSet id="1" author="hudson9999">	
+		<comment>Themis Init</comment>
+		<sqlFile path="incremental/init/1_create_themis_tables.sql" stripComments="true"/>
+		<sqlFile path="incremental/init/2_insert_themis_data.sql" stripComments="true"/>
+	</changeSet>
+</databaseChangeLog>
