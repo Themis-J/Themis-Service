@@ -39,7 +39,7 @@
 		<fail unless="username">database username not set</fail>
 		<fail unless="password">database password not set</fail>
 
-		<property name='populateEnvXml' location='${basedir}/liquibase/db.changelog-master.xml'/>
+		<property name='populateEnvXml' location='${basedir}/env/${envType}/db.changelog.${envType}.xml'/>
 		<property name="schema" value="${schema}" />
 
 		<echo>env XML:  ${populateEnvXml}</echo>
@@ -87,7 +87,7 @@
 		<echo>schema:  ${schema}</echo>
 		<fail message="prod database cannot be call dropAll">
 			<condition>
-				<equals arg1="${schema}" arg2="etoeci_prod" casesensitive="false" />
+				<equals arg1="${schema}" arg2="themis_prod" casesensitive="false" />
 			</condition>
 		</fail>
 
