@@ -28,7 +28,7 @@ WITH (
 
 DROP TABLE IF EXISTS public.UserRole CASCADE;
 DROP TABLE IF EXISTS public.EntitlementResource CASCADE;
-DROP TABLE IF EXISTS public.UserEntitlement CASCADE;
+DROP TABLE IF EXISTS public.UserRoleEntitlement CASCADE;
 DROP TABLE IF EXISTS public.UserInfo CASCADE;
 DROP TABLE IF EXISTS public.Dealer CASCADE;
 DROP TABLE IF EXISTS public.UserDealer CASCADE;
