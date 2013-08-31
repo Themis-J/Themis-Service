@@ -428,7 +428,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkNotNull(refDataDAL.getGeneralJournalItem(detail.getItemID()) != null,
+			Preconditions.checkNotNull(refDataDAL.getGeneralJournalItem(detail.getItemID()),
 					"unknown item id " + detail.getItemID());
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());
@@ -500,9 +500,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkNotNull(refDataDAL.getAccountReceivableDurationItem(detail.getItemID()) != null,
+			Preconditions.checkNotNull(refDataDAL.getAccountReceivableDurationItem(detail.getItemID()),
 					"unknown item id " + detail.getItemID());
-			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()) != null,
+			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()),
 					"unknown duration id " + detail.getDurationID());
 			journal.setId(detail.getItemID());
 			journal.setDurationID(detail.getDurationID());
@@ -572,9 +572,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkNotNull(refDataDAL.getInventoryDurationItem(detail.getItemID()) != null,
+			Preconditions.checkNotNull(refDataDAL.getInventoryDurationItem(detail.getItemID()),
 					"unknown item id " + detail.getItemID());
-			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()) != null,
+			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()),
 					"unknown duration id " + detail.getDurationID());
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());

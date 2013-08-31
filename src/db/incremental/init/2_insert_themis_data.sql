@@ -8,9 +8,9 @@ INSERT INTO EnumValue VALUES (1, 'Dealer', 1);
 INSERT INTO EnumValue VALUES (1, 'CompanyManager', 2);
 INSERT INTO EnumValue VALUES (3, 'Days', 0);
 INSERT INTO EnumValue VALUES (3, 'Months', 1);
-INSERT INTO EnumValue VALUES (4, 'StandardFee', 0);
-INSERT INTO EnumValue VALUES (4, 'EffectiveRate', 1);
-INSERT INTO EnumValue VALUES (4, 'AverageSalary', 2);
+INSERT INTO EnumValue VALUES (4, '标准工时收费', 0);
+INSERT INTO EnumValue VALUES (4, '有效工时比率', 1);
+INSERT INTO EnumValue VALUES (4, '技工平均工资', 2);
 INSERT INTO EnumValue VALUES (5, 'Revenue', 0);
 INSERT INTO EnumValue VALUES (5, 'Expense', 1);
 
@@ -207,8 +207,8 @@ INSERT INTO Vehicle SELECT 40, 'MPV (A) 逸致 180G豪华版', 1, current_timest
 INSERT INTO Vehicle SELECT 41, 'MPV (B) Multi-Purpose Vehicle', 2, current_timestamp;
 INSERT INTO Vehicle SELECT 42, 'MPV (C) 埃尔法 3.5 豪华版', 2, current_timestamp;
 
-INSERT INTO InventoryDurationItem SELECT 1, '本品牌新车库存', current_timestamp;
-INSERT INTO InventoryDurationItem SELECT 2, '非本品牌新车库存', current_timestamp;
+INSERT INTO InventoryDurationItem SELECT 1, '本品牌新车库存台次', current_timestamp;
+INSERT INTO InventoryDurationItem SELECT 2, '非本品牌新车库存台次', current_timestamp;
 INSERT INTO InventoryDurationItem SELECT 3, '其它车辆库存', current_timestamp;
 INSERT INTO InventoryDurationItem SELECT 4, '二手车库存', current_timestamp;
 INSERT INTO InventoryDurationItem SELECT 5, '本品牌备件库存', current_timestamp;
@@ -216,6 +216,8 @@ INSERT INTO InventoryDurationItem SELECT 6, '本品牌精品库存', current_tim
 INSERT INTO InventoryDurationItem SELECT 7, '非本品牌备件库存', current_timestamp;
 INSERT INTO InventoryDurationItem SELECT 8, '非本品牌精品库存', current_timestamp;
 INSERT INTO InventoryDurationItem SELECT 9, '轮胎库存', current_timestamp;
+INSERT INTO InventoryDurationItem SELECT 10, '本品牌新车库存金额', current_timestamp;
+INSERT INTO InventoryDurationItem SELECT 11, '非本品牌新车库存金额', current_timestamp;
 
 INSERT INTO Duration SELECT 1, 0, 0, 30;
 INSERT INTO Duration SELECT 2, 0, 31, 60;

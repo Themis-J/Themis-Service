@@ -12,9 +12,10 @@ public interface UserDAO {
 	
 	UserRole getUserRole(Integer roleID);
 	
-	List<UserRoleEntitlement> getEntitlements(Integer userRoleID);
+	List<UserRoleEntitlement> getEntitlements(String resourceType, Integer userRoleID);
 	
 	UserInfo getUser(String username);
 	
 	Integer getDealerID(UserInfo user);
+	
 }

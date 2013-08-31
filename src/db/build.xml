@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="liquibase" basedir="." default="usage">
+	<property name='envDir'
+		location='env'/>
+	<path id="classpath">
+        <fileset dir="lib" includes="*.jar"/>
+    </path>
+
+	<taskdef resource="liquibasetasks.properties">
+        <classpath refid="classpath"/>
+    </taskdef>
+
+	<target name="usage">
+		<echo> Usage: ant -DenvType=&lt;env type&gt; update</echo>
+		<echo> For example: ant -DenvType=dev update</echo>
+	</target>
+
+	<target name='init'>
+		<!--<fail unless='dbuser'>dbuser variable must be set!</fail>-->
+		<fail unless='envType'>envType must be defined; e.g. -DenvType=dev</fail>
+		<property name='envFile' location='${envDir}/${envType}/db.properties'/>
+		<echo>using environment file:  ${envFile}</echo>
+		<property file='${envFile}'/>
+
+		<echo>driver:  ${postgres_driver}</echo>
+		<echo>connect:  ${postgres_url}</echo>
+		<echo>username:  ${postgres_username}</echo>
+		<echo>password:  ${postgres_password}</echo>
+
+		<property name='driver' value='${postgres_driver}'/>
+		<property name='url' value='${postgres_url}'/>
+		<property name='username' value='${postgres_username}'/>
+		<property name='password' value='${postgres_password}'/>
+	</target>
+
+	<target name="populateEnv" depends='init'>
+		<fail unless="url">database url not set</fail>
+		<fail unless="username">database username not set</fail>
+		<fail unless="password">database password not set</fail>
+
+		<property name='populateEnvXml' location='${basedir}/env/${envType}/db.changelog.${envType}.xml'/>
+
+		<echo>env XML:  ${populateEnvXml}</echo>
+		<echo>basedir:  ${basedir}</echo>
+		<updateDatabase
+			changeLogFile="${populateEnvXml}"
+            driver="${driver}"
+            url="${url}"
+            username="${username}"
+			defaultSchemaName="${username}"
+            password="${password}"
+			classpathref="classpath">
+			<changeLogProperty name="schema" value="${username}"/>
+		</updateDatabase>
+	</target>
+
+	<target name="update" depends='init'>
+		<fail unless="url">database url not set</fail>
+		<fail unless="username">database username not set</fail>
+		<fail unless="password">database password not set</fail>
+
+		<property name='masterXml' location='${basedir}/liquibase/db.changelog-master.xml'/>
+
+		<echo>master XML:  ${masterXml}</echo>
+		<echo>basedir:  ${basedir}</echo>
+		<updateDatabase
+			changeLogFile="${masterXml}"
+            driver="${driver}"
+            url="${url}"
+            username="${username}"
+			defaultSchemaName="${username}"
+            password="${password}"
+			classpathref="classpath">
+			<changeLogProperty name="schema" value="${username}"/>
+		</updateDatabase>
+	</target>
+
+	<target name="dropAll" depends='init'>
+		<fail unless="url">database url not set</fail>
+		<fail unless="username">database username not set</fail>
+		<fail unless="password">database password not set</fail>
+
+		<fail message="prod database cannot be call dropAll">
+			<condition>
+				<equals arg1="${schema}" arg2="themis_prod" casesensitive="false" />
+			</condition>
+		</fail>
+
+		<dropAllDatabaseObjects
+			driver="${driver}"
+			url="${url}"
+			username="${username}"
+			password="${password}"
+			defaultSchemaName="${username}"
+ 			classpathref="classpath"/>
+	</target>
+</project>

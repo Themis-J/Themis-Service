@@ -2,6 +2,8 @@ CREATE TABLE Menu (id integer PRIMARY KEY, name varchar(100) NOT NULL, displayTe
 CREATE TABLE MenuHierachy (parentID integer, childID integer, itemOrder integer) 
 
 CREATE TABLE Department (   id integer,    name varchar(100),    timestamp timestamp)
+
+CREATE TABLE JobPosition (   id integer,    name varchar(100),    timestamp timestamp)
    
 CREATE TABLE TaxJournalItem (id integer, name varchar(100), timestamp timestamp)
 CREATE TABLE SalesServiceJournalItem (id integer, name varchar(100), categoryID integer, timestamp timestamp)
