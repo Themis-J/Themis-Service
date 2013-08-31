@@ -185,6 +185,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveGeneralJournal(eq(2), eq(4), anyCollectionOf(GeneralJournal.class))).thenReturn(timestamp);
+		when(refDataDAL.getGeneralJournalItem(eq(3))).thenReturn(new GeneralJournalItem());
 		
 		final SaveGeneralJournalRequest request = new SaveGeneralJournalRequest();
 		request.setDealerID(2);
@@ -255,6 +256,10 @@ public class TestDealerIncomeEntryServiceImpl {
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveAccountReceivableDuration(eq(2), anyCollectionOf(AccountReceivableDuration.class))).thenReturn(timestamp);
+		final AccountReceivableDurationItem item = new AccountReceivableDurationItem();
+		item.setId(3);
+		item.setName("GJ Item 3");
+		when(refDataDAL.getAccountReceivableDurationItem(eq(3))).thenReturn(item);
 		
 		final SaveAccountReceivableDurationRequest request = new SaveAccountReceivableDurationRequest();
 		request.setDealerID(2);
@@ -334,6 +339,10 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveInventoryDuration(eq(2), eq(3), anyCollectionOf(InventoryDuration.class))).thenReturn(timestamp);
 		when(refDataDAL.getDepartment(eq(3))).thenReturn(new Department());
+		final InventoryDurationItem item = new InventoryDurationItem();
+		item.setId(5);
+		item.setName("GJ Item 5");
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
 		
 		final SaveInventoryDurationRequest request = new SaveInventoryDurationRequest();
 		request.setDealerID(2);
@@ -342,8 +351,47 @@ public class TestDealerIncomeEntryServiceImpl {
 		
 		final InventoryDurationDetail detail = new InventoryDurationDetail();
 		detail.setAmount(123.4);
-		detail.setItemID(3);
+		detail.setItemID(5);
 		detail.setDurationID(1);
+		detail.setName("AcctDesc");
+		request.getDetail().add(detail);
+		
+		final Instant result = service.saveInventoryDuration(request);
+		
+		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.toString());
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void saveInventoryDurationFailMissingDurationID() {
+		final Dealer dealer = new Dealer();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final Duration duration = new Duration();
+		duration.setId(1);
+		duration.setLowerBound(0);
+		duration.setUnit(1);
+		duration.setUpperBound(30);
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		when(dal.saveInventoryDuration(eq(2), eq(3), anyCollectionOf(InventoryDuration.class))).thenReturn(timestamp);
+		when(refDataDAL.getDepartment(eq(3))).thenReturn(new Department());
+		final InventoryDurationItem item = new InventoryDurationItem();
+		item.setId(5);
+		item.setName("GJ Item 5");
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
+		
+		final SaveInventoryDurationRequest request = new SaveInventoryDurationRequest();
+		request.setDealerID(2);
+		request.setDepartmentID(3);
+		request.setValidDate(LocalDate.of(2013, 6, 1).toString());
+		
+		final InventoryDurationDetail detail = new InventoryDurationDetail();
+		detail.setAmount(123.4);
+		detail.setItemID(5);
+		// detail.setDurationID(1);
 		detail.setName("AcctDesc");
 		request.getDetail().add(detail);
 		

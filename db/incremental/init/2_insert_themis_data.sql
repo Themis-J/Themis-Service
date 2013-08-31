@@ -8,9 +8,9 @@ INSERT INTO EnumValue VALUES (1, 'Dealer', 1);
 INSERT INTO EnumValue VALUES (1, 'CompanyManager', 2);
 INSERT INTO EnumValue VALUES (3, 'Days', 0);
 INSERT INTO EnumValue VALUES (3, 'Months', 1);
-INSERT INTO EnumValue VALUES (4, 'StandardFee', 0);
-INSERT INTO EnumValue VALUES (4, 'EffectiveRate', 1);
-INSERT INTO EnumValue VALUES (4, 'AverageSalary', 2);
+INSERT INTO EnumValue VALUES (4, '标准工时收费', 0);
+INSERT INTO EnumValue VALUES (4, '有效工时比率', 1);
+INSERT INTO EnumValue VALUES (4, '技工平均工资', 2);
 INSERT INTO EnumValue VALUES (5, 'Revenue', 0);
 INSERT INTO EnumValue VALUES (5, 'Expense', 1);
 

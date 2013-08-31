@@ -14,6 +14,12 @@ insert into Department values (2, 'Department2', {ts '2012-09-17 18:47:52.69'})
 insert into Department values (3, 'Department3', {ts '2012-09-17 18:47:52.69'})
 insert into Department values (4, 'Department4', {ts '2012-09-17 18:47:52.69'})
 
+insert into JobPosition values (1, 'JobPosition1', {ts '2012-09-17 18:47:52.69'})
+insert into JobPosition values (2, 'JobPosition2', {ts '2012-09-17 18:47:52.69'})
+insert into JobPosition values (3, 'JobPosition3', {ts '2012-09-17 18:47:52.69'})
+insert into JobPosition values (4, 'JobPosition4', {ts '2012-09-17 18:47:52.69'})
+insert into JobPosition values (5, 'JobPosition5', {ts '2012-09-17 18:47:52.69'})
+
 insert into TaxJournalItem values (1, 'IncomeTax', {ts '2012-09-17 18:47:52.69'})
 
 insert into SalesServiceJournalItem values (1, 'SalesServiceJournalItem1', 1, {ts '2012-09-17 18:47:52.69'})
