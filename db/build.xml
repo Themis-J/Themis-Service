@@ -39,7 +39,6 @@
 		<fail unless="password">database password not set</fail>
 
 		<property name='populateEnvXml' location='${basedir}/env/${envType}/db.changelog.${envType}.xml'/>
-		<property name="schema" value="${schema}" />
 
 		<echo>env XML:  ${populateEnvXml}</echo>
 		<echo>basedir:  ${basedir}</echo>
@@ -48,10 +47,10 @@
             driver="${driver}"
             url="${url}"
             username="${username}"
-			defaultSchemaName="${schema}"
+			defaultSchemaName="${username}"
             password="${password}"
 			classpathref="classpath">
-			<changeLogProperty name="schema" value="${schema}"/>
+			<changeLogProperty name="schema" value="${username}"/>
 		</updateDatabase>
 	</target>
 
@@ -61,7 +60,6 @@
 		<fail unless="password">database password not set</fail>
 
 		<property name='masterXml' location='${basedir}/liquibase/db.changelog-master.xml'/>
-		<property name="schema" value="${schema}" />
 
 		<echo>master XML:  ${masterXml}</echo>
 		<echo>basedir:  ${basedir}</echo>
@@ -70,10 +68,10 @@
             driver="${driver}"
             url="${url}"
             username="${username}"
-			defaultSchemaName="${schema}"
+			defaultSchemaName="${username}"
             password="${password}"
 			classpathref="classpath">
-			<changeLogProperty name="schema" value="${schema}"/>
+			<changeLogProperty name="schema" value="${username}"/>
 		</updateDatabase>
 	</target>
 
@@ -82,8 +80,6 @@
 		<fail unless="username">database username not set</fail>
 		<fail unless="password">database password not set</fail>
 
-		<property name="schema" value="${schema}" />
-		<echo>schema:  ${schema}</echo>
 		<fail message="prod database cannot be call dropAll">
 			<condition>
 				<equals arg1="${schema}" arg2="themis_prod" casesensitive="false" />
@@ -95,7 +91,7 @@
 			url="${url}"
 			username="${username}"
 			password="${password}"
-			defaultSchemaName="${schema}"
+			defaultSchemaName="${username}"
  			classpathref="classpath"/>
 	</target>
 </project>

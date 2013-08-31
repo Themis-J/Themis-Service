@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS public.EnumValue CASCADE;
-DROP TABLE IF EXISTS public.EnumType CASCADE;
+DROP TABLE IF EXISTS EnumValue CASCADE;
+DROP TABLE IF EXISTS EnumType CASCADE;
 
-CREATE TABLE public.EnumType
+CREATE TABLE EnumType
 (
    id integer, 
    name varchar(100), 
@@ -13,7 +13,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.EnumValue
+CREATE TABLE EnumValue
 (
    typeID integer, 
    name varchar(100), 
@@ -26,14 +26,14 @@ WITH (
 )
 ;
 
-DROP TABLE IF EXISTS public.UserRole CASCADE;
-DROP TABLE IF EXISTS public.EntitlementResource CASCADE;
-DROP TABLE IF EXISTS public.UserRoleEntitlement CASCADE;
-DROP TABLE IF EXISTS public.UserInfo CASCADE;
-DROP TABLE IF EXISTS public.Dealer CASCADE;
-DROP TABLE IF EXISTS public.UserDealer CASCADE;
+DROP TABLE IF EXISTS UserRole CASCADE;
+DROP TABLE IF EXISTS EntitlementResource CASCADE;
+DROP TABLE IF EXISTS UserRoleEntitlement CASCADE;
+DROP TABLE IF EXISTS UserInfo CASCADE;
+DROP TABLE IF EXISTS Dealer CASCADE;
+DROP TABLE IF EXISTS UserDealer CASCADE;
 
-CREATE TABLE public.UserRole
+CREATE TABLE UserRole
 (
    id integer, 
    name varchar(20),  
@@ -45,7 +45,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.EntitlementResource
+CREATE TABLE EntitlementResource
 (
    id integer, 
    name varchar(20),  
@@ -58,7 +58,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.UserRoleEntitlement
+CREATE TABLE UserRoleEntitlement
 (
    roleID integer, 
    resourceID integer, 
@@ -68,7 +68,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.UserInfo
+CREATE TABLE UserInfo
 (
    id integer, 
    username varchar(20), 
@@ -84,7 +84,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.Dealer
+CREATE TABLE Dealer
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -101,7 +101,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.UserDealer
+CREATE TABLE UserDealer
 (
    userID integer, 
    dealerID integer, 
@@ -114,9 +114,9 @@ WITH (
 )
 ;
 
-DROP TABLE IF EXISTS public.Department CASCADE;
+DROP TABLE IF EXISTS Department CASCADE;
 
-CREATE TABLE public.Department
+CREATE TABLE Department
 (
    id integer, 
    name varchar(100), 
@@ -129,10 +129,10 @@ WITH (
 )
 ;
 
-DROP TABLE IF EXISTS public.MenuHierachy CASCADE;
-DROP TABLE IF EXISTS public.Menu CASCADE;
+DROP TABLE IF EXISTS MenuHierachy CASCADE;
+DROP TABLE IF EXISTS Menu CASCADE;
 
-CREATE TABLE public.Menu
+CREATE TABLE Menu
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -144,7 +144,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.MenuHierachy
+CREATE TABLE MenuHierachy
 (
    parentID integer, 
    childID integer, 
@@ -158,8 +158,8 @@ WITH (
 )
 ;
 
-DROP TABLE IF EXISTS public.DealerEntryItemStatus CASCADE;
-CREATE TABLE public.DealerEntryItemStatus
+DROP TABLE IF EXISTS DealerEntryItemStatus CASCADE;
+CREATE TABLE DealerEntryItemStatus
 (
    timestamp timestamp without time zone, 
    timeEnd timestamp without time zone, 
@@ -175,10 +175,10 @@ WITH (
 ;
 
 
-DROP TABLE IF EXISTS public.HumanResourceAllocation CASCADE;
-DROP TABLE IF EXISTS public.JobPosition CASCADE;
+DROP TABLE IF EXISTS HumanResourceAllocation CASCADE;
+DROP TABLE IF EXISTS JobPosition CASCADE;
 
-CREATE TABLE public.JobPosition
+CREATE TABLE JobPosition
 (
    id integer, 
    name varchar(100),
@@ -190,7 +190,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.HumanResourceAllocation
+CREATE TABLE HumanResourceAllocation
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -207,18 +207,18 @@ WITH (
 )
 ;
 
-DROP TABLE IF EXISTS public.GeneralJournal CASCADE;
-DROP TABLE IF EXISTS public.GeneralJournalItem CASCADE;
-DROP TABLE IF EXISTS public.GeneralJournalCategory CASCADE;
-DROP TABLE IF EXISTS public.SalesServiceJournal CASCADE;
-DROP TABLE IF EXISTS public.SalesServiceJournalItem CASCADE;
-DROP TABLE IF EXISTS public.SalesServiceJournalCategory CASCADE;
-DROP TABLE IF EXISTS public.VehicleSalesJournal CASCADE;
-DROP TABLE IF EXISTS public.VehicleJournalItem CASCADE;
-DROP TABLE IF EXISTS public.Vehicle CASCADE;
+DROP TABLE IF EXISTS GeneralJournal CASCADE;
+DROP TABLE IF EXISTS GeneralJournalItem CASCADE;
+DROP TABLE IF EXISTS GeneralJournalCategory CASCADE;
+DROP TABLE IF EXISTS SalesServiceJournal CASCADE;
+DROP TABLE IF EXISTS SalesServiceJournalItem CASCADE;
+DROP TABLE IF EXISTS SalesServiceJournalCategory CASCADE;
+DROP TABLE IF EXISTS VehicleSalesJournal CASCADE;
+DROP TABLE IF EXISTS VehicleJournalItem CASCADE;
+DROP TABLE IF EXISTS Vehicle CASCADE;
 
 
-CREATE TABLE public.GeneralJournalCategory
+CREATE TABLE GeneralJournalCategory
 (
    id integer, 
    name varchar(100), 
@@ -231,7 +231,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.GeneralJournalItem
+CREATE TABLE GeneralJournalItem
 (
    id integer, 
    name varchar(100), 
@@ -245,7 +245,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.GeneralJournal
+CREATE TABLE GeneralJournal
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -261,7 +261,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.SalesServiceJournalCategory
+CREATE TABLE SalesServiceJournalCategory
 (
    id integer, 
    name varchar(100), 
@@ -272,7 +272,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.SalesServiceJournalItem
+CREATE TABLE SalesServiceJournalItem
 (
    id integer, 
    name varchar(100), 
@@ -286,7 +286,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.Vehicle
+CREATE TABLE Vehicle
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -299,7 +299,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.SalesServiceJournal
+CREATE TABLE SalesServiceJournal
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -317,7 +317,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.VehicleSalesJournal
+CREATE TABLE VehicleSalesJournal
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -337,18 +337,18 @@ WITH (
 ;
 
 
-DROP TABLE IF EXISTS public.AccountReceivableDuration CASCADE;
-DROP TABLE IF EXISTS public.AccountReceivableDurationItem CASCADE;
-DROP TABLE IF EXISTS public.EmployeeFee CASCADE;
-DROP TABLE IF EXISTS public.EmployeeFeeItem CASCADE;
-DROP TABLE IF EXISTS public.EmployeeFeeSummary CASCADE;
-DROP TABLE IF EXISTS public.EmployeeFeeSummaryItem CASCADE;
-DROP TABLE IF EXISTS public.InventoryDuration CASCADE;
-DROP TABLE IF EXISTS public.InventoryDurationItem CASCADE;
-DROP TABLE IF EXISTS public.Duration CASCADE;
+DROP TABLE IF EXISTS AccountReceivableDuration CASCADE;
+DROP TABLE IF EXISTS AccountReceivableDurationItem CASCADE;
+DROP TABLE IF EXISTS EmployeeFee CASCADE;
+DROP TABLE IF EXISTS EmployeeFeeItem CASCADE;
+DROP TABLE IF EXISTS EmployeeFeeSummary CASCADE;
+DROP TABLE IF EXISTS EmployeeFeeSummaryItem CASCADE;
+DROP TABLE IF EXISTS InventoryDuration CASCADE;
+DROP TABLE IF EXISTS InventoryDurationItem CASCADE;
+DROP TABLE IF EXISTS Duration CASCADE;
 
 
-CREATE TABLE public.Duration
+CREATE TABLE Duration
 (
    id integer, 
    unit integer NOT NULL, 
@@ -361,7 +361,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.AccountReceivableDurationItem
+CREATE TABLE AccountReceivableDurationItem
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -374,7 +374,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.AccountReceivableDuration
+CREATE TABLE AccountReceivableDuration
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -390,7 +390,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.EmployeeFeeItem
+CREATE TABLE EmployeeFeeItem
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -401,7 +401,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.EmployeeFee
+CREATE TABLE EmployeeFee
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -419,7 +419,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.EmployeeFeeSummaryItem
+CREATE TABLE EmployeeFeeSummaryItem
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -430,7 +430,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.EmployeeFeeSummary
+CREATE TABLE EmployeeFeeSummary
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -446,7 +446,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.InventoryDurationItem
+CREATE TABLE InventoryDurationItem
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -458,7 +458,7 @@ WITH (
 )
 ;
 
-CREATE TABLE public.InventoryDuration
+CREATE TABLE InventoryDuration
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -477,9 +477,9 @@ WITH (
 )
 ;
 
-DROP TABLE IF EXISTS public.TaxJournalItem CASCADE;
-DROP TABLE IF EXISTS public.TaxJournal CASCADE;
-CREATE TABLE public.TaxJournalItem
+DROP TABLE IF EXISTS TaxJournalItem CASCADE;
+DROP TABLE IF EXISTS TaxJournal CASCADE;
+CREATE TABLE TaxJournalItem
 (
    id integer, 
    name varchar(100) NOT NULL, 
@@ -490,7 +490,7 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE public.TaxJournal
+CREATE TABLE TaxJournal
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
