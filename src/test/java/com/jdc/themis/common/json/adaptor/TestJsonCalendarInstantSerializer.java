@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Date;
 
 import javax.time.Instant;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.TimeZone;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -35,6 +37,16 @@ public class TestJsonCalendarInstantSerializer {
 		instance.serialize(timestamp, jsonGenerator, provider);
 		verify(jsonGenerator, times(1)).writeStartObject();
 		verify(jsonGenerator).writeStringField("text", timestamp.toString());
+		verify(jsonGenerator, times(1)).writeEndObject();
+	}
+	
+	@Test
+	public void serialize2() throws JsonProcessingException, IOException {
+		final Instant timestamp = LocalDateTime.of(2013, 8, 1, 2, 23).atZone(TimeZone.UTC).toInstant();
+		instance.serialize(timestamp, jsonGenerator, provider);
+		verify(jsonGenerator, times(1)).writeStartObject();
+		verify(jsonGenerator).writeStringField("text", "2013-08-01T02:23Z");
+		verify(jsonGenerator).writeStringField("local", "2013-08-01T10:23");
 		verify(jsonGenerator, times(1)).writeEndObject();
 	}
 	

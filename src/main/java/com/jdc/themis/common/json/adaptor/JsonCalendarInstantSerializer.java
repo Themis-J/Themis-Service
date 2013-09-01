@@ -3,6 +3,8 @@ package com.jdc.themis.common.json.adaptor;
 import java.io.IOException;
 
 import javax.time.Instant;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZonedDateTime;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -17,6 +19,7 @@ public class JsonCalendarInstantSerializer extends JsonSerializer<Instant>
 			JsonProcessingException {
 		jgen.writeStartObject();
 	    jgen.writeStringField("text", value.toString());
+	    jgen.writeStringField("local", ZonedDateTime.fromInstant(value, TimeZone.of("GMT+08:00:00")).toString().replaceAll("\\+08:00\\[UTC\\+08:00\\]", ""));
 	    jgen.writeEndObject();
 	}
 
