@@ -481,6 +481,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public Instant saveAccountReceivableDuration (
 			SaveAccountReceivableDurationRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
@@ -520,6 +521,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public GetAccountReceivableDurationResponse getAccountReceivableDuration(
 			Integer dealerID, String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
@@ -551,6 +553,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public Instant saveInventoryDuration(SaveInventoryDurationRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
@@ -593,6 +596,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public GetInventoryDurationResponse getInventoryDuration(Integer dealerID,
 			Integer departmentID, String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
@@ -628,6 +632,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public Instant saveEmployeeFee(SaveEmployeeFeeRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
@@ -672,6 +677,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public GetEmployeeFeeResponse getEmployeeFee(Integer dealerID,
 			Integer departmentID, String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
@@ -707,6 +713,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public Instant saveEmployeeFeeSummary(SaveEmployeeFeeSummaryRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
@@ -747,6 +754,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public GetEmployeeFeeSummaryResponse getEmployeeFeeSummary(
 			Integer dealerID, Integer departmentID, String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
@@ -780,6 +788,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public Instant saveHumanResourceAllocation(
 			SaveHumanResourceAllocationRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
@@ -821,6 +830,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	}
 
 	@Override
+	@Performance
 	public GetHumanResourceAllocationResponse getHumanResourceAllocation(
 			Integer dealerID, String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");

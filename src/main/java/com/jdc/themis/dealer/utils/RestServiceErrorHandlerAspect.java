@@ -24,7 +24,7 @@ public class RestServiceErrorHandlerAspect {
 			Object retVal = pjp.proceed();
 			return retVal;
 		} catch (Exception e) {
-			logger.debug("capture error in call ", pjp.toLongString());
+			logger.error("capture error in call " + pjp.toLongString(), e);
 			final GeneralResponse response = new GeneralResponse();
 			response.setErrorMsg(e.getMessage());
 			response.setSuccess(false);

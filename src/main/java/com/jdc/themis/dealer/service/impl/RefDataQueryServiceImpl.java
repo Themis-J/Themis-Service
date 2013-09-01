@@ -150,4 +150,47 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		return response;
 	}
 
+	@Override
+	public MenuDetail getMenu(Integer id) {
+		return getMenuByID(id);
+	}
+
+	@Override
+	public DepartmentDetail getDepartment(Integer id) {
+		final Department department = refDataDAL.getDepartment(id);
+		final DepartmentDetail item = new DepartmentDetail();
+		item.setId(department.getId());
+		item.setName(department.getName());
+		return item;
+	}
+
+	@Override
+	public VehicleDetail getVehicle(Integer id) {
+		final Vehicle vehicle = refDataDAL.getVehicle(id);
+		final VehicleDetail item = new VehicleDetail();
+		item.setId(vehicle.getId());
+		item.setName(vehicle.getName());
+		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).getName());
+		item.setTimestamp(vehicle.getTimestamp());
+		return item;
+	}
+
+	@Override
+	public SalesServiceJournalItemDetail getSalesServiceRevenueItem(Integer id) {
+		final SalesServiceJournalItem ssj = refDataDAL.getSalesServiceJournalItem(id);
+		final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
+		item.setId(ssj.getId());
+		item.setName(ssj.getName());
+		return item;
+	}
+
+	@Override
+	public GeneralJournalItemDetail getGeneralIncomeItem(Integer id) {
+		final GeneralJournalItem gji = refDataDAL.getGeneralJournalItem(id);
+		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
+		item.setId(gji.getId());
+		item.setName(gji.getName());
+		return item;
+	}
+
 }

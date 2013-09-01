@@ -128,7 +128,7 @@ public interface DealerIncomeEntryService {
 	 *            Date to query report
 	 * @return
 	 */
-	@Transactional(readOnly=true)
+	@Transactional
 	public GetDealerEntryItemStatusResponse getDealerEntryItemStatus(Integer dealerID, String validDate);
 	
 	/**

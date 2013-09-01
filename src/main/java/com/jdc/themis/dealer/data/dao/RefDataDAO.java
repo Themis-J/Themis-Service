@@ -2,9 +2,6 @@ package com.jdc.themis.dealer.data.dao;
 
 import java.util.Collection;
 import java.util.List;
-
-import org.springframework.cache.annotation.Cacheable;
-
 import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Department;
@@ -31,10 +28,8 @@ import com.jdc.themis.dealer.domain.Vehicle;
  */
 public interface RefDataDAO {
 
-	@Cacheable(value="enumValueByID")
 	EnumValue getEnumValue(String enumType, Integer enumValue);
 	
-	@Cacheable(value="enumValueByName")
 	EnumValue getEnumValue(String enumType, String enumValue);
 	
 	List<EnumType> getEnumTypes();
@@ -43,77 +38,62 @@ public interface RefDataDAO {
 	
 	List<Menu> getMenus();
 	
-	@Cacheable(value="menu")
 	Menu getMenu(Integer id);
 	
-	@Cacheable(value="parentMenu")
 	Integer getParentMenuID(Integer id);
 	
-	@Cacheable(value="childMenus")
 	Collection<MenuHierachy> getChildMenus(Integer id);
 	
 	List<MenuHierachy> getMenuHierachys();
 	
 	List<Vehicle> getVehicles();
 	
-	@Cacheable(value="vehicle")
 	Vehicle getVehicle(Integer id);
 	
 	List<Dealer> getDealers();
 	
-	@Cacheable(value="dealer")
 	Dealer getDealer(Integer dealerID);
 	
 	List<Department> getDepartments();
 	
-	@Cacheable(value="department")
 	Department getDepartment(Integer departmentID);
 	
 	List<TaxJournalItem> getTaxJournalItems();
 
 	List<SalesServiceJournalItem> getSalesServiceJournalItems();
 	
-	@Cacheable(value="salesServiceJournalItem")
 	SalesServiceJournalItem getSalesServiceJournalItem(Integer id);
 	
 	List<SalesServiceJournalCategory> getSalesServiceJournalCategorys();
 	
-	@Cacheable(value="salesServiceJournalCategory")
 	SalesServiceJournalCategory getSalesServiceJournalCategory(Integer id);
 	
 	List<GeneralJournalItem> getGeneralJournalItems();
 	
-	@Cacheable(value="generalJournalItem")
 	GeneralJournalItem getGeneralJournalItem(Integer id);
 	
 	List<JobPosition> getJobPositions();
 	
-	@Cacheable(value="jobPosition")
 	JobPosition getJobPosition(Integer positionID);
 	
 	List<AccountReceivableDurationItem> getAccountReceivableDurationItems();
 	
-	@Cacheable(value="inventoryDurationItem")
 	InventoryDurationItem getInventoryDurationItem(Integer itemID);
 	
 	List<InventoryDurationItem> getInventoryDurationItems();
 	
-	@Cacheable(value="accountReceivableDurationItem")
 	AccountReceivableDurationItem getAccountReceivableDurationItem(Integer itemID);
 	
 	List<Duration> getDurations();
 	
-	@Cacheable(value="duration")
 	Duration getDuration(Integer durationID);
 	
 	List<EmployeeFeeItem> getEmployeeFeeItems();
 	
-	@Cacheable(value="employeeFeeItem")
 	EmployeeFeeItem getEmployeeFeeItem(Integer itemID);
 	
 	List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItems();
 	
-	@Cacheable(value="employeeFeeSummarysItem")
 	EmployeeFeeSummaryItem getEmployeeFeeSummaryItem(Integer itemID);
 	
 }
