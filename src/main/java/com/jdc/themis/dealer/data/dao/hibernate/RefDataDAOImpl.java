@@ -94,6 +94,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 
 	@Override
 	public Integer getParentMenuID(final Integer id) {
+		// Kai: try out functional java here...
 		final Collection<MenuHierachy> list = fj.data.List.iterableList(getMenuHierachys()).filter(new fj.F<MenuHierachy, Boolean>() {
 
 			@Override

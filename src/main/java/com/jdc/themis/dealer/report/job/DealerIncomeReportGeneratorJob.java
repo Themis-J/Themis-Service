@@ -1,6 +1,6 @@
 package com.jdc.themis.dealer.report.job;
 
 
-public class DealerIncomeReportGenerator {
+public class DealerIncomeReportGeneratorJob {
 	//TODO:
 }

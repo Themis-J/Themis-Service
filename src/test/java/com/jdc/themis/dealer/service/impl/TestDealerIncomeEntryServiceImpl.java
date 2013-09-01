@@ -656,5 +656,6 @@ public class TestDealerIncomeEntryServiceImpl {
 		
 		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.getDetail().get(0).getTimestamp().toString());
 		Assert.assertEquals(new BigDecimal("0.2").doubleValue(), result.getDetail().get(0).getAllocation());
+		Assert.assertEquals(4, result.getDetail().get(0).getDepartmentID().intValue());
 	}
 }

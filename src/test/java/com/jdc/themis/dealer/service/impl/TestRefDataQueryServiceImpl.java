@@ -99,4 +99,34 @@ public class TestRefDataQueryServiceImpl {
 		Assert.assertEquals(2, response.getItems().size());
 		Assert.assertEquals("v2", response.getItems().get(1).getName());
 	}
+	
+	@Test
+	public void getEmployeeFeeItem() {
+		//TODO:
+	}
+	
+	@Test
+	public void getEmployeeFeeSummaryItem() {
+		//TODO:
+	}
+	
+	@Test
+	public void getInventoryDurationItem() {
+		//TODO:
+	}
+	
+	@Test
+	public void getAccountReceivableDurationItem() {
+		//TODO:
+	}
+	
+	@Test
+	public void getHumanResourceAllocationItem() {
+		//TODO:
+	}
+	
+	@Test
+	public void getDuration() {
+		//TODO:
+	}
 }

@@ -25,7 +25,14 @@ public class HumanResourceAllocationDetail implements Serializable {
 	private String name;
 	private Instant timestamp;
 	private Double allocation;
+	private Integer departmentID;
 	
+	public Integer getDepartmentID() {
+		return departmentID;
+	}
+	public void setDepartmentID(Integer departmentID) {
+		this.departmentID = departmentID;
+	}
 	public Integer getItemID() {
 		return itemID;
 	}

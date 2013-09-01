@@ -852,6 +852,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			item.setName(refDataDAL.getJobPosition(journal.getId())
 					.getName());
 			item.setItemID(journal.getId());
+			item.setDepartmentID(journal.getDepartmentID());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}

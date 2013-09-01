@@ -27,9 +27,25 @@
 		<hazelcast.version>2.6</hazelcast.version>
 		<jackson.version>1.9.13</jackson.version>
 		<hibernate.version>3.6.10.Final</hibernate.version>
+		<quartz.version>2.2.0</quartz.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.googlecode.lambdaj</groupId>
+			<artifactId>lambdaj</artifactId>
+			<version>2.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>${quartz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>${quartz.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.functionaljava</groupId>
 			<artifactId>functionaljava</artifactId>

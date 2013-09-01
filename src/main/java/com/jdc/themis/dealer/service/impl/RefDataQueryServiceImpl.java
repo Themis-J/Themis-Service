@@ -5,21 +5,35 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
+import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Department;
+import com.jdc.themis.dealer.domain.Duration;
+import com.jdc.themis.dealer.domain.EmployeeFeeItem;
+import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
+import com.jdc.themis.dealer.domain.InventoryDurationItem;
+import com.jdc.themis.dealer.domain.JobPosition;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.Performance;
+import com.jdc.themis.dealer.web.domain.AccountReceivableDurationItemDetail;
+import com.jdc.themis.dealer.web.domain.DealerDetail;
 import com.jdc.themis.dealer.web.domain.DepartmentDetail;
+import com.jdc.themis.dealer.web.domain.DurationDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
+import com.jdc.themis.dealer.web.domain.HumanResourceAllocationItemDetail;
+import com.jdc.themis.dealer.web.domain.InventoryDurationItemDetail;
 import com.jdc.themis.dealer.web.domain.MenuDetail;
 import com.jdc.themis.dealer.web.domain.MenuOrderItem;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
@@ -190,6 +204,75 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
+		return item;
+	}
+
+	@Override
+	public InventoryDurationItemDetail getInventoryDurationItem(Integer id) {
+		final InventoryDurationItem gji = refDataDAL.getInventoryDurationItem(id);
+		final InventoryDurationItemDetail item = new InventoryDurationItemDetail();
+		item.setId(gji.getId());
+		item.setName(gji.getName());
+		return item;
+	}
+
+	@Override
+	public AccountReceivableDurationItemDetail getAccountReceivableDurationItem(
+			Integer id) {
+		final AccountReceivableDurationItem gji = refDataDAL.getAccountReceivableDurationItem(id);
+		final AccountReceivableDurationItemDetail item = new AccountReceivableDurationItemDetail();
+		item.setId(gji.getId());
+		item.setName(gji.getName());
+		return item;
+	}
+
+	@Override
+	public EmployeeFeeItemDetail getEmployeeFeeItem(Integer id) {
+		final EmployeeFeeItem gji = refDataDAL.getEmployeeFeeItem(id);
+		final EmployeeFeeItemDetail item = new EmployeeFeeItemDetail();
+		item.setId(gji.getId());
+		item.setName(gji.getName());
+		return item;
+	}
+
+	@Override
+	public EmployeeFeeSummaryItemDetail getEmployeeFeeSummaryItem(Integer id) {
+		final EmployeeFeeSummaryItem gji = refDataDAL.getEmployeeFeeSummaryItem(id);
+		final EmployeeFeeSummaryItemDetail item = new EmployeeFeeSummaryItemDetail();
+		item.setId(gji.getId());
+		item.setName(gji.getName());
+		return item;
+	}
+
+	@Override
+	public HumanResourceAllocationItemDetail getHumanResourceAllocationItem(
+			Integer id) {
+		final JobPosition gji = refDataDAL.getJobPosition(id);
+		final HumanResourceAllocationItemDetail item = new HumanResourceAllocationItemDetail();
+		item.setId(gji.getId());
+		item.setName(gji.getName());
+		return item;
+	}
+
+	@Override
+	public DurationDetail getDuration(Integer id) {
+		final Duration gji = refDataDAL.getDuration(id);
+		final DurationDetail item = new DurationDetail();
+		item.setId(gji.getId());
+		item.setLowerBound(gji.getLowerBound());
+		item.setUnit(gji.getUnit());
+		item.setUpperBound(gji.getUpperBound());
+		return item;
+	}
+
+	@Override
+	public DealerDetail getDealer(Integer id) {
+		final Dealer gji = refDataDAL.getDealer(id);
+		final DealerDetail item = new DealerDetail();
+		item.setId(gji.getId());
+		item.setName(gji.getName());
+		item.setCode(gji.getCode());
+		item.setFullName(gji.getFullName());
 		return item;
 	}
 
