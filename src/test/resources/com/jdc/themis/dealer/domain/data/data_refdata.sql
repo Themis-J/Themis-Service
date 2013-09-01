@@ -1,3 +1,17 @@
+insert into EnumType values (1, 'EntitlementResourceType')
+insert into EnumType values (3, 'DurationUnit')
+insert into EnumType values (4, 'FeeType')
+insert into EnumType values (5, 'JournalType')
+
+insert into EnumValue values (1, 'Service', 0)
+insert into EnumValue values (3, 'Days', 0)
+insert into EnumValue values (3, 'Months', 1)
+insert into EnumValue values (4, '标准工时收费', 0)
+insert into EnumValue values (4, '有效工时比率', 1)
+insert into EnumValue values (4, '技工平均工资', 2)
+insert into EnumValue values (5, 'Revenue', 0)
+insert into EnumValue values (5, 'Expense', 1)
+
 insert into Menu values (1, 'DealerEntrySystem', 'DealerEntrySystemText')
 insert into Menu values (2, 'DealerDataEntry', 'DealerDataEntryText')
 insert into Menu values (3, 'DealerDataDisplay', 'DealerDataDisplayText')

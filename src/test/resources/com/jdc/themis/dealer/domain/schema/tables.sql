@@ -1,3 +1,13 @@
+CREATE TABLE EnumType (    id integer,     name varchar(100)  ) 
+
+CREATE TABLE EnumValue (    typeID integer,     name varchar(100),     value integer   ) 
+
+CREATE TABLE UserRole( id integer,    name varchar(20),     timestamp timestamp) 
+CREATE TABLE EntitlementResource ( id integer,  name varchar(20),      resourceType integer, timestamp timestamp)
+    
+CREATE TABLE UserRoleEntitlement ( roleID integer,  resourceID integer ) 
+CREATE TABLE UserInfo (    id integer,     username varchar(20),     password varchar(50),     userRoleID integer,    dealerID integer,    active boolean,     timestamp timestamp ) 
+
 CREATE TABLE Menu (id integer PRIMARY KEY, name varchar(100) NOT NULL, displayText varchar(100)) 
 CREATE TABLE MenuHierachy (parentID integer, childID integer, itemOrder integer) 
 

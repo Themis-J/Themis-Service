@@ -27,6 +27,7 @@
 	<jdbc:embedded-database id="dataSource" type="H2">
 		<jdbc:script location="classpath:com/jdc/themis/dealer/domain/schema/tables.sql" />
 		<jdbc:script location="classpath:com/jdc/themis/dealer/domain/data/data_refdata.sql" />
+		<jdbc:script location="classpath:com/jdc/themis/dealer/domain/data/data_userinfo.sql" />
 		<jdbc:script location="classpath:com/jdc/themis/dealer/domain/data/data_others.sql" />
 	</jdbc:embedded-database>
     <!-- org.hibernate.dialect.H2Dialect -->
@@ -50,5 +51,7 @@
 	</bean>
 	<bean id="incomeJournalDAL" class="com.jdc.themis.dealer.data.dao.hibernate.IncomeJournalDAOImpl">
 	</bean>
-
+	<bean id="userDAL" class="com.jdc.themis.dealer.data.dao.hibernate.UserDAOImpl">
+	</bean>
+	
 </beans>
