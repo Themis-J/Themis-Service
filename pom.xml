@@ -31,6 +31,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.functionaljava</groupId>
+			<artifactId>functionaljava</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>

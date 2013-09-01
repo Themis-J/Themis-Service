@@ -11,16 +11,18 @@ import javax.time.calendar.LocalDate;
  */
 public interface TemporalEntity {
 
-	public Instant getTimestamp();
+	Instant getTimestamp();
 
-	public void setTimestamp(Instant timestamp);
+	void setTimestamp(Instant timestamp);
 
-	public Instant getTimeEnd();
+	Instant getTimeEnd();
 
-	public void setTimeEnd(Instant timeEnd);
+	void setTimeEnd(Instant timeEnd);
 
-	public LocalDate getValidDate();
+	LocalDate getValidDate();
 	
-	public void setValidDate(LocalDate validDate);
+	void setValidDate(LocalDate validDate);
+	
+	Integer getVersion();
 	
 }

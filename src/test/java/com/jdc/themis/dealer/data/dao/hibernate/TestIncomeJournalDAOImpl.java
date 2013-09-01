@@ -72,6 +72,7 @@ public class TestIncomeJournalDAOImpl {
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
 			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(0, journal.getVersion().intValue());
 			Assert.assertEquals(new BigDecimal("2234.01"), journal.getAmount());
 		}
 		Assert.assertEquals(1, hasJournal);
@@ -106,6 +107,8 @@ public class TestIncomeJournalDAOImpl {
 		taxJournal1.setValidDate(LocalDate.of(2013, 8, 1));
 		taxJournal1.setUpdatedBy("test1");
 		incomeJournalDAL.saveTaxJournal(1, Lists.newArrayList(taxJournal1));
+		System.err.println(taxJournal1);
+		Assert.assertEquals(0, taxJournal1.getVersion().intValue());
 		
 		int hasJournal = 0;
 		for (final TaxJournal journal : incomeJournalDAL.getTaxJournal(1, LocalDate.of(2013, 8, 1))) {
@@ -117,12 +120,13 @@ public class TestIncomeJournalDAOImpl {
 		Assert.assertEquals(1, hasJournal);
 		
 		final TaxJournal taxJournal2 = new TaxJournal();
-		taxJournal2.setAmount(new BigDecimal("1235.01"));
+		taxJournal2.setAmount(new BigDecimal("2235.01"));
 		taxJournal2.setDealerID(1);
 		taxJournal2.setId(1);
 		taxJournal2.setValidDate(LocalDate.of(2013, 8, 1));
 		taxJournal2.setUpdatedBy("test2");
 		incomeJournalDAL.saveTaxJournal(1, Lists.newArrayList(taxJournal2));
+		System.err.println(taxJournal1);
 		
 		hasJournal = 0;
 		for (final TaxJournal journal : incomeJournalDAL.getTaxJournal(1, LocalDate.of(2013, 8, 1))) {
@@ -130,8 +134,11 @@ public class TestIncomeJournalDAOImpl {
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
 			Assert.assertEquals("test2", journal.getUpdatedBy());
-			Assert.assertEquals(new BigDecimal("1235.01"), journal.getAmount());
+			Assert.assertEquals(0, journal.getVersion().intValue());
+			Assert.assertEquals(new BigDecimal("2235.01"), journal.getAmount());
 		}
+		
+		Assert.assertEquals(1, taxJournal1.getVersion().intValue());
 		Assert.assertEquals(1, hasJournal);
 	} 
 	

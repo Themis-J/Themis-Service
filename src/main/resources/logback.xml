@@ -1,7 +1,7 @@
 <configuration>
 
 <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/tmp/themis/logFile.log</file>
+    <file>${log_dir}/logFile.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
       <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -22,7 +22,7 @@
     </encoder>
   </appender>
 
-  <root level="debug">
+  <root level="${log_level}">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </root>

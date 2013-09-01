@@ -47,11 +47,13 @@
     	</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean="jsonProvider" />
+			<ref bean="jaxbProvider" />
 		</jaxrs:providers>
 	</jaxrs:server>
 	
 	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
-	
+	<bean id="jaxbProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"></bean>
+
 	<hz:hazelcast id="hazelcast">
         <hz:config>
             <hz:group name="themis" password="themis123"/>
@@ -63,6 +65,13 @@
                     </hz:tcp-ip>
                 </hz:join>
             </hz:network>
+            <hz:map name="default"
+                backup-count="0"
+                max-size="5000"
+                eviction-percentage="30"
+                cache-value="true"
+                eviction-policy="LRU"
+                merge-policy="hz.ADD_NEW_ENTRY"/>
         </hz:config>
     </hz:hazelcast>
 </beans>

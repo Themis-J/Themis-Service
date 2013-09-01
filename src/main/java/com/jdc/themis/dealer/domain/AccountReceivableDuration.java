@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Version;
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -56,6 +57,17 @@ public class AccountReceivableDuration implements TemporalEntity, Serializable {
 	private String updatedBy;
 	@Id
 	private Integer durationID;
+	private Integer version;
+
+	 @Version
+	public Integer getVersion() {
+		return version;
+	}
+
+	//DO NOT set this field manually, it is set by hibernate to achieve optimistic locking
+	protected void setVersion(Integer version) {
+		this.version = version;
+	}
 	
 	@Id
 	public Integer getDurationID() {

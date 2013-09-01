@@ -24,7 +24,14 @@ import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
 
-
+/**
+ * Dealer income entry service layer. 
+ * 
+ * Define database transaction behavior here as well. 
+ * 
+ * @author Kai Chen
+ *
+ */
 public interface DealerIncomeEntryService {
 	/**
 	 * Save a list of vehicle sales revenue.

@@ -1,9 +1,9 @@
 package com.jdc.themis.dealer.data.dao.hibernate;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Maps;
@@ -86,36 +85,6 @@ public class RefDataDAOImpl implements RefDataDAO {
 		}
 	}
 
-	private enum GetChildIDFunction implements Function<MenuHierachy, Integer> {
-		INSTANCE;
-
-		@Override
-		public Integer apply(MenuHierachy hierachy) {
-			return hierachy.getMenuHierachyID().getChildID();
-		}
-	}
-
-	/*
-	 * child to parent menu mapping
-	 */
-	private Map<Integer, Integer> getChildMenuMapping() {
-		final List<MenuHierachy> menuHierachy = getMenuHierachys();
-		final Map<Integer, Integer> map = Maps.newHashMap();
-		final ImmutableListMultimap<Integer, MenuHierachy> parentIDToMenuHierachy = Multimaps
-				.index(menuHierachy, GetChildIDFunction.INSTANCE);
-
-		for (final Integer key : parentIDToMenuHierachy.keySet()) {
-			final Iterator<Integer> parents = Collections2.transform(
-					parentIDToMenuHierachy.get(key),
-					GetParentIDFunction.INSTANCE).iterator();
-			if (parents.hasNext()) {
-				map.put(key, parents.next()); // there must be one child mapped
-												// to one parent
-			}
-		}
-		return map;
-	}
-
 	@Override
 	public Menu getMenu(Integer id) {
 		final Session session = sessionFactory.getCurrentSession();
@@ -124,8 +93,19 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public Integer getParentMenuID(Integer id) {
-		return getChildMenuMapping().get(id);
+	public Integer getParentMenuID(final Integer id) {
+		final Collection<MenuHierachy> list = fj.data.List.iterableList(getMenuHierachys()).filter(new fj.F<MenuHierachy, Boolean>() {
+
+			@Override
+			public Boolean f(MenuHierachy a) {
+				return ((MenuHierachy) a).getMenuHierachyID().getChildID().equals(id);
+			}
+			
+		}).toCollection();
+		if ( list.size() == 0 ) {
+			return null;
+		}
+		return list.iterator().next().getMenuHierachyID().getParentID();
 	}
 
 	@Override
@@ -232,6 +212,22 @@ public class RefDataDAOImpl implements RefDataDAO {
 				.index(getEnumValues(), GetEnumTypeIDFunction.INSTANCE);
 		for (final EnumValue ev : values.asMap().get(type.getId())) {
 			if (ev.getValue().equals(enumValue)) {
+				return ev;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	@Performance
+	public EnumValue getEnumValue(String enumType, String enumValue) {
+		final Map<String, EnumType> enumTypes = Maps.uniqueIndex(
+				getEnumTypes(), GetEnumTypeNameFunction.INSTANCE);
+		final EnumType type = enumTypes.get(enumType);
+		final ImmutableListMultimap<Integer, EnumValue> values = Multimaps
+				.index(getEnumValues(), GetEnumTypeIDFunction.INSTANCE);
+		for (final EnumValue ev : values.asMap().get(type.getId())) {
+			if (ev.getName().equals(enumValue)) {
 				return ev;
 			}
 		}

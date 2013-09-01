@@ -1,11 +1,9 @@
-INSERT INTO EnumType VALUES (1, 'UserType');
+INSERT INTO EnumType VALUES (1, 'EntitlementResourceType');
 INSERT INTO EnumType VALUES (3, 'DurationUnit');
 INSERT INTO EnumType VALUES (4, 'FeeType');
 INSERT INTO EnumType VALUES (5, 'JournalType');
 
-INSERT INTO EnumValue VALUES (1, 'Administrator', 0);
-INSERT INTO EnumValue VALUES (1, 'Dealer', 1);
-INSERT INTO EnumValue VALUES (1, 'CompanyManager', 2);
+INSERT INTO EnumValue VALUES (1, 'Service', 0);
 INSERT INTO EnumValue VALUES (3, 'Days', 0);
 INSERT INTO EnumValue VALUES (3, 'Months', 1);
 INSERT INTO EnumValue VALUES (4, '标准工时收费', 0);
@@ -14,9 +12,15 @@ INSERT INTO EnumValue VALUES (4, '技工平均工资', 2);
 INSERT INTO EnumValue VALUES (5, 'Revenue', 0);
 INSERT INTO EnumValue VALUES (5, 'Expense', 1);
 
-INSERT INTO UserInfo SELECT 0, 'admin', 'admin', 0, true, current_timestamp;
-INSERT INTO UserInfo SELECT 1, 'guangning', 'guangning', 1, true, current_timestamp;
-INSERT INTO UserInfo SELECT 2, 'manager', 'manager', 1, true, current_timestamp;
+INSERT INTO UserRole SELECT 0, 'Super', current_timestamp;
+INSERT INTO UserRole SELECT 1, 'Admin', current_timestamp;
+INSERT INTO UserRole SELECT 2, 'Dealer', current_timestamp;
+INSERT INTO UserRole SELECT 3, 'HeadQuater', current_timestamp;
+
+INSERT INTO UserInfo SELECT 0, 'sa', 'sa', 0, null, true, current_timestamp;
+INSERT INTO UserInfo SELECT 1, 'admin', 'admin', 1, null, true, current_timestamp;
+INSERT INTO UserInfo SELECT 2, 'guangning', 'guangning', 2, 11, true, current_timestamp;
+INSERT INTO UserInfo SELECT 3, 'manager', 'manager', 3, null, true, current_timestamp;
 
 INSERT INTO Dealer SELECT 1, '重庆长锦', '重庆长锦销售服务有限公司', 'CN-01', '重庆', current_timestamp;
 INSERT INTO Dealer SELECT 2, '长沙长耀', '长沙长耀销售服务有限公司', 'CN-02', '长沙', current_timestamp;

@@ -1,4 +1,4 @@
-package com.jdc.themis.dealer.job;
+package com.jdc.themis.dealer.report.job;
 
 
 public class DealerIncomeReportGenerator {

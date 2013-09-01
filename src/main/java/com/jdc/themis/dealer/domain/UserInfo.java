@@ -13,11 +13,19 @@ public class UserInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	private Integer id;
+	@Id
 	private String username;
 	private String password;
-	private Integer userType;
+	private Integer userRoleID;
 	private Boolean active;
+	private Integer dealerID;
 	
+	public Integer getDealerID() {
+		return dealerID;
+	}
+	public void setDealerID(Integer dealerID) {
+		this.dealerID = dealerID;
+	}
 	@Id
 	public Integer getId() {
 		return id;
@@ -25,6 +33,7 @@ public class UserInfo implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	@Id
 	public String getUsername() {
 		return username;
 	}
@@ -37,12 +46,13 @@ public class UserInfo implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public Integer getUserType() {
-		return userType;
+	public Integer getUserRoleID() {
+		return userRoleID;
 	}
-	public void setUserType(Integer userType) {
-		this.userType = userType;
+	public void setUserRoleID(Integer userRoleID) {
+		this.userRoleID = userRoleID;
 	}
+	
 	public Boolean getActive() {
 		return active;
 	}
@@ -52,7 +62,8 @@ public class UserInfo implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id)
 				.append("username", username)
-				.append("userType", userType)
+				.append("userRoleID", userRoleID)
+				.append("dealerID", dealerID)
 				.append("active", active)
 				.getStringBuffer().toString();
 	}

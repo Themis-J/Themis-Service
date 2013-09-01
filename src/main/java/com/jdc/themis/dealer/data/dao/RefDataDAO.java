@@ -31,8 +31,11 @@ import com.jdc.themis.dealer.domain.Vehicle;
  */
 public interface RefDataDAO {
 
-	@Cacheable(value="enumValue")
+	@Cacheable(value="enumValueByID")
 	EnumValue getEnumValue(String enumType, Integer enumValue);
+	
+	@Cacheable(value="enumValueByName")
+	EnumValue getEnumValue(String enumType, String enumValue);
 	
 	List<EnumType> getEnumTypes();
 	
