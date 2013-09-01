@@ -36,7 +36,7 @@ public class TestJsonCalendarInstantSerializer {
 		final Instant timestamp = Instant.millis(new Date().getTime());
 		instance.serialize(timestamp, jsonGenerator, provider);
 		verify(jsonGenerator, times(1)).writeStartObject();
-		verify(jsonGenerator).writeStringField("text", timestamp.toString());
+		verify(jsonGenerator).writeStringField("utc", timestamp.toString());
 		verify(jsonGenerator, times(1)).writeEndObject();
 	}
 	
@@ -45,8 +45,8 @@ public class TestJsonCalendarInstantSerializer {
 		final Instant timestamp = LocalDateTime.of(2013, 8, 1, 2, 23).atZone(TimeZone.UTC).toInstant();
 		instance.serialize(timestamp, jsonGenerator, provider);
 		verify(jsonGenerator, times(1)).writeStartObject();
-		verify(jsonGenerator).writeStringField("text", "2013-08-01T02:23Z");
-		verify(jsonGenerator).writeStringField("local", "2013-08-01T10:23");
+		verify(jsonGenerator).writeStringField("utc", "2013-08-01T02:23Z");
+		verify(jsonGenerator).writeStringField("text", "2013-08-01T10:23");
 		verify(jsonGenerator, times(1)).writeEndObject();
 	}
 	

@@ -18,8 +18,8 @@ public class JsonCalendarInstantSerializer extends JsonSerializer<Instant>
 			SerializerProvider provider) throws IOException,
 			JsonProcessingException {
 		jgen.writeStartObject();
-	    jgen.writeStringField("text", value.toString());
-	    jgen.writeStringField("local", ZonedDateTime.fromInstant(value, TimeZone.of("GMT+08:00:00")).toString().replaceAll("\\+08:00\\[UTC\\+08:00\\]", ""));
+	    jgen.writeStringField("utc", value.toString());
+	    jgen.writeStringField("text", ZonedDateTime.fromInstant(value, TimeZone.of("GMT+08:00:00")).toString().replaceAll("\\+08:00\\[UTC\\+08:00\\]", ""));
 	    jgen.writeEndObject();
 	}
 
