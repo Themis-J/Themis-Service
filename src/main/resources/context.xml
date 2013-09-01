@@ -69,7 +69,6 @@
                 backup-count="0"
                 max-size="5000"
                 eviction-percentage="30"
-                invalidate-on-change="true"
                 cache-value="true"
                 eviction-policy="LRU"
                 merge-policy="hz.ADD_NEW_ENTRY"/>
