@@ -1,9 +1,13 @@
 INSERT INTO EnumType VALUES (1, 'EntitlementResourceType');
+INSERT INTO EnumType VALUES (2, 'ReportItemSource');
 INSERT INTO EnumType VALUES (3, 'DurationUnit');
 INSERT INTO EnumType VALUES (4, 'FeeType');
 INSERT INTO EnumType VALUES (5, 'JournalType');
 
 INSERT INTO EnumValue VALUES (1, 'Service', 0);
+INSERT INTO EnumValue VALUES (2, 'VehicleSalesJournal', 0);
+INSERT INTO EnumValue VALUES (2, 'SalesServiceJournal', 1);
+INSERT INTO EnumValue VALUES (2, 'GeneralJournal', 2);
 INSERT INTO EnumValue VALUES (3, 'Days', 0);
 INSERT INTO EnumValue VALUES (3, 'Months', 1);
 INSERT INTO EnumValue VALUES (4, '标准工时收费', 0);

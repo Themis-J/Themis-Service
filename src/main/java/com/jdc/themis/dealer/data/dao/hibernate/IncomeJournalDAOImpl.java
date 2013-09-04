@@ -840,4 +840,32 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 		});
 	}
 
+	@Override
+	public Collection<VehicleSalesJournal> getVehicleSalesJournal(
+			LocalDate validDate, Instant timestamp) {
+		final Session session = sessionFactory.getCurrentSession();
+		session.enableFilter(VehicleSalesJournal.FILTER_VALIDATE)
+			.setParameter("referenceDate", validDate)
+			.setParameter("referenceTime", timestamp);
+		@SuppressWarnings("unchecked")
+		final List<VehicleSalesJournal> list = session.createCriteria(
+				VehicleSalesJournal.class).list();
+		session.disableFilter(VehicleSalesJournal.FILTER_VALIDATE);
+		return list;
+	}
+
+	@Override
+	public Collection<SalesServiceJournal> getSalesServiceJournal(
+			LocalDate validDate, Instant timestamp) {
+		final Session session = sessionFactory.getCurrentSession();
+		session.enableFilter(SalesServiceJournal.FILTER_VALIDATE)
+			.setParameter("referenceDate", validDate)
+			.setParameter("referenceTime", timestamp);
+		@SuppressWarnings("unchecked")
+		final List<SalesServiceJournal> list = session.createCriteria(
+				SalesServiceJournal.class).list();
+		session.disableFilter(SalesServiceJournal.FILTER_VALIDATE);
+		return list;
+	}
+
 }

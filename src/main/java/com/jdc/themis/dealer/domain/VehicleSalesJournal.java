@@ -28,6 +28,10 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="vehicleSalesDateFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate")}),
 			@org.hibernate.annotations.FilterDef(name="vehicleSalesFilterSingleItem", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
@@ -39,6 +43,7 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 		)
 @Filters( {
     @Filter(name="vehicleSalesFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="vehicleSalesDateFilter", condition="validDate = :referenceDate and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
     @Filter(name="vehicleSalesFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
@@ -48,6 +53,7 @@ public class VehicleSalesJournal implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static String FILTER = "vehicleSalesFilter";
+	public static String FILTER_VALIDATE = "vehicleSalesDateFilter";
 	public static String FILTER_SINGLEITEM = "vehicleSalesFilterSingleItem";
 
 	@Id

@@ -20,6 +20,8 @@ import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.TaxJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
 
+import fj.data.Option;
+
 /**
  * Data access layer to query static reference data like menus. 
  * 
@@ -28,9 +30,9 @@ import com.jdc.themis.dealer.domain.Vehicle;
  */
 public interface RefDataDAO {
 
-	EnumValue getEnumValue(String enumType, Integer enumValue);
+	Option<EnumValue> getEnumValue(String enumType, Integer enumValue);
 	
-	EnumValue getEnumValue(String enumType, String enumValue);
+	Option<EnumValue> getEnumValue(String enumType, String enumValue);
 	
 	List<EnumType> getEnumTypes();
 	
@@ -48,7 +50,7 @@ public interface RefDataDAO {
 	
 	List<Vehicle> getVehicles();
 	
-	Vehicle getVehicle(Integer id);
+	Option<Vehicle> getVehicle(Integer id);
 	
 	List<Dealer> getDealers();
 	
@@ -62,38 +64,38 @@ public interface RefDataDAO {
 
 	List<SalesServiceJournalItem> getSalesServiceJournalItems();
 	
-	SalesServiceJournalItem getSalesServiceJournalItem(Integer id);
+	Option<SalesServiceJournalItem> getSalesServiceJournalItem(Integer id);
 	
 	List<SalesServiceJournalCategory> getSalesServiceJournalCategorys();
 	
-	SalesServiceJournalCategory getSalesServiceJournalCategory(Integer id);
+	Option<SalesServiceJournalCategory> getSalesServiceJournalCategory(Integer id);
 	
 	List<GeneralJournalItem> getGeneralJournalItems();
 	
-	GeneralJournalItem getGeneralJournalItem(Integer id);
+	Option<GeneralJournalItem> getGeneralJournalItem(Integer id);
 	
 	List<JobPosition> getJobPositions();
 	
-	JobPosition getJobPosition(Integer positionID);
+	Option<JobPosition> getJobPosition(Integer positionID);
 	
 	List<AccountReceivableDurationItem> getAccountReceivableDurationItems();
 	
-	InventoryDurationItem getInventoryDurationItem(Integer itemID);
+	Option<InventoryDurationItem> getInventoryDurationItem(Integer itemID);
 	
 	List<InventoryDurationItem> getInventoryDurationItems();
 	
-	AccountReceivableDurationItem getAccountReceivableDurationItem(Integer itemID);
+	Option<AccountReceivableDurationItem> getAccountReceivableDurationItem(Integer itemID);
 	
 	List<Duration> getDurations();
 	
-	Duration getDuration(Integer durationID);
+	Option<Duration> getDuration(Integer durationID);
 	
 	List<EmployeeFeeItem> getEmployeeFeeItems();
 	
-	EmployeeFeeItem getEmployeeFeeItem(Integer itemID);
+	Option<EmployeeFeeItem> getEmployeeFeeItem(Integer itemID);
 	
 	List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItems();
 	
-	EmployeeFeeSummaryItem getEmployeeFeeSummaryItem(Integer itemID);
+	Option<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItem(Integer itemID);
 	
 }

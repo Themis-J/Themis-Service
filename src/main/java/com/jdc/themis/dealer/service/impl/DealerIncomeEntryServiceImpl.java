@@ -112,6 +112,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getVehicleID(),
 					"vehicle id can't be null");
+			Preconditions.checkArgument(
+					refDataDAL.getVehicle(detail.getVehicleID()).isSome(),
+					"unknown vehicle id " + detail.getVehicleID());
 			journal.setId(detail.getVehicleID());
 			journal.setDepartmentID(requestedDeparmentID);
 			journal.setUpdatedBy(request.getUpdateBy());
@@ -168,7 +171,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setCount(journal.getCount());
 			item.setMargin(journal.getMargin().doubleValue());
-			item.setName(refDataDAL.getVehicle(journal.getId()).getName());
+			item.setName(refDataDAL.getVehicle(journal.getId()).some().getName());
 			item.setVehicleID(journal.getId());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
@@ -210,6 +213,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
+			Preconditions.checkArgument(refDataDAL.getSalesServiceJournalItem(detail.getItemID()).isSome(),
+					"unknown item id");
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
@@ -265,7 +270,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			item.setCount(journal.getCount());
 			item.setMargin(journal.getMargin().doubleValue());
 			item.setName(refDataDAL.getSalesServiceJournalItem(journal.getId())
-					.getName());
+					.some().getName());
 			item.setItemID(journal.getId());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
@@ -428,7 +433,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkNotNull(refDataDAL.getGeneralJournalItem(detail.getItemID()),
+			Preconditions.checkArgument(refDataDAL.getGeneralJournalItem(detail.getItemID()).isSome(),
 					"unknown item id " + detail.getItemID());
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());
@@ -471,7 +476,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			final GeneralJournalDetail item = new GeneralJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setName(refDataDAL.getGeneralJournalItem(journal.getId())
-					.getName());
+					.some().getName());
 			item.setItemID(journal.getId());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
@@ -501,9 +506,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkNotNull(refDataDAL.getAccountReceivableDurationItem(detail.getItemID()),
+			Preconditions.checkArgument(refDataDAL.getAccountReceivableDurationItem(detail.getItemID()).isSome(),
 					"unknown item id " + detail.getItemID());
-			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()),
+			Preconditions.checkArgument(refDataDAL.getDuration(detail.getDurationID()).isSome(),
 					"unknown duration id " + detail.getDurationID());
 			journal.setId(detail.getItemID());
 			journal.setDurationID(detail.getDurationID());
@@ -541,10 +546,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			final AccountReceivableDurationDetail item = new AccountReceivableDurationDetail();
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setName(refDataDAL.getAccountReceivableDurationItem(journal.getId())
-					.getName());
+					.some().getName());
 			item.setItemID(journal.getId());
 			item.setDurationID(journal.getDurationID());
-			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()), refDataDAL));
+			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()).some(), refDataDAL));
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -575,9 +580,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkNotNull(refDataDAL.getInventoryDurationItem(detail.getItemID()),
+			Preconditions.checkArgument(refDataDAL.getInventoryDurationItem(detail.getItemID()).isSome(),
 					"unknown item id " + detail.getItemID());
-			Preconditions.checkNotNull(refDataDAL.getDuration(detail.getDurationID()),
+			Preconditions.checkArgument(refDataDAL.getDuration(detail.getDurationID()).isSome(),
 					"unknown duration id " + detail.getDurationID());
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());
@@ -620,10 +625,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			final InventoryDurationDetail item = new InventoryDurationDetail();
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setName(refDataDAL.getInventoryDurationItem(journal.getId())
-					.getName());
+					.some().getName());
 			item.setItemID(journal.getId());
 			item.setDurationID(journal.getDurationID());
-			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()), refDataDAL));
+			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()).some(), refDataDAL));
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -655,10 +660,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
 			Preconditions.checkArgument(
-					refDataDAL.getEmployeeFeeItem(detail.getItemID()) != null,
+					refDataDAL.getEmployeeFeeItem(detail.getItemID()).isSome(),
 					"unknown item id " + detail.getItemID());
 			Preconditions.checkArgument(
-					refDataDAL.getEnumValue("FeeType", detail.getFeeTypeID()) != null,
+					refDataDAL.getEnumValue("FeeType", detail.getFeeTypeID()).isSome(),
 					"unknown fee type id " + detail.getFeeTypeID());
 			journal.setId(detail.getItemID());
 			journal.setFeeTypeID(detail.getFeeTypeID());
@@ -701,10 +706,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			final EmployeeFeeDetail item = new EmployeeFeeDetail();
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setName(refDataDAL.getEmployeeFeeItem(journal.getId())
-					.getName());
+					.some().getName());
 			item.setItemID(journal.getId());
 			item.setFeeTypeID(journal.getFeeTypeID());
-			item.setFeeType(refDataDAL.getEnumValue("FeeType", journal.getFeeTypeID()).getName());
+			item.setFeeType(refDataDAL.getEnumValue("FeeType", journal.getFeeTypeID()).some().getName());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -736,7 +741,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
 			Preconditions.checkArgument(
-					refDataDAL.getEmployeeFeeSummaryItem(detail.getItemID()) != null,
+					refDataDAL.getEmployeeFeeSummaryItem(detail.getItemID()).isSome(),
 					"unknown item id " + detail.getItemID());
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());
@@ -778,7 +783,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			final EmployeeFeeSummaryDetail item = new EmployeeFeeSummaryDetail();
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setName(refDataDAL.getEmployeeFeeSummaryItem(journal.getId())
-					.getName());
+					.some().getName());
 			item.setItemID(journal.getId());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
@@ -812,7 +817,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
 			Preconditions.checkArgument(
-					refDataDAL.getJobPosition(detail.getItemID()) != null,
+					refDataDAL.getJobPosition(detail.getItemID()).isSome(),
 					"unknown job position id " + detail.getItemID());
 			journal.setId(detail.getItemID());
 			journal.setDepartmentID(request.getDepartmentID());
@@ -850,7 +855,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			final HumanResourceAllocationDetail item = new HumanResourceAllocationDetail();
 			item.setAllocation(journal.getAllocation().doubleValue());
 			item.setName(refDataDAL.getJobPosition(journal.getId())
-					.getName());
+					.some().getName());
 			item.setItemID(journal.getId());
 			item.setDepartmentID(journal.getDepartmentID());
 			item.setTimestamp(journal.getTimestamp());

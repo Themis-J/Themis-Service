@@ -64,7 +64,7 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getSalesServiceJournalItem() {
-		Assert.assertEquals("SalesServiceJournalItem1", refDataDAO.getSalesServiceJournalItem(1).getName());
+		Assert.assertEquals("SalesServiceJournalItem1", refDataDAO.getSalesServiceJournalItem(1).some().getName());
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getGeneralJournalItem() {
-		Assert.assertEquals("GeneralJournalItem1", refDataDAO.getGeneralJournalItem(1).getName());
+		Assert.assertEquals("GeneralJournalItem1", refDataDAO.getGeneralJournalItem(1).some().getName());
 	}
 	
 	@Test
@@ -84,7 +84,7 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getAccountReceivableDurationItem() {
-		Assert.assertEquals("AccountReceivableDurationItem2", refDataDAO.getAccountReceivableDurationItem(2).getName());
+		Assert.assertEquals("AccountReceivableDurationItem2", refDataDAO.getAccountReceivableDurationItem(2).some().getName());
 	}
 	
 	@Test
@@ -94,7 +94,7 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getInventoryDurationItem() {
-		Assert.assertEquals("InventoryDurationItem2", refDataDAO.getInventoryDurationItem(2).getName());
+		Assert.assertEquals("InventoryDurationItem2", refDataDAO.getInventoryDurationItem(2).some().getName());
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getEmployeeFeeItem() {
-		Assert.assertEquals("EmployeeFeeItem1", refDataDAO.getEmployeeFeeItem(1).getName());
+		Assert.assertEquals("EmployeeFeeItem1", refDataDAO.getEmployeeFeeItem(1).some().getName());
 	}
 	
 	@Test
@@ -114,7 +114,7 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getEmployeeFeeSummaryItem() {
-		Assert.assertEquals("EmployeeFeeSummaryItem1", refDataDAO.getEmployeeFeeSummaryItem(1).getName());
+		Assert.assertEquals("EmployeeFeeSummaryItem1", refDataDAO.getEmployeeFeeSummaryItem(1).some().getName());
 	}
 	
 	@Test
@@ -134,6 +134,6 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getJobPosition() {
-		Assert.assertEquals("JobPosition1", refDataDAO.getJobPosition(1).getName());
+		Assert.assertEquals("JobPosition1", refDataDAO.getJobPosition(1).some().getName());
 	}
 }

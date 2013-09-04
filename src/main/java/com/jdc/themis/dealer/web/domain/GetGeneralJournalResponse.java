@@ -23,6 +23,7 @@ public class GetGeneralJournalResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private Integer dealerID;
+	@XmlJavaTypeAdapter(JaxbCalendarLocalDateAdaptor.class)
 	private LocalDate validDate;
 	@XmlElement(name = "detail")
 	private final List<GeneralJournalDetail> detail = Lists.newArrayList();
@@ -40,7 +41,6 @@ public class GetGeneralJournalResponse implements Serializable{
 	public void setDealerID(Integer dealerID) {
 		this.dealerID = dealerID;
 	}
-	@XmlJavaTypeAdapter(JaxbCalendarLocalDateAdaptor.class)
 	@JsonSerialize(using = JsonCalendarLocalDateSerializer.class)
 	public LocalDate getValidDate() {
 		return validDate;

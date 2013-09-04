@@ -1,9 +1,13 @@
 insert into EnumType values (1, 'EntitlementResourceType')
+insert into EnumType values (2, 'ReportItemSource')
 insert into EnumType values (3, 'DurationUnit')
 insert into EnumType values (4, 'FeeType')
 insert into EnumType values (5, 'JournalType')
 
 insert into EnumValue values (1, 'Service', 0)
+insert into EnumValue values (2, 'VehicleSalesJournal', 0)
+insert into EnumValue values (2, 'SalesServiceJournal', 1)
+insert into EnumValue values (2, 'GeneralJournal', 2)
 insert into EnumValue values (3, 'Days', 0)
 insert into EnumValue values (3, 'Months', 1)
 insert into EnumValue values (4, '标准工时收费', 0)
@@ -17,6 +21,9 @@ insert into Menu values (2, 'DealerDataEntry', 'DealerDataEntryText')
 insert into Menu values (3, 'DealerDataDisplay', 'DealerDataDisplayText')
 insert into Menu values (4, 'Income', 'IncomeText')
 insert into Menu values (5, 'Expense', 'ExpenseText')
+
+insert into Vehicle values (1, '微型车 Mini', 1, {ts '2012-09-17 18:47:52.69'})
+insert into Vehicle values (2, '微型车 XXX', 1, {ts '2012-09-17 18:47:52.69'})
 
 insert into MenuHierachy values (1, 2, 1)
 insert into MenuHierachy values (1, 3, 2)

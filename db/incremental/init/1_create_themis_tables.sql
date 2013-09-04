@@ -503,3 +503,49 @@ WITH (
   OIDS = FALSE
 )
 ;
+DROP TABLE IF EXISTS DealerIncomeRevenueFact CASCADE;
+DROP TABLE IF EXISTS ReportTime CASCADE;
+DROP TABLE IF EXISTS ReportItem CASCADE;
+
+CREATE TABLE ReportTime
+(
+   id SERIAL, 
+   validDate date NOT NULL,
+   monthOfYear integer NOT NULL,
+   year integer NOT NULL,
+   CONSTRAINT ReportTime_PK PRIMARY KEY (id)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE ReportItem
+(
+   id SERIAL, 
+   name varchar(100) NOT NULL, 
+   sourceItemID integer NOT NULL, 
+   itemSource integer NOT NULL, 
+   CONSTRAINT ReportItem_PK PRIMARY KEY (id)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE DealerIncomeRevenueFact
+(
+   timeID integer NOT NULL, 
+   dealerID integer NOT NULL,
+   departmentID integer NOT NULL,
+   itemID integer NOT NULL,
+   version integer,
+   amount double precision,
+   margin double precision,
+   count integer,
+   timestamp timestamp without time zone NOT NULL, 
+   timeEnd timestamp without time zone NOT NULL, 
+   CONSTRAINT DIRF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
+) 
+WITH (
+  OIDS = FALSE
+)
+;

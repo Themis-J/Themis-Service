@@ -23,6 +23,8 @@ import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
 
+import fj.data.Option;
+
 public class TestRefDataQueryServiceImpl {
 
 	private RefDataQueryServiceImpl refDataQueryService;
@@ -92,7 +94,7 @@ public class TestRefDataQueryServiceImpl {
 		category.setId(1);
 		category.setName("VC1");
 		when(refDataDAL.getVehicles()).thenReturn(list);
-		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(category);
+		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
 		final GetVehicleResponse response = refDataQueryService.getAllVehicles();
 		
 		Assert.assertNotNull(response);

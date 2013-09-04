@@ -113,7 +113,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 			final VehicleDetail item = new VehicleDetail();
 			item.setId(vehicle.getId());
 			item.setName(vehicle.getName());
-			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).getName());
+			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).some().getName());
 			item.setTimestamp(vehicle.getTimestamp());
 			response.getItems().add(item);
 		}
@@ -180,18 +180,18 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public VehicleDetail getVehicle(Integer id) {
-		final Vehicle vehicle = refDataDAL.getVehicle(id);
+		final Vehicle vehicle = refDataDAL.getVehicle(id).some();
 		final VehicleDetail item = new VehicleDetail();
 		item.setId(vehicle.getId());
 		item.setName(vehicle.getName());
-		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).getName());
+		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).some().getName());
 		item.setTimestamp(vehicle.getTimestamp());
 		return item;
 	}
 
 	@Override
 	public SalesServiceJournalItemDetail getSalesServiceRevenueItem(Integer id) {
-		final SalesServiceJournalItem ssj = refDataDAL.getSalesServiceJournalItem(id);
+		final SalesServiceJournalItem ssj = refDataDAL.getSalesServiceJournalItem(id).some();
 		final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
 		item.setId(ssj.getId());
 		item.setName(ssj.getName());
@@ -200,7 +200,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public GeneralJournalItemDetail getGeneralIncomeItem(Integer id) {
-		final GeneralJournalItem gji = refDataDAL.getGeneralJournalItem(id);
+		final GeneralJournalItem gji = refDataDAL.getGeneralJournalItem(id).some();
 		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
@@ -209,7 +209,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public InventoryDurationItemDetail getInventoryDurationItem(Integer id) {
-		final InventoryDurationItem gji = refDataDAL.getInventoryDurationItem(id);
+		final InventoryDurationItem gji = refDataDAL.getInventoryDurationItem(id).some();
 		final InventoryDurationItemDetail item = new InventoryDurationItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
@@ -219,7 +219,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Override
 	public AccountReceivableDurationItemDetail getAccountReceivableDurationItem(
 			Integer id) {
-		final AccountReceivableDurationItem gji = refDataDAL.getAccountReceivableDurationItem(id);
+		final AccountReceivableDurationItem gji = refDataDAL.getAccountReceivableDurationItem(id).some();
 		final AccountReceivableDurationItemDetail item = new AccountReceivableDurationItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
@@ -228,7 +228,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public EmployeeFeeItemDetail getEmployeeFeeItem(Integer id) {
-		final EmployeeFeeItem gji = refDataDAL.getEmployeeFeeItem(id);
+		final EmployeeFeeItem gji = refDataDAL.getEmployeeFeeItem(id).some();
 		final EmployeeFeeItemDetail item = new EmployeeFeeItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
@@ -237,7 +237,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public EmployeeFeeSummaryItemDetail getEmployeeFeeSummaryItem(Integer id) {
-		final EmployeeFeeSummaryItem gji = refDataDAL.getEmployeeFeeSummaryItem(id);
+		final EmployeeFeeSummaryItem gji = refDataDAL.getEmployeeFeeSummaryItem(id).some();
 		final EmployeeFeeSummaryItemDetail item = new EmployeeFeeSummaryItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
@@ -247,7 +247,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Override
 	public HumanResourceAllocationItemDetail getHumanResourceAllocationItem(
 			Integer id) {
-		final JobPosition gji = refDataDAL.getJobPosition(id);
+		final JobPosition gji = refDataDAL.getJobPosition(id).some();
 		final HumanResourceAllocationItemDetail item = new HumanResourceAllocationItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
@@ -256,7 +256,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public DurationDetail getDuration(Integer id) {
-		final Duration gji = refDataDAL.getDuration(id);
+		final Duration gji = refDataDAL.getDuration(id).some();
 		final DurationDetail item = new DurationDetail();
 		item.setId(gji.getId());
 		item.setLowerBound(gji.getLowerBound());

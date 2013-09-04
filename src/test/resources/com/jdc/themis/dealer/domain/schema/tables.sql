@@ -14,7 +14,8 @@ CREATE TABLE MenuHierachy (parentID integer, childID integer, itemOrder integer)
 CREATE TABLE Department (   id integer,    name varchar(100),    timestamp timestamp)
 
 CREATE TABLE JobPosition (   id integer,    name varchar(100),    timestamp timestamp)
-   
+CREATE TABLE Vehicle (    id integer,  name varchar(100), categoryID integer, timestamp timestamp) 
+
 CREATE TABLE TaxJournalItem (id integer, name varchar(100), timestamp timestamp)
 CREATE TABLE SalesServiceJournalItem (id integer, name varchar(100), categoryID integer, timestamp timestamp)
 
@@ -113,5 +114,7 @@ ALTER TABLE InventoryDuration ALTER COLUMN durationID SET NOT NULL
 ALTER TABLE InventoryDuration ALTER COLUMN id SET NOT NULL
 ALTER TABLE InventoryDuration ALTER COLUMN amount SET NOT NULL
    
-   
+CREATE TABLE ReportTime (   id bigint auto_increment,    validDate date,   monthOfYear integer, year integer) 
+CREATE TABLE ReportItem(   id bigint auto_increment,    name varchar(100),   sourceItemID integer NOT NULL,   itemSource integer NOT NULL,    CONSTRAINT ReportItem_PK PRIMARY KEY (id)) 
+CREATE TABLE DealerIncomeRevenueFact (   timeID integer,    dealerID integer,   departmentID integer,   itemID integer,   version integer,   amount double,   margin double,   count integer,   timestamp timestamp,    timeEnd timestamp)
    

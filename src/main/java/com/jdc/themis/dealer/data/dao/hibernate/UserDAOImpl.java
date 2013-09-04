@@ -114,7 +114,7 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public Collection<EntitlementResource> getEntitlements(final String resourceType,
 			final Integer userRoleID) {
-		final Integer resourceTypeID = refDataDAL.getEnumValue("EntitlementResourceType", resourceType).getValue();
+		final Integer resourceTypeID = refDataDAL.getEnumValue("EntitlementResourceType", resourceType).some().getValue();
 		final ImmutableListMultimap<Integer, UserRoleEntitlement> values = Multimaps
 				.index(getUserRoleEntitlements(), GetUserRoleEntitlementIDFunction.INSTANCE);
 		

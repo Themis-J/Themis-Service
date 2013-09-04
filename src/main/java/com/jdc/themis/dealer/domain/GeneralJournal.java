@@ -14,6 +14,11 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
 import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
+import com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate;
+import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 
 @FilterDefs(
 		{
@@ -36,6 +41,8 @@ import org.hibernate.annotations.Type;
     @Filter(name="generalFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
     @Filter(name="generalFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
+@TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
+	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
 @Entity
 public class GeneralJournal implements TemporalEntity, Serializable {
 

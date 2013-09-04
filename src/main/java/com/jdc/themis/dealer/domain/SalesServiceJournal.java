@@ -14,6 +14,11 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
 import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
+import com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate;
+import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 
 @FilterDefs(
 		{
@@ -23,6 +28,10 @@ import org.hibernate.annotations.Type;
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="salesServiceDateFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate")}),
 			@org.hibernate.annotations.FilterDef(name="salesServiceFilterSingleItem", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
@@ -36,11 +45,14 @@ import org.hibernate.annotations.Type;
     @Filter(name="salesServiceFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
     @Filter(name="salesServiceFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
+@TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
+	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
 @Entity
 public class SalesServiceJournal implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static String FILTER = "salesServiceFilter";
+	public static String FILTER_VALIDATE = "salesServiceDateFilter";
 	public static String FILTER_SINGLEITEM = "salesServiceFilterSingleItem";
 
 	@Id

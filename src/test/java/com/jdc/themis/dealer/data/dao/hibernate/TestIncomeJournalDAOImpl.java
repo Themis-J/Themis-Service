@@ -24,6 +24,7 @@ import com.jdc.themis.dealer.domain.InventoryDuration;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
+import com.jdc.themis.dealer.utils.Utils;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -246,6 +247,39 @@ public class TestIncomeJournalDAOImpl {
 			Assert.assertEquals(1123432, journal.getCount().intValue());
 		}
 		Assert.assertEquals(1, hasJournal);
+	} 
+
+	@Test
+	public void getVehicleSalesJournal() {
+		final VehicleSalesJournal status = new VehicleSalesJournal();
+		status.setDealerID(10);
+		status.setId(2);
+		status.setAmount(new BigDecimal("1234.343"));
+		status.setMargin(new BigDecimal("2234.343"));
+		status.setCount(12);
+		status.setDepartmentID(1);
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveVehicleSalesJournal(10, 1, Lists.newArrayList(status));
+		
+		final VehicleSalesJournal status2 = new VehicleSalesJournal();
+		status2.setDealerID(10);
+		status2.setId(1);
+		status2.setAmount(new BigDecimal("5234.343"));
+		status2.setMargin(new BigDecimal("2234.343"));
+		status2.setCount(1123432);
+		status2.setDepartmentID(1);
+		status2.setValidDate(LocalDate.of(2013, 8, 1));
+		status2.setUpdatedBy("test2");
+		incomeJournalDAL.saveVehicleSalesJournal(10, 1, Lists.newArrayList(status2));
+		
+		int hasJournal = 0;
+		for (final VehicleSalesJournal journal : incomeJournalDAL.getVehicleSalesJournal(LocalDate.of(2013, 8, 1), Utils.currentTimestamp())) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+		}
+		Assert.assertEquals(2, hasJournal);
 	} 
 	
 	@Test

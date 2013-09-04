@@ -36,9 +36,13 @@ public interface IncomeJournalDAO {
 	
 	Collection<VehicleSalesJournal> getVehicleSalesJournal(Integer dealerID, Integer departmentID, LocalDate validDate);
 	
+	Collection<VehicleSalesJournal> getVehicleSalesJournal(LocalDate validDate, Instant timestamp);
+	
 	Instant saveSalesServiceJournal(Integer dealerID, Integer departmentID, Collection<SalesServiceJournal> journals);
 	
 	Collection<SalesServiceJournal> getSalesServiceJournal(Integer dealerID, Integer departmentID, LocalDate validDate);
+	
+	Collection<SalesServiceJournal> getSalesServiceJournal(LocalDate validDate, Instant timestamp);
 	
 	Instant saveGeneralJournal(Integer dealerID, Integer departmentID, Collection<GeneralJournal> journals);
 	

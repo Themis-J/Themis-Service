@@ -40,6 +40,7 @@ import com.jdc.themis.dealer.domain.HumanResourceAllocation;
 import com.jdc.themis.dealer.domain.InventoryDuration;
 import com.jdc.themis.dealer.domain.InventoryDurationItem;
 import com.jdc.themis.dealer.domain.JobPosition;
+import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.web.domain.AccountReceivableDurationDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeDetail;
@@ -61,6 +62,8 @@ import com.jdc.themis.dealer.web.domain.SaveHumanResourceAllocationRequest;
 import com.jdc.themis.dealer.web.domain.SaveInventoryDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
 import com.jdc.themis.dealer.web.domain.VehicleSalesJournalDetail;
+
+import fj.data.Option;
 
 public class TestDealerIncomeEntryServiceImpl {
 
@@ -101,7 +104,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		detail.setCount(12345);
 		detail.setVehicleID(1);
 		request.getDetail().add(detail);
-		
+		when(refDataDAL.getVehicle(1)).thenReturn(Option.<Vehicle>some(new Vehicle()));
 		final Instant result = service.saveVehicleSalesRevenue(request);
 		
 		Assert.assertEquals("2014-01-01T00:00:00.001Z", result.toString());
@@ -185,7 +188,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveGeneralJournal(eq(2), eq(4), anyCollectionOf(GeneralJournal.class))).thenReturn(timestamp);
-		when(refDataDAL.getGeneralJournalItem(eq(3))).thenReturn(new GeneralJournalItem());
+		when(refDataDAL.getGeneralJournalItem(eq(3))).thenReturn(Option.<GeneralJournalItem>some(new GeneralJournalItem()));
 		
 		final SaveGeneralJournalRequest request = new SaveGeneralJournalRequest();
 		request.setDealerID(2);
@@ -230,7 +233,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		final GeneralJournalItem item = new GeneralJournalItem();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getGeneralJournalItem(eq(5))).thenReturn(item);
+		when(refDataDAL.getGeneralJournalItem(eq(5))).thenReturn(Option.<GeneralJournalItem>some(item));
 		
 		when(dal.getGeneralJournal(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		
@@ -252,14 +255,14 @@ public class TestDealerIncomeEntryServiceImpl {
 		duration.setLowerBound(0);
 		duration.setUnit(1);
 		duration.setUpperBound(30);
-		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveAccountReceivableDuration(eq(2), anyCollectionOf(AccountReceivableDuration.class))).thenReturn(timestamp);
 		final AccountReceivableDurationItem item = new AccountReceivableDurationItem();
 		item.setId(3);
 		item.setName("GJ Item 3");
-		when(refDataDAL.getAccountReceivableDurationItem(eq(3))).thenReturn(item);
+		when(refDataDAL.getAccountReceivableDurationItem(eq(3))).thenReturn(Option.<AccountReceivableDurationItem>some(item));
 		
 		final SaveAccountReceivableDurationRequest request = new SaveAccountReceivableDurationRequest();
 		request.setDealerID(2);
@@ -289,7 +292,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		duration.setUnit(1);
 		duration.setLowerBound(0);
 		duration.setUpperBound(null);
-		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
@@ -307,14 +310,14 @@ public class TestDealerIncomeEntryServiceImpl {
 		final AccountReceivableDurationItem item = new AccountReceivableDurationItem();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getAccountReceivableDurationItem(eq(5))).thenReturn(item);
+		when(refDataDAL.getAccountReceivableDurationItem(eq(5))).thenReturn(Option.<AccountReceivableDurationItem>some(item));
 		
 		when(dal.getAccountReceivableDuration(eq(2), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		final EnumValue enumValue = new EnumValue();
 		enumValue.setTypeID(1);
 		enumValue.setValue(1);
 		enumValue.setName("Days");
-		when(refDataDAL.getEnumValue("DurationUnit", 1)).thenReturn(enumValue);
+		when(refDataDAL.getEnumValue("DurationUnit", 1)).thenReturn(Option.<EnumValue>some(enumValue));
 		
 		final GetAccountReceivableDurationResponse result = service.getAccountReceivableDuration(2, LocalDate.of(2013, 6, 1).toString());
 		
@@ -334,7 +337,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		duration.setLowerBound(0);
 		duration.setUnit(1);
 		duration.setUpperBound(30);
-		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveInventoryDuration(eq(2), eq(3), anyCollectionOf(InventoryDuration.class))).thenReturn(timestamp);
@@ -342,7 +345,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		final InventoryDurationItem item = new InventoryDurationItem();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(Option.<InventoryDurationItem>some(item));
 		
 		final SaveInventoryDurationRequest request = new SaveInventoryDurationRequest();
 		request.setDealerID(2);
@@ -373,7 +376,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		duration.setLowerBound(0);
 		duration.setUnit(1);
 		duration.setUpperBound(30);
-		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveInventoryDuration(eq(2), eq(3), anyCollectionOf(InventoryDuration.class))).thenReturn(timestamp);
@@ -381,7 +384,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		final InventoryDurationItem item = new InventoryDurationItem();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(Option.<InventoryDurationItem>some(item));
 		
 		final SaveInventoryDurationRequest request = new SaveInventoryDurationRequest();
 		request.setDealerID(2);
@@ -412,7 +415,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		duration.setUnit(1);
 		duration.setLowerBound(0);
 		duration.setUpperBound(null);
-		when(refDataDAL.getDuration(1)).thenReturn(duration);
+		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
@@ -430,7 +433,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		final InventoryDurationItem item = new InventoryDurationItem();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(Option.<InventoryDurationItem>some(item));
 		
 		when(refDataDAL.getDepartment(eq(3))).thenReturn(new Department());
 		
@@ -439,7 +442,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		enumValue.setTypeID(1);
 		enumValue.setValue(1);
 		enumValue.setName("Days");
-		when(refDataDAL.getEnumValue("DurationUnit", 1)).thenReturn(enumValue);
+		when(refDataDAL.getEnumValue("DurationUnit", 1)).thenReturn(Option.<EnumValue>some(enumValue));
 		
 		final GetInventoryDurationResponse result = service.getInventoryDuration(2, 3, LocalDate.of(2013, 6, 1).toString());
 		
@@ -458,8 +461,8 @@ public class TestDealerIncomeEntryServiceImpl {
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
-		when(refDataDAL.getEmployeeFeeItem(3)).thenReturn(new EmployeeFeeItem());
-		when(refDataDAL.getEnumValue("FeeType", 1)).thenReturn(new EnumValue());
+		when(refDataDAL.getEmployeeFeeItem(3)).thenReturn(Option.<EmployeeFeeItem>some(new EmployeeFeeItem()));
+		when(refDataDAL.getEnumValue("FeeType", 1)).thenReturn(Option.<EnumValue>some(new EnumValue()));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveEmployeeFee(eq(2), eq(4), anyCollectionOf(EmployeeFee.class))).thenReturn(timestamp);
@@ -509,10 +512,10 @@ public class TestDealerIncomeEntryServiceImpl {
 		final EmployeeFeeItem item = new EmployeeFeeItem();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getEmployeeFeeItem(eq(5))).thenReturn(item);
+		when(refDataDAL.getEmployeeFeeItem(eq(5))).thenReturn(Option.<EmployeeFeeItem>some(item));
 		
 		when(dal.getEmployeeFee(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
-		when(refDataDAL.getEnumValue("FeeType", 1)).thenReturn(new EnumValue());
+		when(refDataDAL.getEnumValue("FeeType", 1)).thenReturn(Option.<EnumValue>some(new EnumValue()));
 		
 		final GetEmployeeFeeResponse result = service.getEmployeeFee(2, 4, LocalDate.of(2013, 6, 1).toString());
 		
@@ -531,7 +534,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
-		when(refDataDAL.getEmployeeFeeSummaryItem(3)).thenReturn(new EmployeeFeeSummaryItem());
+		when(refDataDAL.getEmployeeFeeSummaryItem(3)).thenReturn(Option.<EmployeeFeeSummaryItem>some(new EmployeeFeeSummaryItem()));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveEmployeeFeeSummary(eq(2), eq(4), anyCollectionOf(EmployeeFeeSummary.class))).thenReturn(timestamp);
@@ -579,7 +582,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		final EmployeeFeeSummaryItem item = new EmployeeFeeSummaryItem();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getEmployeeFeeSummaryItem(eq(5))).thenReturn(item);
+		when(refDataDAL.getEmployeeFeeSummaryItem(eq(5))).thenReturn(Option.<EmployeeFeeSummaryItem>some(item));
 		
 		when(dal.getEmployeeFeeSummary(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		
@@ -600,7 +603,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
-		when(refDataDAL.getJobPosition(3)).thenReturn(new JobPosition());
+		when(refDataDAL.getJobPosition(3)).thenReturn(Option.<JobPosition>some(new JobPosition()));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveHumanResourceAllocation(eq(2), eq(4), anyCollectionOf(HumanResourceAllocation.class))).thenReturn(timestamp);
@@ -648,7 +651,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		final JobPosition item = new JobPosition();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getJobPosition(eq(5))).thenReturn(item);
+		when(refDataDAL.getJobPosition(eq(5))).thenReturn(Option.<JobPosition>some(item));
 		
 		when(dal.getHumanResourceAllocation(eq(2), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		
