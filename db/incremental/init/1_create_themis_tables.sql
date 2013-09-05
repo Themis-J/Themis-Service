@@ -525,6 +525,7 @@ CREATE TABLE ReportItem
    name varchar(100) NOT NULL, 
    sourceItemID integer NOT NULL, 
    itemSource integer NOT NULL, 
+   itemCategory varchar(100) NOT NULL, 
    CONSTRAINT ReportItem_PK PRIMARY KEY (id)
 ) 
 WITH (

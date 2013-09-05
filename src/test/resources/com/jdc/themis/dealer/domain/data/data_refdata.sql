@@ -43,6 +43,9 @@ insert into JobPosition values (5, 'JobPosition5', {ts '2012-09-17 18:47:52.69'}
 
 insert into TaxJournalItem values (1, 'IncomeTax', {ts '2012-09-17 18:47:52.69'})
 
+insert into SalesServiceJournalCategory values (1, 'SalesServiceJournalCate1', {ts '2012-09-17 18:47:52.69'})
+insert into SalesServiceJournalCategory values (2, 'SalesServiceJournalCate2', {ts '2012-09-17 18:47:52.69'})
+
 insert into SalesServiceJournalItem values (1, 'SalesServiceJournalItem1', 1, {ts '2012-09-17 18:47:52.69'})
 insert into SalesServiceJournalItem values (2, 'SalesServiceJournalItem2', 1, {ts '2012-09-17 18:47:52.69'})
 

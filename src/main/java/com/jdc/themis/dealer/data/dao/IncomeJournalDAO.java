@@ -48,6 +48,8 @@ public interface IncomeJournalDAO {
 	
 	Collection<GeneralJournal> getGeneralJournal(Integer dealerID, Integer departmentID, LocalDate validDate);
 	
+	Collection<GeneralJournal> getGeneralJournal(LocalDate validDate, Instant timestamp);
+	
 	Instant saveAccountReceivableDuration(Integer dealerID, Collection<AccountReceivableDuration> journals);
 	
 	Collection<AccountReceivableDuration> getAccountReceivableDuration(Integer dealerID, LocalDate validDate);

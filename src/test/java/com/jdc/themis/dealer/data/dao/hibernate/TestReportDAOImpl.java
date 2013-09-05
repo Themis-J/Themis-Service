@@ -80,7 +80,7 @@ public class TestReportDAOImpl {
 		
 		int hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(LocalDate.of(2013, 8, 1), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(8), Option.<Integer>none())) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -89,7 +89,7 @@ public class TestReportDAOImpl {
 		
 		hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(LocalDate.of(2013, 7, 1), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(7), Option.<Integer>none())) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);

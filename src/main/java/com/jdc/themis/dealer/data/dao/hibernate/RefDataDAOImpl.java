@@ -25,6 +25,7 @@ import com.jdc.themis.dealer.domain.EmployeeFeeItem;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
 import com.jdc.themis.dealer.domain.EnumType;
 import com.jdc.themis.dealer.domain.EnumValue;
+import com.jdc.themis.dealer.domain.GeneralJournalCategory;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.InventoryDurationItem;
 import com.jdc.themis.dealer.domain.JobPosition;
@@ -501,6 +502,31 @@ public class RefDataDAOImpl implements RefDataDAO {
 			return Option.<GeneralJournalItem>none();
 		}
 		return Option.<GeneralJournalItem>some(map.get(itemID));
+	}
+	private enum GetGeneralJournalCategoryIDFunction implements Function<GeneralJournalCategory, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(GeneralJournalCategory item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public Option<GeneralJournalCategory> getGeneralJournalCategory(Integer itemID) {
+		final Map<Integer, GeneralJournalCategory> map = Maps.uniqueIndex(getGeneralJournalCategorys(), GetGeneralJournalCategoryIDFunction.INSTANCE);
+		if ( !map.containsKey(itemID) ) {
+			return Option.<GeneralJournalCategory>none();
+		}
+		return Option.<GeneralJournalCategory>some(map.get(itemID));
+	}
+
+	@Override
+	public List<GeneralJournalCategory> getGeneralJournalCategorys() {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<GeneralJournalCategory> list = session.createCriteria(
+				GeneralJournalCategory.class).list();
+		return ImmutableList.copyOf(list);
 	}
 
 }

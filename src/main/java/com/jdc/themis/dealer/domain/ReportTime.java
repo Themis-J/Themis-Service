@@ -25,10 +25,21 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate")
 					}), 
+			@org.hibernate.annotations.FilterDef(name="reportTimeYearFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="year", type="integer")
+					}), 
+			@org.hibernate.annotations.FilterDef(name="reportTimeMonthFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="year", type="integer"),
+					@org.hibernate.annotations.ParamDef(name="monthOfYear", type="integer")
+					}), 
 		}
 		)
 @Filters( {
-    @Filter(name="reportTimeValidDateFilter", condition="validDate = :referenceDate")
+    @Filter(name="reportTimeValidDateFilter", condition="validDate = :referenceDate"), 
+    @Filter(name="reportTimeYearFilter", condition="year = :year"), 
+    @Filter(name="reportTimeMonthFilter", condition="year = :year and monthOfYear = :monthOfYear")
 } )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
@@ -37,6 +48,8 @@ public class ReportTime implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static String FILTER = "reportTimeValidDateFilter";
+	public static String FILTER_YEAR = "reportTimeYearFilter";
+	public static String FILTER_MONTH = "reportTimeMonthFilter";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

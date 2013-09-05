@@ -35,7 +35,14 @@ public class ReportItem implements Serializable {
 	private String name;
 	private Integer itemSource;
 	private Integer sourceItemID;
+	private String itemCategory;
 	
+	public String getItemCategory() {
+		return itemCategory;
+	}
+	public void setItemCategory(String itemCategory) {
+		this.itemCategory = itemCategory;
+	}
 	public Integer getSourceItemID() {
 		return sourceItemID;
 	}
@@ -65,6 +72,7 @@ public class ReportItem implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id)
 				.append("sourceItemID", sourceItemID)
+				.append("itemCategory", itemCategory)
 				.append("itemSource", itemSource).getStringBuffer().toString();
 	}
 }

@@ -10,6 +10,7 @@ import com.jdc.themis.dealer.domain.EmployeeFeeItem;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
 import com.jdc.themis.dealer.domain.EnumType;
 import com.jdc.themis.dealer.domain.EnumValue;
+import com.jdc.themis.dealer.domain.GeneralJournalCategory;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.InventoryDurationItem;
 import com.jdc.themis.dealer.domain.JobPosition;
@@ -69,6 +70,10 @@ public interface RefDataDAO {
 	List<SalesServiceJournalCategory> getSalesServiceJournalCategorys();
 	
 	Option<SalesServiceJournalCategory> getSalesServiceJournalCategory(Integer id);
+	
+	Option<GeneralJournalCategory> getGeneralJournalCategory(Integer id);
+	
+	List<GeneralJournalCategory> getGeneralJournalCategorys();
 	
 	List<GeneralJournalItem> getGeneralJournalItems();
 	

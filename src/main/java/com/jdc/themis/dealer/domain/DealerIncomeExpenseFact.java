@@ -11,21 +11,54 @@ import javax.time.Instant;
 import javax.time.calendar.LocalDate;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDefs;
+import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Type;
 
+@FilterDefs(
+		{
+			@org.hibernate.annotations.FilterDef(name="diefFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="timeID", type="long"), 
+					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer"), 
+					@org.hibernate.annotations.ParamDef(name="itemID", type="long"), 
+					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="diefAllFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="timeID", type="long"), 
+					}), 
+			@org.hibernate.annotations.FilterDef(name="diefDepFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"),
+					@org.hibernate.annotations.ParamDef(name="timeID", type="long"), 
+					}), 
+		}
+		)
+@Filters( {
+    @Filter(name="diefFilter", condition="timeID = :timeID and dealerID = :dealerID and itemID = :itemID and departmentID = :departmentID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="diefAllFilter", condition="timeID = :timeID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="diefDepFilter", condition="timeID = :timeID and departmentID = :departmentID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+} )
 @Entity
 public class DealerIncomeExpenseFact implements Serializable, TemporalEntity {
+	public static final String FILTER = "diefFilter";
+	public static final String FILTER_ALL = "diefAllFilter";
+	public static final String FILTER_DEP = "diefDepFilter";
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Integer timeID;
+	private Long timeID;
 	@Id
 	private Integer dealerID;
 	@Id
 	private Integer departmentID;
 	@Id
-	private Integer itemID;
+	private Long itemID;
 	private BigDecimal amount;
 	@Id
 	@Type(type = "datetime")
@@ -64,10 +97,10 @@ public class DealerIncomeExpenseFact implements Serializable, TemporalEntity {
 	}
 	
 	@Id
-	public Integer getTimeID() {
+	public Long getTimeID() {
 		return timeID;
 	}
-	public void setTimeID(Integer timeID) {
+	public void setTimeID(Long timeID) {
 		this.timeID = timeID;
 	}
 	@Id
@@ -85,10 +118,10 @@ public class DealerIncomeExpenseFact implements Serializable, TemporalEntity {
 		this.departmentID = departmentID;
 	}
 	@Id
-	public Integer getItemID() {
+	public Long getItemID() {
 		return itemID;
 	}
-	public void setItemID(Integer itemID) {
+	public void setItemID(Long itemID) {
 		this.itemID = itemID;
 	}
 	public BigDecimal getAmount() {

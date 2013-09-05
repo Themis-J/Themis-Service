@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>themis</groupId>
-	<artifactId>dealer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<artifactId>themis</artifactId>
+	<version>1.0.0</version>
+	<packaging>war</packaging>
 
 	<name>dealer</name>
 	<url>http://maven.apache.org</url>

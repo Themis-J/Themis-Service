@@ -17,6 +17,9 @@ CREATE TABLE JobPosition (   id integer,    name varchar(100),    timestamp time
 CREATE TABLE Vehicle (    id integer,  name varchar(100), categoryID integer, timestamp timestamp) 
 
 CREATE TABLE TaxJournalItem (id integer, name varchar(100), timestamp timestamp)
+
+CREATE TABLE SalesServiceJournalCategory (    id integer,    name varchar(100),     timestamp timestamp, CONSTRAINT SSJI_PK PRIMARY KEY (id))
+
 CREATE TABLE SalesServiceJournalItem (id integer, name varchar(100), categoryID integer, timestamp timestamp)
 
 CREATE TABLE TaxJournal (timestamp timestamp, timeEnd timestamp, validDate date, dealerID integer, id integer, version integer, amount double, updatedBy varchar(50))
@@ -115,6 +118,6 @@ ALTER TABLE InventoryDuration ALTER COLUMN id SET NOT NULL
 ALTER TABLE InventoryDuration ALTER COLUMN amount SET NOT NULL
    
 CREATE TABLE ReportTime (   id bigint auto_increment,    validDate date,   monthOfYear integer, year integer) 
-CREATE TABLE ReportItem(   id bigint auto_increment,    name varchar(100),   sourceItemID integer NOT NULL,   itemSource integer NOT NULL,    CONSTRAINT ReportItem_PK PRIMARY KEY (id)) 
+CREATE TABLE ReportItem(   id bigint auto_increment,    name varchar(100),   sourceItemID integer NOT NULL,   itemSource integer NOT NULL,  itemCategory varchar(100) ,  CONSTRAINT ReportItem_PK PRIMARY KEY (id)) 
 CREATE TABLE DealerIncomeRevenueFact (   timeID integer,    dealerID integer,   departmentID integer,   itemID integer,   version integer,   amount double,   margin double,   count integer,   timestamp timestamp,    timeEnd timestamp)
    

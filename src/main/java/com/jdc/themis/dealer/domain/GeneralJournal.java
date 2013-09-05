@@ -28,6 +28,10 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="generalDateFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate")}),
 			@org.hibernate.annotations.FilterDef(name="generalFilterSingleItem", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
@@ -49,6 +53,7 @@ public class GeneralJournal implements TemporalEntity, Serializable {
 	private static final long serialVersionUID = 1L;
 	public static String FILTER = "generalFilter";
 	public static String FILTER_SINGLEITEM = "generalFilterSingleItem";
+	public static String FILTER_VALIDATE = "generalDateFilter";
 
 	@Id
 	private Integer id;
