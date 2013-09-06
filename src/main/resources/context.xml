@@ -39,6 +39,8 @@
 	
 	<bean id="dealerIncomeEntryService" class="com.jdc.themis.dealer.service.impl.DealerIncomeEntryServiceImpl" />
 	
+	<bean id="dealerIncomeReportService" class="com.jdc.themis.dealer.service.impl.DealerIncomeReportServiceImpl" />
+	
 	<bean id="dealerRestService" class="com.jdc.themis.dealer.service.rest.DealerIncomeSystemRestService" />
 				
 	<jaxrs:server id="dealerEntryServer" address="/dealer">

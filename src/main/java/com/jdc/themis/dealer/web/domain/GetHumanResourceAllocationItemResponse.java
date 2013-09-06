@@ -18,13 +18,13 @@ import com.google.common.collect.Lists;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetEmployeeFeeItemResponse implements Serializable{
+public class GetHumanResourceAllocationItemResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	@XmlElement(name = "item")
-	private final List<EmployeeFeeItemDetail> items = Lists.newArrayList();
+	private final List<HumanResourceAllocationItemDetail> items = Lists.newArrayList();
 	
-	public List<EmployeeFeeItemDetail> getItems() {
+	public List<HumanResourceAllocationItemDetail> getItems() {
 		return items;
 	}
 }

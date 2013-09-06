@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ch.lambdaj.Lambda;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -56,10 +57,10 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 	}
 
 	@Override
-	public void importReportData(final Integer year, final Option<Integer> monthOfYear) {
-		reportDAL.importVehicleSalesJournal(LocalDate.of(year, monthOfYear.some(), 1));
-		reportDAL.importSalesServiceJournal(LocalDate.of(year, monthOfYear.some(), 1));
-		reportDAL.importGeneralJournal(LocalDate.of(year, monthOfYear.some(), 1));
+	public void importReportData(LocalDate validDate) {
+		reportDAL.importVehicleSalesJournal(validDate);
+		reportDAL.importSalesServiceJournal(validDate);
+		reportDAL.importGeneralJournal(validDate);
 	}
 
 	private enum GetDealerIDFromRevenueFunction implements Function<DealerIncomeRevenueFact, Integer> {
@@ -90,6 +91,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 	@Override
 	@Performance
 	public QueryReportDataResponse queryYearlyOverallIncomeReport(final Integer year) {
+		Preconditions.checkNotNull(year, "year can't be null");
 		final QueryReportDataResponse response = new QueryReportDataResponse();
 		response.setReportName("YearlyOverallIncomeReport");
 		

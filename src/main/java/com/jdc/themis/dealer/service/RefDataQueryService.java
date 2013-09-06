@@ -10,8 +10,13 @@ import com.jdc.themis.dealer.web.domain.DurationDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
+import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeItemResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryItemResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
+import com.jdc.themis.dealer.web.domain.GetInventoryDurationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
@@ -24,7 +29,7 @@ import com.jdc.themis.dealer.web.domain.VehicleDetail;
 public interface RefDataQueryService {
 	
 	@Transactional(readOnly=true)
-	GetMenuResponse getAllMenu();
+	GetMenuResponse getMenu();
 	
 	@Transactional(readOnly=true)
 	@Cacheable("menu")
@@ -35,28 +40,28 @@ public interface RefDataQueryService {
 	DealerDetail getDealer(Integer id);
 
 	@Transactional(readOnly=true)
-	GetDepartmentResponse getAllDepartments();
+	GetDepartmentResponse getDepartments();
 	
 	@Transactional(readOnly=true)
 	@Cacheable("department")
 	DepartmentDetail getDepartment(Integer id);
 	
 	@Transactional(readOnly=true)
-	GetVehicleResponse getAllVehicles();
+	GetVehicleResponse getVehicles();
 	
 	@Transactional(readOnly=true)
 	@Cacheable("vehicle")
 	VehicleDetail getVehicle(Integer id);
 	
 	@Transactional(readOnly=true)
-	GetSalesServiceJournalItemResponse getAllSalesServiceRevenueItems();
+	GetSalesServiceJournalItemResponse getSalesServiceRevenueItems();
 	
 	@Transactional(readOnly=true)
 	@Cacheable("salesServiceJournalItem")
 	SalesServiceJournalItemDetail getSalesServiceRevenueItem(Integer id);
 	
 	@Transactional(readOnly=true)
-	GetGeneralJournalItemResponse getAllGeneralIncomeItems();
+	GetGeneralJournalItemResponse getGeneralIncomeItems();
 	
 	@Transactional(readOnly=true)
 	@Cacheable("generalJournalItem")
@@ -67,20 +72,35 @@ public interface RefDataQueryService {
 	InventoryDurationItemDetail getInventoryDurationItem(Integer id);
 	
 	@Transactional(readOnly=true)
+	GetInventoryDurationItemResponse getInventoryDurationItems();
+	
+	@Transactional(readOnly=true)
 	@Cacheable("accountReceivableDurationItem")
 	AccountReceivableDurationItemDetail getAccountReceivableDurationItem(Integer id);
+	
+	@Transactional(readOnly=true)
+	GetAccountReceivableDurationItemResponse getAccountReceivableDurationItems();
 	
 	@Transactional(readOnly=true)
 	@Cacheable("employeeFeeItem")
 	EmployeeFeeItemDetail getEmployeeFeeItem(Integer id);
 	
 	@Transactional(readOnly=true)
+	GetEmployeeFeeItemResponse getEmployeeFeeItems();
+	
+	@Transactional(readOnly=true)
 	@Cacheable("employeeFeeSummaryItem")
 	EmployeeFeeSummaryItemDetail getEmployeeFeeSummaryItem(Integer id);
 	
 	@Transactional(readOnly=true)
+	GetEmployeeFeeSummaryItemResponse getEmployeeFeeSummaryItems();
+	
+	@Transactional(readOnly=true)
 	@Cacheable("jobPosition")
 	HumanResourceAllocationItemDetail getHumanResourceAllocationItem(Integer id);
+	
+	@Transactional(readOnly=true)
+	GetHumanResourceAllocationItemResponse getHumanResourceAllocationItems();
 	
 	@Transactional(readOnly=true)
 	@Cacheable("duration")

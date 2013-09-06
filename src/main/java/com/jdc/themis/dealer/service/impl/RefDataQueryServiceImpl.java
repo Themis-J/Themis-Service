@@ -27,8 +27,13 @@ import com.jdc.themis.dealer.web.domain.DurationDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
+import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeItemResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryItemResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
+import com.jdc.themis.dealer.web.domain.GetInventoryDurationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
@@ -90,7 +95,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	 */
 	@Performance
 	@Override
-	public GetMenuResponse getAllMenu() {
+	public GetMenuResponse getMenu() {
 		final GetMenuResponse response = new GetMenuResponse();
 
 		for (final Menu menu : refDataDAL.getMenus()) {
@@ -106,7 +111,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	 * @return
 	 */
 	@Performance
-	public GetVehicleResponse getAllVehicles() {
+	public GetVehicleResponse getVehicles() {
 		final GetVehicleResponse response = new GetVehicleResponse();
 
 		for (final Vehicle vehicle : refDataDAL.getVehicles()) {
@@ -114,7 +119,6 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 			item.setId(vehicle.getId());
 			item.setName(vehicle.getName());
 			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).some().getName());
-			item.setTimestamp(vehicle.getTimestamp());
 			response.getItems().add(item);
 		}
 		return response;
@@ -126,33 +130,35 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	 * @return
 	 */
 	@Performance
-	public GetSalesServiceJournalItemResponse getAllSalesServiceRevenueItems() {
+	public GetSalesServiceJournalItemResponse getSalesServiceRevenueItems() {
 		final GetSalesServiceJournalItemResponse response = new GetSalesServiceJournalItemResponse();
 
 		for (final SalesServiceJournalItem ssj : refDataDAL.getSalesServiceJournalItems()) {
 			final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
 			item.setId(ssj.getId());
 			item.setName(ssj.getName());
+			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(ssj.getCategoryID()).some().getName());
 			response.getItems().add(item);
 		}
 		return response;
 	}
 
 	@Override
-	public GetGeneralJournalItemResponse getAllGeneralIncomeItems() {
+	public GetGeneralJournalItemResponse getGeneralIncomeItems() {
 		final GetGeneralJournalItemResponse response = new GetGeneralJournalItemResponse();
 
 		for (final GeneralJournalItem gji : refDataDAL.getGeneralJournalItems()) {
 			final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 			item.setId(gji.getId());
 			item.setName(gji.getName());
+			item.setCategory(this.refDataDAL.getGeneralJournalCategory(gji.getCategoryID()).some().getName());
 			response.getItems().add(item);
 		}
 		return response;
 	}
 
 	@Override
-	public GetDepartmentResponse getAllDepartments() {
+	public GetDepartmentResponse getDepartments() {
 		final GetDepartmentResponse response = new GetDepartmentResponse();
 
 		for (final Department department : refDataDAL.getDepartments()) {
@@ -185,7 +191,6 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		item.setId(vehicle.getId());
 		item.setName(vehicle.getName());
 		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).some().getName());
-		item.setTimestamp(vehicle.getTimestamp());
 		return item;
 	}
 
@@ -274,6 +279,71 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		item.setCode(gji.getCode());
 		item.setFullName(gji.getFullName());
 		return item;
+	}
+
+	@Override
+	public GetInventoryDurationItemResponse getInventoryDurationItems() {
+		final GetInventoryDurationItemResponse response = new GetInventoryDurationItemResponse();
+
+		for (final InventoryDurationItem gji : refDataDAL.getInventoryDurationItems()) {
+			final InventoryDurationItemDetail item = new InventoryDurationItemDetail();
+			item.setId(gji.getId());
+			item.setName(gji.getName());
+			response.getItems().add(item);
+		}
+		return response;
+	}
+
+	@Override
+	public GetAccountReceivableDurationItemResponse getAccountReceivableDurationItems() {
+		final GetAccountReceivableDurationItemResponse response = new GetAccountReceivableDurationItemResponse();
+
+		for (final AccountReceivableDurationItem gji : refDataDAL.getAccountReceivableDurationItems()) {
+			final AccountReceivableDurationItemDetail item = new AccountReceivableDurationItemDetail();
+			item.setId(gji.getId());
+			item.setName(gji.getName());
+			response.getItems().add(item);
+		}
+		return response;
+	}
+
+	@Override
+	public GetEmployeeFeeItemResponse getEmployeeFeeItems() {
+		final GetEmployeeFeeItemResponse response = new GetEmployeeFeeItemResponse();
+
+		for (final EmployeeFeeItem gji : refDataDAL.getEmployeeFeeItems()) {
+			final EmployeeFeeItemDetail item = new EmployeeFeeItemDetail();
+			item.setId(gji.getId());
+			item.setName(gji.getName());
+			response.getItems().add(item);
+		}
+		return response;
+	}
+
+	@Override
+	public GetEmployeeFeeSummaryItemResponse getEmployeeFeeSummaryItems() {
+		final GetEmployeeFeeSummaryItemResponse response = new GetEmployeeFeeSummaryItemResponse();
+
+		for (final EmployeeFeeSummaryItem gji : refDataDAL.getEmployeeFeeSummaryItems()) {
+			final EmployeeFeeSummaryItemDetail item = new EmployeeFeeSummaryItemDetail();
+			item.setId(gji.getId());
+			item.setName(gji.getName());
+			response.getItems().add(item);
+		}
+		return response;
+	}
+
+	@Override
+	public GetHumanResourceAllocationItemResponse getHumanResourceAllocationItems() {
+		final GetHumanResourceAllocationItemResponse response = new GetHumanResourceAllocationItemResponse();
+
+		for (final JobPosition gji : refDataDAL.getJobPositions()) {
+			final HumanResourceAllocationItemDetail item = new HumanResourceAllocationItemDetail();
+			item.setId(gji.getId());
+			item.setName(gji.getName());
+			response.getItems().add(item);
+		}
+		return response;
 	}
 
 }

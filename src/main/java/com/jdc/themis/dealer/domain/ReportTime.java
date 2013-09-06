@@ -52,7 +52,7 @@ public class ReportTime implements Serializable {
 	public static String FILTER_MONTH = "reportTimeMonthFilter";
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	@Type(type = "localdate")
 	private LocalDate validDate;
@@ -60,7 +60,7 @@ public class ReportTime implements Serializable {
 	private Integer year;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}

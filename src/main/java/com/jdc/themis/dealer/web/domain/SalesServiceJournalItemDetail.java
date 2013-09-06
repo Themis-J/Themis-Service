@@ -2,16 +2,26 @@ package com.jdc.themis.dealer.web.domain;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SalesServiceJournalItemDetail implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
 	private String name;
+	private String category;
 	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	public Integer getId() {
 		return id;
 	}

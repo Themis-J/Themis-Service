@@ -1,5 +1,6 @@
 package com.jdc.themis.dealer.service.rest;
 
+import javax.time.calendar.LocalDate;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jdc.themis.dealer.service.DealerIncomeEntryService;
+import com.jdc.themis.dealer.service.DealerIncomeReportService;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.RestServiceErrorHandler;
+import com.jdc.themis.dealer.utils.Utils;
 import com.jdc.themis.dealer.web.domain.GeneralResponse;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
@@ -41,6 +44,9 @@ public class DealerIncomeSystemRestService {
 
 	@Autowired
 	private DealerIncomeEntryService dealerIncomeEntryService;
+	
+	@Autowired
+	private DealerIncomeReportService dealerIncomeReportService;
 
 	/**
 	 * Get full list of menu. Each menu includes its parent id and child id
@@ -52,8 +58,8 @@ public class DealerIncomeSystemRestService {
 	@Path("/menu")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getAllMenu() {
-		return Response.ok(this.refDataQueryService.getAllMenu()).build();
+	public Response getMenu() {
+		return Response.ok(this.refDataQueryService.getMenu()).build();
 	}
 	
 	/**
@@ -65,8 +71,8 @@ public class DealerIncomeSystemRestService {
 	@Path("/department")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getAllDepartments() {
-		return Response.ok(this.refDataQueryService.getAllDepartments()).build();
+	public Response getDepartments() {
+		return Response.ok(this.refDataQueryService.getDepartments()).build();
 	}
 
 	/**
@@ -78,8 +84,8 @@ public class DealerIncomeSystemRestService {
 	@Path("/vehicle")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getAllVehicles() {
-		return Response.ok(this.refDataQueryService.getAllVehicles()).build();
+	public Response getVehicles() {
+		return Response.ok(this.refDataQueryService.getVehicles()).build();
 	}
 
 	/**
@@ -91,9 +97,9 @@ public class DealerIncomeSystemRestService {
 	@Path("/salesServiceRevenue/items")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getAllSalesServiceRevenueItems() {
+	public Response getSalesServiceRevenueItems() {
 		return Response.ok(
-				this.refDataQueryService.getAllSalesServiceRevenueItems())
+				this.refDataQueryService.getSalesServiceRevenueItems())
 				.build();
 	}
 
@@ -275,11 +281,11 @@ public class DealerIncomeSystemRestService {
 	 * @return
 	 */
 	@GET
-	@Path("/generalIncome/items")
+	@Path("/generalJournal/items")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getAllGeneralIncomeItems() {
-		return Response.ok(this.refDataQueryService.getAllGeneralIncomeItems())
+	public Response getGeneralIncomeItems() {
+		return Response.ok(this.refDataQueryService.getGeneralIncomeItems())
 				.build();
 	}
 
@@ -366,6 +372,20 @@ public class DealerIncomeSystemRestService {
 				dealerIncomeEntryService.getAccountReceivableDuration(dealerID,
 						validDate)).build();
 	}
+	
+	/**
+	 * Get a list account receivable duration items.
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/accountReceivable/duration/items")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getAccountReceivableDurationItems() {
+		return Response.ok(this.refDataQueryService.getAccountReceivableDurationItems())
+				.build();
+	}
 
 	/**
 	 * Save a list of inventory duration.
@@ -406,6 +426,20 @@ public class DealerIncomeSystemRestService {
 		return Response.ok(
 				dealerIncomeEntryService.getInventoryDuration(dealerID, departmentID,
 						validDate)).build();
+	}
+	
+	/**
+	 * Get a list inventory duration items.
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/inventory/duration/items")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getInventoryDurationItems() {
+		return Response.ok(this.refDataQueryService.getInventoryDurationItems())
+				.build();
 	}
 	
 	/**
@@ -453,6 +487,20 @@ public class DealerIncomeSystemRestService {
 	}
 	
 	/**
+	 * Get a list inventory duration items.
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/employee/fee/items")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getEmployeeFeeItems() {
+		return Response.ok(this.refDataQueryService.getEmployeeFeeItems())
+				.build();
+	}
+	
+	/**
 	 * Save a list of employee fee summary.
 	 * 
 	 * @param request
@@ -497,6 +545,20 @@ public class DealerIncomeSystemRestService {
 	}
 	
 	/**
+	 * Get a list inventory duration items.
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/employee/feeSummary/items")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getEmployeeFeeSummaryItems() {
+		return Response.ok(this.refDataQueryService.getEmployeeFeeSummaryItems())
+				.build();
+	}
+	
+	/**
 	 * Save a list of human resource allocations.
 	 * 
 	 * @param request
@@ -535,4 +597,55 @@ public class DealerIncomeSystemRestService {
 		return Response.ok(
 				dealerIncomeEntryService.getHumanResourceAllocation(dealerID, validDate)).build();
 	}
+	
+	/**
+	 * Get a list inventory duration items.
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/hr/allocation/items")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getHumanResourceAllocationItems() {
+		return Response.ok(this.refDataQueryService.getHumanResourceAllocationItems())
+				.build();
+	}
+	
+	/**
+	 * Import report data for given year and month.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@POST
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	@Path("/report/import")
+	@RestServiceErrorHandler
+	public Response importReportData(@QueryParam("validDate") String validDate) {
+		final GeneralResponse response = new GeneralResponse();
+		response.setErrorMsg("");
+		response.setSuccess(true);
+		dealerIncomeReportService
+			.importReportData(LocalDate.parse(validDate));
+		response.setTimestamp(Utils.currentTimestamp());
+		return Response.ok(response).status(Status.CREATED).build();
+	}
+
+	/**
+	 * Query yearly income report.
+	 * 
+	 * @param year
+	 * @return
+	 */
+	@GET
+	@Path("/report/yearlyOverallIncomeReport")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response queryYearlyOverallIncomeReport(@QueryParam("year") Integer year) {
+		return Response.ok(
+				dealerIncomeReportService.queryYearlyOverallIncomeReport(year)).build();
+	}
+	
 }

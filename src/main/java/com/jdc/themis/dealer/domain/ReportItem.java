@@ -30,7 +30,7 @@ public class ReportItem implements Serializable {
 	public static String FILTER = "reportItemFilter";
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String name;
 	private Integer itemSource;
@@ -56,7 +56,7 @@ public class ReportItem implements Serializable {
 		this.itemSource = itemSource;
 	}
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}

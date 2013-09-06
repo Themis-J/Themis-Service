@@ -61,4 +61,6 @@
 	<bean id="incomeJournalDAL"
 		class="com.jdc.themis.dealer.data.dao.hibernate.IncomeJournalDAOImpl">
 	</bean>
+	<bean id="reportDAL" class="com.jdc.themis.dealer.data.dao.hibernate.ReportDAOImpl">
+	</bean>
 </beans>

@@ -15,12 +15,17 @@ import org.mockito.MockitoAnnotations;
 
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.GeneralJournalCategory;
+import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.MenuHierachyId;
 import com.jdc.themis.dealer.domain.SalesServiceJournalCategory;
+import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
+import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
+import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
 
 import fj.data.Option;
@@ -66,7 +71,7 @@ public class TestRefDataQueryServiceImpl {
 		when(refDataDAL.getMenu(1)).thenReturn(menu1);
 		when(refDataDAL.getMenu(2)).thenReturn(menu2);
 		
-		final GetMenuResponse response = refDataQueryService.getAllMenu();
+		final GetMenuResponse response = refDataQueryService.getMenu();
 		
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
@@ -95,7 +100,7 @@ public class TestRefDataQueryServiceImpl {
 		category.setName("VC1");
 		when(refDataDAL.getVehicles()).thenReturn(list);
 		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
-		final GetVehicleResponse response = refDataQueryService.getAllVehicles();
+		final GetVehicleResponse response = refDataQueryService.getVehicles();
 		
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
@@ -103,32 +108,57 @@ public class TestRefDataQueryServiceImpl {
 	}
 	
 	@Test
-	public void getEmployeeFeeItem() {
-		//TODO:
+	public void getAllSalesServiceJournalItems() {
+		final List<SalesServiceJournalItem> list = Lists.newArrayList();
+		final SalesServiceJournalItem v1 = new SalesServiceJournalItem();
+		final SalesServiceJournalItem v2 = new SalesServiceJournalItem();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("s1");
+		v1.setCategoryID(1);
+		v2.setId(2);
+		v2.setName("s2");
+		v2.setCategoryID(1);
+		
+		final SalesServiceJournalCategory category = new SalesServiceJournalCategory();
+		category.setId(1);
+		category.setName("SSJ1");
+		when(refDataDAL.getSalesServiceJournalItems()).thenReturn(list);
+		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
+		final GetSalesServiceJournalItemResponse response = refDataQueryService.getSalesServiceRevenueItems();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("s2", response.getItems().get(1).getName());
 	}
 	
 	@Test
-	public void getEmployeeFeeSummaryItem() {
-		//TODO:
+	public void getAllGeneralJournalItems() {
+		final List<GeneralJournalItem> list = Lists.newArrayList();
+		final GeneralJournalItem v1 = new GeneralJournalItem();
+		final GeneralJournalItem v2 = new GeneralJournalItem();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v1.setCategoryID(1);
+		v2.setId(2);
+		v2.setName("g2");
+		v2.setCategoryID(1);
+		
+		final GeneralJournalCategory category = new GeneralJournalCategory();
+		category.setId(1);
+		category.setName("GJ1");
+		when(refDataDAL.getGeneralJournalItems()).thenReturn(list);
+		when(refDataDAL.getGeneralJournalCategory(1)).thenReturn(Option.<GeneralJournalCategory>some(category));
+		final GetGeneralJournalItemResponse response = refDataQueryService.getGeneralIncomeItems();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g2", response.getItems().get(1).getName());
 	}
 	
-	@Test
-	public void getInventoryDurationItem() {
-		//TODO:
-	}
-	
-	@Test
-	public void getAccountReceivableDurationItem() {
-		//TODO:
-	}
-	
-	@Test
-	public void getHumanResourceAllocationItem() {
-		//TODO:
-	}
-	
-	@Test
-	public void getDuration() {
-		//TODO:
-	}
 }
