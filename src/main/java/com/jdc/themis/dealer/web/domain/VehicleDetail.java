@@ -15,7 +15,14 @@ public class VehicleDetail implements Serializable{
 	private Integer id;
 	private String name;
 	private String category;
+	private Integer categoryID;
 	
+	public Integer getCategoryID() {
+		return categoryID;
+	}
+	public void setCategoryID(Integer categoryID) {
+		this.categoryID = categoryID;
+	}
 	public String getCategory() {
 		return category;
 	}

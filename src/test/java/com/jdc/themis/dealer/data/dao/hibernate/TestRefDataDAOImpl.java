@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 
+import fj.data.Option;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({
     "classpath:test-database-config.xml" })
@@ -59,7 +61,11 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getSalesServiceJournalItemList() {
-		Assert.assertEquals(2, refDataDAO.getSalesServiceJournalItems().size());
+		Assert.assertEquals(3, refDataDAO.getSalesServiceJournalItems(Option.<Integer>none()).size());
+	}
+	@Test
+	public void getSalesServiceJournalItemListByCategoryID() {
+		Assert.assertEquals(2, refDataDAO.getSalesServiceJournalItems(Option.<Integer>some(1)).size());
 	}
 	
 	@Test
@@ -69,7 +75,22 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getGeneralJournalItemList() {
-		Assert.assertEquals(2, refDataDAO.getGeneralJournalItems().size());
+		Assert.assertEquals(2, refDataDAO.getGeneralJournalItems(Option.<Integer>none()).size());
+	}
+	
+	@Test
+	public void getGeneralJournalItemListByCategoryID() {
+		Assert.assertEquals(2, refDataDAO.getGeneralJournalItems(Option.<Integer>some(1)).size());
+	}
+	
+	@Test
+	public void getVehicleList() {
+		Assert.assertEquals(2, refDataDAO.getVehicles(Option.<Integer>none()).size());
+	}
+	
+	@Test
+	public void getVehicleListByCategoryID() {
+		Assert.assertEquals(2, refDataDAO.getVehicles(Option.<Integer>some(1)).size());
 	}
 	
 	@Test

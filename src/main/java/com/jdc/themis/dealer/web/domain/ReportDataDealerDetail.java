@@ -20,6 +20,7 @@ public class ReportDataDealerDetail implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String name;
+	private String code;
 	private ReportDataDealerDetailAmount revenue = new ReportDataDealerDetailAmount();
 	private ReportDataDealerDetailAmount expense = new ReportDataDealerDetailAmount();
 	private ReportDataDealerDetailAmount margin = new ReportDataDealerDetailAmount();
@@ -27,6 +28,12 @@ public class ReportDataDealerDetail implements Serializable{
 	@XmlElement(name = "department")
 	private List<ReportDataDealerDepartmentDetail> detail = Lists.newArrayList();
 
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
 	public ReportDataDealerDetailAmount getNonRecurrentPnL() {
 		return nonRecurrentPnL;
 	}

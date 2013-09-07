@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.common.base.Preconditions;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
@@ -11,6 +13,7 @@ import com.jdc.themis.dealer.domain.Department;
 import com.jdc.themis.dealer.domain.Duration;
 import com.jdc.themis.dealer.domain.EmployeeFeeItem;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
+import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.InventoryDurationItem;
 import com.jdc.themis.dealer.domain.JobPosition;
@@ -43,6 +46,8 @@ import com.jdc.themis.dealer.web.domain.MenuDetail;
 import com.jdc.themis.dealer.web.domain.MenuOrderItem;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.VehicleDetail;
+
+import fj.data.Option;
 
 @Service
 public class RefDataQueryServiceImpl implements RefDataQueryService {
@@ -111,13 +116,14 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	 * @return
 	 */
 	@Performance
-	public GetVehicleResponse getVehicles() {
+	public GetVehicleResponse getVehicles(Option<Integer> categoryID) {
 		final GetVehicleResponse response = new GetVehicleResponse();
 
-		for (final Vehicle vehicle : refDataDAL.getVehicles()) {
+		for (final Vehicle vehicle : refDataDAL.getVehicles(categoryID)) {
 			final VehicleDetail item = new VehicleDetail();
 			item.setId(vehicle.getId());
 			item.setName(vehicle.getName());
+			item.setCategoryID(vehicle.getCategoryID());
 			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).some().getName());
 			response.getItems().add(item);
 		}
@@ -130,13 +136,14 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	 * @return
 	 */
 	@Performance
-	public GetSalesServiceJournalItemResponse getSalesServiceRevenueItems() {
+	public GetSalesServiceJournalItemResponse getSalesServiceRevenueItems(Option<Integer> categoryID) {
 		final GetSalesServiceJournalItemResponse response = new GetSalesServiceJournalItemResponse();
 
-		for (final SalesServiceJournalItem ssj : refDataDAL.getSalesServiceJournalItems()) {
+		for (final SalesServiceJournalItem ssj : refDataDAL.getSalesServiceJournalItems(categoryID)) {
 			final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
 			item.setId(ssj.getId());
 			item.setName(ssj.getName());
+			item.setCategoryID(ssj.getCategoryID());
 			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(ssj.getCategoryID()).some().getName());
 			response.getItems().add(item);
 		}
@@ -144,13 +151,14 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	}
 
 	@Override
-	public GetGeneralJournalItemResponse getGeneralIncomeItems() {
+	public GetGeneralJournalItemResponse getGeneralIncomeItems(Option<Integer> categoryID) {
 		final GetGeneralJournalItemResponse response = new GetGeneralJournalItemResponse();
 
-		for (final GeneralJournalItem gji : refDataDAL.getGeneralJournalItems()) {
+		for (final GeneralJournalItem gji : refDataDAL.getGeneralJournalItems(categoryID)) {
 			final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 			item.setId(gji.getId());
 			item.setName(gji.getName());
+			item.setCategoryID(gji.getCategoryID());
 			item.setCategory(this.refDataDAL.getGeneralJournalCategory(gji.getCategoryID()).some().getName());
 			response.getItems().add(item);
 		}
@@ -190,6 +198,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		final VehicleDetail item = new VehicleDetail();
 		item.setId(vehicle.getId());
 		item.setName(vehicle.getName());
+		item.setCategoryID(vehicle.getCategoryID());
 		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).some().getName());
 		return item;
 	}
@@ -200,6 +209,8 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
 		item.setId(ssj.getId());
 		item.setName(ssj.getName());
+		item.setCategoryID(ssj.getCategoryID());
+		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(ssj.getCategoryID()).some().getName());
 		return item;
 	}
 
@@ -209,6 +220,8 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());
+		item.setCategoryID(gji.getCategoryID());
+		item.setCategory(this.refDataDAL.getGeneralJournalCategory(gji.getCategoryID()).some().getName());
 		return item;
 	}
 
@@ -252,6 +265,10 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Override
 	public HumanResourceAllocationItemDetail getHumanResourceAllocationItem(
 			Integer id) {
+		Preconditions.checkArgument(
+				refDataDAL.getJobPosition(id).isSome(),
+				"unknown job position id " + id);
+		
 		final JobPosition gji = refDataDAL.getJobPosition(id).some();
 		final HumanResourceAllocationItemDetail item = new HumanResourceAllocationItemDetail();
 		item.setId(gji.getId());
@@ -344,6 +361,16 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 			response.getItems().add(item);
 		}
 		return response;
+	}
+
+	@Override
+	public Option<EnumValue> getEnumValue(String enumType, Integer enumValue) {
+		return refDataDAL.getEnumValue(enumType, enumValue);
+	}
+
+	@Override
+	public Option<EnumValue> getEnumValue(String enumType, String enumValue) {
+		return refDataDAL.getEnumValue(enumType, enumValue);
 	}
 
 }

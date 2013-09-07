@@ -113,10 +113,16 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<Vehicle> getVehicles() {
+	public List<Vehicle> getVehicles(Option<Integer> categoryID) {
 		final Session session = sessionFactory.getCurrentSession();
+		if ( categoryID.isSome() ) {
+			session.enableFilter(Vehicle.FILTER).setParameter("categoryID", categoryID.some());
+		}
 		@SuppressWarnings("unchecked")
 		final List<Vehicle> list = session.createCriteria(Vehicle.class).list();
+		if ( categoryID.isSome() ) {
+			session.disableFilter(Vehicle.FILTER);
+		}
 		return ImmutableList.copyOf(list);
 	}
 
@@ -138,11 +144,17 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<SalesServiceJournalItem> getSalesServiceJournalItems() {
+	public List<SalesServiceJournalItem> getSalesServiceJournalItems(Option<Integer> categoryID) {
 		final Session session = sessionFactory.getCurrentSession();
+		if ( categoryID.isSome() ) {
+			session.enableFilter(SalesServiceJournalItem.FILTER).setParameter("categoryID", categoryID.some());
+		}
 		@SuppressWarnings("unchecked")
 		final List<SalesServiceJournalItem> list = session.createCriteria(
 				SalesServiceJournalItem.class).list();
+		if ( categoryID.isSome() ) {
+			session.disableFilter(SalesServiceJournalItem.FILTER);
+		}
 		return ImmutableList.copyOf(list);
 	}
 
@@ -239,11 +251,18 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 
 	@Override
-	public List<GeneralJournalItem> getGeneralJournalItems() {
+	public List<GeneralJournalItem> getGeneralJournalItems(Option<Integer> categoryID) {
 		final Session session = sessionFactory.getCurrentSession();
+		
+		if ( categoryID.isSome() ) {
+			session.enableFilter(GeneralJournalItem.FILTER).setParameter("categoryID", categoryID.some());
+		}
 		@SuppressWarnings("unchecked")
 		final List<GeneralJournalItem> list = session.createCriteria(
 				GeneralJournalItem.class).list();
+		if ( categoryID.isSome() ) {
+			session.disableFilter(GeneralJournalItem.FILTER);
+		}
 		return ImmutableList.copyOf(list);
 	}
 
@@ -301,7 +320,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 	@Override
 	public Option<Vehicle> getVehicle(Integer id) {
-		final Map<Integer, Vehicle> map = Maps.uniqueIndex(getVehicles(), GetVehicleIDFunction.INSTANCE);
+		final Map<Integer, Vehicle> map = Maps.uniqueIndex(getVehicles(Option.<Integer>none()), GetVehicleIDFunction.INSTANCE);
 		if ( !map.containsKey(id) ) {
 			return Option.<Vehicle>none();
 		}
@@ -318,7 +337,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	
 	@Override
 	public Option<SalesServiceJournalItem> getSalesServiceJournalItem(Integer id) {
-		final Map<Integer, SalesServiceJournalItem> map = Maps.uniqueIndex(getSalesServiceJournalItems(), GetSalesServiceIDFunction.INSTANCE);
+		final Map<Integer, SalesServiceJournalItem> map = Maps.uniqueIndex(getSalesServiceJournalItems(Option.<Integer>none()), GetSalesServiceIDFunction.INSTANCE);
 		if ( !map.containsKey(id) ) {
 			return Option.<SalesServiceJournalItem>none();
 		}
@@ -497,7 +516,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 	@Override
 	public Option<GeneralJournalItem> getGeneralJournalItem(Integer itemID) {
-		final Map<Integer, GeneralJournalItem> map = Maps.uniqueIndex(getGeneralJournalItems(), GetGeneralJournalItemIDFunction.INSTANCE);
+		final Map<Integer, GeneralJournalItem> map = Maps.uniqueIndex(getGeneralJournalItems(Option.<Integer>none()), GetGeneralJournalItemIDFunction.INSTANCE);
 		if ( !map.containsKey(itemID) ) {
 			return Option.<GeneralJournalItem>none();
 		}

@@ -58,6 +58,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 
 	@Override
 	public void importReportData(LocalDate validDate) {
+		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		reportDAL.importVehicleSalesJournal(validDate);
 		reportDAL.importSalesServiceJournal(validDate);
 		reportDAL.importGeneralJournal(validDate);
@@ -115,6 +116,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 			dealerDetails.put(dealer.getId(), new ReportDataDealerDetail());
 			dealerDetails.get(dealer.getId()).setId(dealer.getId());
 			dealerDetails.get(dealer.getId()).setName(dealer.getName());
+			dealerDetails.get(dealer.getId()).setCode(dealer.getCode());
 		}
 		
 	    Option<Map<Integer, ReportDataDealerDetail>> dealerPreviousYearDetailOption = Option.<Map<Integer, ReportDataDealerDetail>>none();

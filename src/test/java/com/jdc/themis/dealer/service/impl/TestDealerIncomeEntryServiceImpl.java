@@ -23,29 +23,26 @@ import org.mockito.MockitoAnnotations;
 
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
-import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDuration;
-import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
-import com.jdc.themis.dealer.domain.Dealer;
-import com.jdc.themis.dealer.domain.Department;
-import com.jdc.themis.dealer.domain.Duration;
 import com.jdc.themis.dealer.domain.EmployeeFee;
-import com.jdc.themis.dealer.domain.EmployeeFeeItem;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummary;
-import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
 import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.domain.GeneralJournal;
-import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.HumanResourceAllocation;
 import com.jdc.themis.dealer.domain.InventoryDuration;
-import com.jdc.themis.dealer.domain.InventoryDurationItem;
-import com.jdc.themis.dealer.domain.JobPosition;
-import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
+import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.web.domain.AccountReceivableDurationDetail;
+import com.jdc.themis.dealer.web.domain.AccountReceivableDurationItemDetail;
+import com.jdc.themis.dealer.web.domain.DealerDetail;
+import com.jdc.themis.dealer.web.domain.DepartmentDetail;
+import com.jdc.themis.dealer.web.domain.DurationDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalDetail;
+import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryResponse;
@@ -53,7 +50,9 @@ import com.jdc.themis.dealer.web.domain.GetGeneralJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationResponse;
 import com.jdc.themis.dealer.web.domain.GetInventoryDurationResponse;
 import com.jdc.themis.dealer.web.domain.HumanResourceAllocationDetail;
+import com.jdc.themis.dealer.web.domain.HumanResourceAllocationItemDetail;
 import com.jdc.themis.dealer.web.domain.InventoryDurationDetail;
+import com.jdc.themis.dealer.web.domain.InventoryDurationItemDetail;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeSummaryRequest;
@@ -61,6 +60,7 @@ import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveHumanResourceAllocationRequest;
 import com.jdc.themis.dealer.web.domain.SaveInventoryDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
+import com.jdc.themis.dealer.web.domain.VehicleDetail;
 import com.jdc.themis.dealer.web.domain.VehicleSalesJournalDetail;
 
 import fj.data.Option;
@@ -71,21 +71,21 @@ public class TestDealerIncomeEntryServiceImpl {
 	@Mock
 	private IncomeJournalDAO dal;
 	@Mock
-	private RefDataDAO refDataDAL;
+	private RefDataQueryService refDataDAL;
 	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks( this );
 		dal = mock(IncomeJournalDAO.class);
-		refDataDAL = mock(RefDataDAO.class);
+		refDataDAL = mock(RefDataQueryService.class);
 		service = new DealerIncomeEntryServiceImpl();
 		service.setIncomeJournalDAL(dal);
-		service.setRefDataDAL(refDataDAL);
+		service.setRefDataQueryService(refDataDAL);
 	}
 	
 	@Test
 	public void saveVehicleSalesRevenueSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(1);
 		dealer.setName("Dealer1");
 		when(refDataDAL.getDealer(1)).thenReturn(dealer);
@@ -104,7 +104,7 @@ public class TestDealerIncomeEntryServiceImpl {
 		detail.setCount(12345);
 		detail.setVehicleID(1);
 		request.getDetail().add(detail);
-		when(refDataDAL.getVehicle(1)).thenReturn(Option.<Vehicle>some(new Vehicle()));
+		when(refDataDAL.getVehicle(1)).thenReturn(new VehicleDetail());
 		final Instant result = service.saveVehicleSalesRevenue(request);
 		
 		Assert.assertEquals("2014-01-01T00:00:00.001Z", result.toString());
@@ -112,7 +112,7 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test(expected=RuntimeException.class)
 	public void saveVehicleSalesRevenueFailMissingDealerID() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(1);
 		dealer.setName("Dealer1");
 		when(refDataDAL.getDealer(1)).thenReturn(dealer);
@@ -134,7 +134,7 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test(expected=RuntimeException.class)
 	public void saveVehicleSalesRevenueFailMissingValidDate() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(1);
 		dealer.setName("Dealer1");
 		when(refDataDAL.getDealer(1)).thenReturn(dealer);
@@ -155,7 +155,7 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test(expected=RuntimeException.class)
 	public void saveVehicleSalesRevenueFailMissingDetail() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(1);
 		dealer.setName("Dealer1");
 		when(refDataDAL.getDealer(1)).thenReturn(dealer);
@@ -176,19 +176,19 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void saveGeneralJournalSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveGeneralJournal(eq(2), eq(4), anyCollectionOf(GeneralJournal.class))).thenReturn(timestamp);
-		when(refDataDAL.getGeneralJournalItem(eq(3))).thenReturn(Option.<GeneralJournalItem>some(new GeneralJournalItem()));
+		when(refDataDAL.getGeneralIncomeItem(eq(3))).thenReturn(new GeneralJournalItemDetail());
 		
 		final SaveGeneralJournalRequest request = new SaveGeneralJournalRequest();
 		request.setDealerID(2);
@@ -207,12 +207,12 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void getGeneralJournalSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
@@ -230,39 +230,117 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Collection<GeneralJournal> list = Lists.newArrayList();
 		list.add(journal1);
 		
-		final GeneralJournalItem item = new GeneralJournalItem();
+		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getGeneralJournalItem(eq(5))).thenReturn(Option.<GeneralJournalItem>some(item));
+		when(refDataDAL.getGeneralIncomeItem(eq(5))).thenReturn(item);
 		
 		when(dal.getGeneralJournal(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		
-		final GetGeneralJournalResponse result = service.getGeneralIncome(2, 4, LocalDate.of(2013, 6, 1).toString());
+		final GetGeneralJournalResponse result = service.getGeneralIncome(2, 4, LocalDate.of(2013, 6, 1).toString(), Option.<Integer>none());
 		
 		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.getDetail().get(0).getTimestamp().toString());
 		Assert.assertEquals(new BigDecimal("21023.343").doubleValue(), result.getDetail().get(0).getAmount());
 	}
 	
 	@Test
-	public void saveAcctReceivableDurationSuccessfully() {
-		final Dealer dealer = new Dealer();
+	public void getGeneralJournalSuccessfully2() {
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Duration duration = new Duration();
+		final DepartmentDetail department = new DepartmentDetail();
+		department.setId(4);
+		department.setName("Department4");
+		when(refDataDAL.getDepartment(4)).thenReturn(department);
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
+		final GeneralJournal journal1 = new GeneralJournal();
+		journal1.setDealerID(2);
+		journal1.setDepartmentID(4);
+		journal1.setId(5);
+		journal1.setAmount(new BigDecimal("21023.343"));
+		journal1.setTimestamp(timestamp);
+		journal1.setTimeEnd(timeEnd);
+		
+		final Collection<GeneralJournal> list = Lists.newArrayList();
+		list.add(journal1);
+		
+		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
+		item.setId(5);
+		item.setName("GJ Item 5");
+		item.setCategory("GC1");
+		item.setCategoryID(1);
+		when(refDataDAL.getGeneralIncomeItem(eq(5))).thenReturn(item);
+		
+		when(dal.getGeneralJournal(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
+		
+		final GetGeneralJournalResponse result = service.getGeneralIncome(2, 4, LocalDate.of(2013, 6, 1).toString(), Option.<Integer>some(2));
+		
+		Assert.assertEquals(0, result.getDetail().size());
+	}
+	
+	@Test
+	public void getGeneralJournalSuccessfully3() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final DepartmentDetail department = new DepartmentDetail();
+		department.setId(4);
+		department.setName("Department4");
+		when(refDataDAL.getDepartment(4)).thenReturn(department);
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
+		final GeneralJournal journal1 = new GeneralJournal();
+		journal1.setDealerID(2);
+		journal1.setDepartmentID(4);
+		journal1.setId(5);
+		journal1.setAmount(new BigDecimal("21023.343"));
+		journal1.setTimestamp(timestamp);
+		journal1.setTimeEnd(timeEnd);
+		
+		final Collection<GeneralJournal> list = Lists.newArrayList();
+		list.add(journal1);
+		
+		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
+		item.setId(5);
+		item.setName("GJ Item 5");
+		item.setCategory("GC1");
+		item.setCategoryID(2);
+		when(refDataDAL.getGeneralIncomeItem(eq(5))).thenReturn(item);
+		
+		when(dal.getGeneralJournal(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
+		
+		final GetGeneralJournalResponse result = service.getGeneralIncome(2, 4, LocalDate.of(2013, 6, 1).toString(), Option.<Integer>some(2));
+		
+		Assert.assertEquals(1, result.getDetail().size());
+	}
+	
+	@Test
+	public void saveAcctReceivableDurationSuccessfully() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final DurationDetail duration = new DurationDetail();
 		duration.setId(1);
 		duration.setLowerBound(0);
 		duration.setUnit(1);
 		duration.setUpperBound(30);
-		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveAccountReceivableDuration(eq(2), anyCollectionOf(AccountReceivableDuration.class))).thenReturn(timestamp);
-		final AccountReceivableDurationItem item = new AccountReceivableDurationItem();
+		final AccountReceivableDurationItemDetail item = new AccountReceivableDurationItemDetail();
 		item.setId(3);
 		item.setName("GJ Item 3");
-		when(refDataDAL.getAccountReceivableDurationItem(eq(3))).thenReturn(Option.<AccountReceivableDurationItem>some(item));
+		when(refDataDAL.getAccountReceivableDurationItem(eq(3))).thenReturn(item);
 		
 		final SaveAccountReceivableDurationRequest request = new SaveAccountReceivableDurationRequest();
 		request.setDealerID(2);
@@ -282,17 +360,17 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void getAcctReceivableDurationSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Duration duration = new Duration();
+		final DurationDetail duration = new DurationDetail();
 		duration.setId(1);
 		duration.setUnit(1);
 		duration.setLowerBound(0);
 		duration.setUpperBound(null);
-		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
@@ -307,10 +385,10 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Collection<AccountReceivableDuration> list = Lists.newArrayList();
 		list.add(journal1);
 		
-		final AccountReceivableDurationItem item = new AccountReceivableDurationItem();
+		final AccountReceivableDurationItemDetail item = new AccountReceivableDurationItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getAccountReceivableDurationItem(eq(5))).thenReturn(Option.<AccountReceivableDurationItem>some(item));
+		when(refDataDAL.getAccountReceivableDurationItem(eq(5))).thenReturn(item);
 		
 		when(dal.getAccountReceivableDuration(eq(2), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		final EnumValue enumValue = new EnumValue();
@@ -327,25 +405,25 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void saveInventoryDurationSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Duration duration = new Duration();
+		final DurationDetail duration = new DurationDetail();
 		duration.setId(1);
 		duration.setLowerBound(0);
 		duration.setUnit(1);
 		duration.setUpperBound(30);
-		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveInventoryDuration(eq(2), eq(3), anyCollectionOf(InventoryDuration.class))).thenReturn(timestamp);
-		when(refDataDAL.getDepartment(eq(3))).thenReturn(new Department());
-		final InventoryDurationItem item = new InventoryDurationItem();
+		when(refDataDAL.getDepartment(eq(3))).thenReturn(new DepartmentDetail());
+		final InventoryDurationItemDetail item = new InventoryDurationItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(Option.<InventoryDurationItem>some(item));
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
 		
 		final SaveInventoryDurationRequest request = new SaveInventoryDurationRequest();
 		request.setDealerID(2);
@@ -366,25 +444,25 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test(expected=RuntimeException.class)
 	public void saveInventoryDurationFailMissingDurationID() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Duration duration = new Duration();
+		final DurationDetail duration = new DurationDetail();
 		duration.setId(1);
 		duration.setLowerBound(0);
 		duration.setUnit(1);
 		duration.setUpperBound(30);
-		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveInventoryDuration(eq(2), eq(3), anyCollectionOf(InventoryDuration.class))).thenReturn(timestamp);
-		when(refDataDAL.getDepartment(eq(3))).thenReturn(new Department());
-		final InventoryDurationItem item = new InventoryDurationItem();
+		when(refDataDAL.getDepartment(eq(3))).thenReturn(new DepartmentDetail());
+		final InventoryDurationItemDetail item = new InventoryDurationItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(Option.<InventoryDurationItem>some(item));
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
 		
 		final SaveInventoryDurationRequest request = new SaveInventoryDurationRequest();
 		request.setDealerID(2);
@@ -405,17 +483,17 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void getInventoryDurationSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Duration duration = new Duration();
+		final DurationDetail duration = new DurationDetail();
 		duration.setId(1);
 		duration.setUnit(1);
 		duration.setLowerBound(0);
 		duration.setUpperBound(null);
-		when(refDataDAL.getDuration(1)).thenReturn(Option.<Duration>some(duration));
+		when(refDataDAL.getDuration(1)).thenReturn(duration);
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		final Instant timeEnd = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
@@ -430,12 +508,12 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Collection<InventoryDuration> list = Lists.newArrayList();
 		list.add(journal1);
 		
-		final InventoryDurationItem item = new InventoryDurationItem();
+		final InventoryDurationItemDetail item = new InventoryDurationItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(Option.<InventoryDurationItem>some(item));
+		when(refDataDAL.getInventoryDurationItem(eq(5))).thenReturn(item);
 		
-		when(refDataDAL.getDepartment(eq(3))).thenReturn(new Department());
+		when(refDataDAL.getDepartment(eq(3))).thenReturn(new DepartmentDetail());
 		
 		when(dal.getInventoryDuration(eq(2), eq(3), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		final EnumValue enumValue = new EnumValue();
@@ -452,16 +530,16 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void saveEmployeeFeeSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
-		when(refDataDAL.getEmployeeFeeItem(3)).thenReturn(Option.<EmployeeFeeItem>some(new EmployeeFeeItem()));
+		when(refDataDAL.getEmployeeFeeItem(3)).thenReturn(new EmployeeFeeItemDetail());
 		when(refDataDAL.getEnumValue("FeeType", 1)).thenReturn(Option.<EnumValue>some(new EnumValue()));
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
@@ -485,12 +563,12 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void getEmployeeFeeSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
@@ -509,10 +587,10 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Collection<EmployeeFee> list = Lists.newArrayList();
 		list.add(journal1);
 		
-		final EmployeeFeeItem item = new EmployeeFeeItem();
+		final EmployeeFeeItemDetail item = new EmployeeFeeItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getEmployeeFeeItem(eq(5))).thenReturn(Option.<EmployeeFeeItem>some(item));
+		when(refDataDAL.getEmployeeFeeItem(eq(5))).thenReturn(item);
 		
 		when(dal.getEmployeeFee(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		when(refDataDAL.getEnumValue("FeeType", 1)).thenReturn(Option.<EnumValue>some(new EnumValue()));
@@ -525,16 +603,16 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void saveEmployeeFeeSummarySuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
-		when(refDataDAL.getEmployeeFeeSummaryItem(3)).thenReturn(Option.<EmployeeFeeSummaryItem>some(new EmployeeFeeSummaryItem()));
+		when(refDataDAL.getEmployeeFeeSummaryItem(3)).thenReturn(new EmployeeFeeSummaryItemDetail());
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveEmployeeFeeSummary(eq(2), eq(4), anyCollectionOf(EmployeeFeeSummary.class))).thenReturn(timestamp);
@@ -556,12 +634,12 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void getEmployeeFeeSummarySuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
@@ -579,10 +657,10 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Collection<EmployeeFeeSummary> list = Lists.newArrayList();
 		list.add(journal1);
 		
-		final EmployeeFeeSummaryItem item = new EmployeeFeeSummaryItem();
+		final EmployeeFeeSummaryItemDetail item = new EmployeeFeeSummaryItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getEmployeeFeeSummaryItem(eq(5))).thenReturn(Option.<EmployeeFeeSummaryItem>some(item));
+		when(refDataDAL.getEmployeeFeeSummaryItem(eq(5))).thenReturn(item);
 		
 		when(dal.getEmployeeFeeSummary(eq(2), eq(4), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		
@@ -594,16 +672,16 @@ public class TestDealerIncomeEntryServiceImpl {
 	
 	@Test
 	public void saveHRAllocationSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
-		when(refDataDAL.getJobPosition(3)).thenReturn(Option.<JobPosition>some(new JobPosition()));
+		when(refDataDAL.getHumanResourceAllocationItem(3)).thenReturn(new HumanResourceAllocationItemDetail());
 		
 		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
 		when(dal.saveHumanResourceAllocation(eq(2), eq(4), anyCollectionOf(HumanResourceAllocation.class))).thenReturn(timestamp);
@@ -623,14 +701,42 @@ public class TestDealerIncomeEntryServiceImpl {
 		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.toString());
 	}
 	
+	@Test(expected=RuntimeException.class)
+	public void saveHRAllocationFailUnknownDealer() {
+		when(refDataDAL.getDealer(2)).thenReturn(null);
+		
+		final DepartmentDetail department = new DepartmentDetail();
+		department.setId(4);
+		department.setName("Department4");
+		when(refDataDAL.getDepartment(4)).thenReturn(department);
+		when(refDataDAL.getHumanResourceAllocationItem(3)).thenReturn(new HumanResourceAllocationItemDetail());
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		when(dal.saveHumanResourceAllocation(eq(2), eq(4), anyCollectionOf(HumanResourceAllocation.class))).thenReturn(timestamp);
+		
+		final SaveHumanResourceAllocationRequest request = new SaveHumanResourceAllocationRequest();
+		request.setDealerID(2);
+		request.setDepartmentID(4);
+		request.setValidDate(LocalDate.of(2013, 6, 1).toString());
+		
+		final HumanResourceAllocationDetail detail = new HumanResourceAllocationDetail();
+		detail.setAllocation(123.4);
+		detail.setItemID(3);
+		request.getDetail().add(detail);
+		
+		service.saveHumanResourceAllocation(request);
+		
+		Assert.fail();
+	}
+	
 	@Test
 	public void getHRAllocationSuccessfully() {
-		final Dealer dealer = new Dealer();
+		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);
 		dealer.setName("Dealer2");
 		when(refDataDAL.getDealer(2)).thenReturn(dealer);
 		
-		final Department department = new Department();
+		final DepartmentDetail department = new DepartmentDetail();
 		department.setId(4);
 		department.setName("Department4");
 		when(refDataDAL.getDepartment(4)).thenReturn(department);
@@ -648,10 +754,10 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Collection<HumanResourceAllocation> list = Lists.newArrayList();
 		list.add(journal1);
 		
-		final JobPosition item = new JobPosition();
+		final HumanResourceAllocationItemDetail item = new HumanResourceAllocationItemDetail();
 		item.setId(5);
 		item.setName("GJ Item 5");
-		when(refDataDAL.getJobPosition(eq(5))).thenReturn(Option.<JobPosition>some(item));
+		when(refDataDAL.getHumanResourceAllocationItem(eq(5))).thenReturn(item);
 		
 		when(dal.getHumanResourceAllocation(eq(2), eq(LocalDate.of(2013, 6, 1)))).thenReturn(list);
 		

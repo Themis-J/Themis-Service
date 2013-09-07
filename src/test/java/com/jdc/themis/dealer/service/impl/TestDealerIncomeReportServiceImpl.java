@@ -43,7 +43,7 @@ public class TestDealerIncomeReportServiceImpl {
 	}
 	
 	@Test
-	public void queryReportData() {
+	public void queryYearlyOverallIncomeReport() {
 		final Dealer dealer1 = new Dealer();
 		dealer1.setId(1);
 		dealer1.setName("Dealer1");
@@ -132,6 +132,10 @@ public class TestDealerIncomeReportServiceImpl {
 		final QueryReportDataResponse response = service.queryYearlyOverallIncomeReport(2013);
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getDetail().size());
+		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());
+		Assert.assertEquals(2013, response.getDetail().get(1).getYear().intValue());
+		Assert.assertEquals(3000.0, response.getDetail().get(1).getDetail().get(0).getRevenue().getAmount());
+		Assert.assertEquals(5000.0, response.getDetail().get(1).getDetail().get(0).getMargin().getAmount());
 		System.err.println(response);
 	}
 }

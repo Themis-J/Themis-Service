@@ -30,6 +30,8 @@ import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
 
+import fj.data.Option;
+
 /**
  * Main entry to dealer income entry system.
  * 
@@ -84,8 +86,9 @@ public class DealerIncomeSystemRestService {
 	@Path("/vehicle")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getVehicles() {
-		return Response.ok(this.refDataQueryService.getVehicles()).build();
+	public Response getVehicles(@QueryParam("categoryID") Integer categoryID) {
+		return Response.ok(
+				this.refDataQueryService.getVehicles(Option.<Integer>iif(categoryID != null, categoryID))).build();
 	}
 
 	/**
@@ -97,9 +100,9 @@ public class DealerIncomeSystemRestService {
 	@Path("/salesServiceRevenue/items")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getSalesServiceRevenueItems() {
+	public Response getSalesServiceRevenueItems(@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
-				this.refDataQueryService.getSalesServiceRevenueItems())
+				this.refDataQueryService.getSalesServiceRevenueItems(Option.<Integer>iif(categoryID != null, categoryID)))
 				.build();
 	}
 
@@ -140,10 +143,14 @@ public class DealerIncomeSystemRestService {
 	public Response getVehicleSalesRevenue(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("departmentID") Integer departmentID,
-			@QueryParam("validDate") String validDate) {
+			@QueryParam("validDate") String validDate, 
+			@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
-				dealerIncomeEntryService.getVehicleSalesRevenue(dealerID,
-						departmentID, validDate)).build();
+				dealerIncomeEntryService.getVehicleSalesRevenue(
+						dealerID,
+						Option.<Integer>iif(departmentID != null, departmentID), 
+						validDate, 
+						Option.<Integer>iif(categoryID != null, categoryID))).build();
 	}
 
 	/**
@@ -185,10 +192,11 @@ public class DealerIncomeSystemRestService {
 	public Response getSalesServiceRevenue(
 			@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("departmentID") Integer departmentID,
-			@QueryParam("validDate") String validDate) {
+			@QueryParam("validDate") String validDate, 
+			@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
 				dealerIncomeEntryService.getSalesServiceRevenue(dealerID,
-						departmentID, validDate)).build();
+						departmentID, validDate, Option.<Integer>iif(categoryID != null, categoryID))).build();
 	}
 
 	/**
@@ -284,8 +292,8 @@ public class DealerIncomeSystemRestService {
 	@Path("/generalJournal/items")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response getGeneralIncomeItems() {
-		return Response.ok(this.refDataQueryService.getGeneralIncomeItems())
+	public Response getGeneralIncomeItems(@QueryParam("categoryID") Integer categoryID) {
+		return Response.ok(this.refDataQueryService.getGeneralIncomeItems(Option.<Integer>iif(categoryID != null, categoryID)))
 				.build();
 	}
 
@@ -327,10 +335,11 @@ public class DealerIncomeSystemRestService {
 	@RestServiceErrorHandler
 	public Response getGeneralIncome(@QueryParam("dealerID") Integer dealerID,
 			@QueryParam("departmentID") Integer departmentID,
-			@QueryParam("validDate") String validDate) {
+			@QueryParam("validDate") String validDate, 
+			@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
 				dealerIncomeEntryService.getGeneralIncome(dealerID,
-						departmentID, validDate)).build();
+						departmentID, validDate, Option.<Integer>iif(categoryID != null, categoryID))).build();
 	}
 	
 	/**

@@ -49,7 +49,7 @@ public interface RefDataDAO {
 	
 	List<MenuHierachy> getMenuHierachys();
 	
-	List<Vehicle> getVehicles();
+	List<Vehicle> getVehicles(Option<Integer> categoryID);
 	
 	Option<Vehicle> getVehicle(Integer id);
 	
@@ -63,7 +63,7 @@ public interface RefDataDAO {
 	
 	List<TaxJournalItem> getTaxJournalItems();
 
-	List<SalesServiceJournalItem> getSalesServiceJournalItems();
+	List<SalesServiceJournalItem> getSalesServiceJournalItems(Option<Integer> categoryID);
 	
 	Option<SalesServiceJournalItem> getSalesServiceJournalItem(Integer id);
 	
@@ -75,7 +75,7 @@ public interface RefDataDAO {
 	
 	List<GeneralJournalCategory> getGeneralJournalCategorys();
 	
-	List<GeneralJournalItem> getGeneralJournalItems();
+	List<GeneralJournalItem> getGeneralJournalItems(Option<Integer> categoryID);
 	
 	Option<GeneralJournalItem> getGeneralJournalItem(Integer id);
 	

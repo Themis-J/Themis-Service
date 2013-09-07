@@ -98,13 +98,15 @@ public class TestRefDataQueryServiceImpl {
 		final SalesServiceJournalCategory category = new SalesServiceJournalCategory();
 		category.setId(1);
 		category.setName("VC1");
-		when(refDataDAL.getVehicles()).thenReturn(list);
+		when(refDataDAL.getVehicles(Option.<Integer>none())).thenReturn(list);
 		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
-		final GetVehicleResponse response = refDataQueryService.getVehicles();
+		final GetVehicleResponse response = refDataQueryService.getVehicles(Option.<Integer>none());
 		
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
 		Assert.assertEquals("v2", response.getItems().get(1).getName());
+		Assert.assertEquals(1, response.getItems().get(1).getCategoryID().intValue());
+		Assert.assertEquals("VC1", response.getItems().get(1).getCategory());
 	}
 	
 	@Test
@@ -125,9 +127,9 @@ public class TestRefDataQueryServiceImpl {
 		final SalesServiceJournalCategory category = new SalesServiceJournalCategory();
 		category.setId(1);
 		category.setName("SSJ1");
-		when(refDataDAL.getSalesServiceJournalItems()).thenReturn(list);
+		when(refDataDAL.getSalesServiceJournalItems(Option.<Integer>none())).thenReturn(list);
 		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
-		final GetSalesServiceJournalItemResponse response = refDataQueryService.getSalesServiceRevenueItems();
+		final GetSalesServiceJournalItemResponse response = refDataQueryService.getSalesServiceRevenueItems(Option.<Integer>none());
 		
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
@@ -152,9 +154,9 @@ public class TestRefDataQueryServiceImpl {
 		final GeneralJournalCategory category = new GeneralJournalCategory();
 		category.setId(1);
 		category.setName("GJ1");
-		when(refDataDAL.getGeneralJournalItems()).thenReturn(list);
+		when(refDataDAL.getGeneralJournalItems(Option.<Integer>none())).thenReturn(list);
 		when(refDataDAL.getGeneralJournalCategory(1)).thenReturn(Option.<GeneralJournalCategory>some(category));
-		final GetGeneralJournalItemResponse response = refDataQueryService.getGeneralIncomeItems();
+		final GetGeneralJournalItemResponse response = refDataQueryService.getGeneralIncomeItems(Option.<Integer>none());
 		
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());

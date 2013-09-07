@@ -24,6 +24,21 @@ public class SalesServiceJournalDetail implements Serializable {
 	private Integer count;
 	private Double amount;
 	private Double margin;
+	private String category;
+	private Integer categoryID;
+	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public Integer getCategoryID() {
+		return categoryID;
+	}
+	public void setCategoryID(Integer categoryID) {
+		this.categoryID = categoryID;
+	}
 	
 	public Integer getItemID() {
 		return itemID;

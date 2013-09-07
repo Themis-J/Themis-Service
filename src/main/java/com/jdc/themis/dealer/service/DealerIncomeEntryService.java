@@ -24,6 +24,8 @@ import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
 
+import fj.data.Option;
+
 /**
  * Dealer income entry service layer. 
  * 
@@ -55,8 +57,9 @@ public interface DealerIncomeEntryService {
 	@Transactional(readOnly=true)
 	public GetVehicleSalesJournalResponse getVehicleSalesRevenue(
 			Integer dealerID,
-			Integer departmentID,
-			String validDate);
+			Option<Integer> departmentID,
+			String validDate, 
+			Option<Integer> categoryID);
 
 	/**
 	 * Save a list of sales & service revenue.
@@ -83,7 +86,7 @@ public interface DealerIncomeEntryService {
 	public GetSalesServiceJournalResponse getSalesServiceRevenue(
 			Integer dealerID,
 			Integer departmentID,
-			String validDate);
+			String validDate, Option<Integer> categoryID);
 
 	/**
 	 * Save income tax.
@@ -156,7 +159,7 @@ public interface DealerIncomeEntryService {
 	public GetGeneralJournalResponse getGeneralIncome(
 			Integer dealerID,
 			Integer departmentID,
-			String validDate);
+			String validDate, Option<Integer> categoryID);
 	
 	/**
 	 * Save a list of account receivable durations.

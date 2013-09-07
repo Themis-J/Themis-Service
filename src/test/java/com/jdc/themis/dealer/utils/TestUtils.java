@@ -1,29 +1,29 @@
 package com.jdc.themis.dealer.utils;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import junit.framework.Assert;
 
-import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.jdc.themis.dealer.data.dao.RefDataDAO;
-import com.jdc.themis.dealer.domain.Duration;
 import com.jdc.themis.dealer.domain.EnumValue;
+import com.jdc.themis.dealer.service.RefDataQueryService;
+import com.jdc.themis.dealer.web.domain.DurationDetail;
 
 import fj.data.Option;
 
 public class TestUtils {
 
 	@Mock
-	private RefDataDAO refDataDAL;
+	private RefDataQueryService refDataDAL;
 	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks( this );
-		refDataDAL = mock(RefDataDAO.class);
+		refDataDAL = mock(RefDataQueryService.class);
 	}
 	
 	@Test
@@ -33,7 +33,7 @@ public class TestUtils {
 	
 	@Test
 	public void getDurationDesc() {
-		final Duration duration = new Duration();
+		final DurationDetail duration = new DurationDetail();
 		duration.setId(1);
 		duration.setLowerBound(0);
 		duration.setUpperBound(30);
@@ -48,7 +48,7 @@ public class TestUtils {
 	
 	@Test(expected=RuntimeException.class)
 	public void getDurationDescFail() {
-		final Duration duration = new Duration();
+		final DurationDetail duration = new DurationDetail();
 		duration.setId(1);
 		duration.setLowerBound(0);
 		duration.setUpperBound(30);

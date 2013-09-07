@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
-import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDuration;
 import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.EmployeeFee;
@@ -25,6 +24,7 @@ import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.service.DealerIncomeEntryService;
+import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.utils.Utils;
 import com.jdc.themis.dealer.web.domain.AccountReceivableDurationDetail;
@@ -32,6 +32,7 @@ import com.jdc.themis.dealer.web.domain.DealerEntryItemStatusDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalDetail;
+import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationResponse;
 import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeResponse;
@@ -45,6 +46,7 @@ import com.jdc.themis.dealer.web.domain.GetVehicleSalesJournalResponse;
 import com.jdc.themis.dealer.web.domain.HumanResourceAllocationDetail;
 import com.jdc.themis.dealer.web.domain.InventoryDurationDetail;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalDetail;
+import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
@@ -55,22 +57,25 @@ import com.jdc.themis.dealer.web.domain.SaveInventoryDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveTaxRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
+import com.jdc.themis.dealer.web.domain.VehicleDetail;
 import com.jdc.themis.dealer.web.domain.VehicleSalesJournalDetail;
+
+import fj.data.Option;
 
 @Service
 public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Autowired
-	private RefDataDAO refDataDAL;
-	@Autowired
 	private IncomeJournalDAO incomeJournalDAL;
+	@Autowired
+	private RefDataQueryService refDataQueryService;
 
-	public RefDataDAO getRefDataDAL() {
-		return refDataDAL;
+	public RefDataQueryService getRefDataQueryService() {
+		return refDataQueryService;
 	}
 
-	public void setRefDataDAL(RefDataDAO refDataDAL) {
-		this.refDataDAL = refDataDAL;
+	public void setRefDataQueryService(RefDataQueryService refDataQueryService) {
+		this.refDataQueryService = refDataQueryService;
 	}
 
 	public IncomeJournalDAO getIncomeJournalDAL() {
@@ -98,7 +103,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkArgument(request.getDetail().size() != 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 
 		final List<VehicleSalesJournal> journals = Lists.newArrayList();
@@ -112,10 +117,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getVehicleID(),
 					"vehicle id can't be null");
-			Preconditions.checkArgument(
-					refDataDAL.getVehicle(detail.getVehicleID()).isSome(),
-					"unknown vehicle id " + detail.getVehicleID());
-			journal.setId(detail.getVehicleID());
+			journal.setId(refDataQueryService.getVehicle(detail.getVehicleID()).getId());
 			journal.setDepartmentID(requestedDeparmentID);
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
@@ -123,9 +125,6 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		}
 		final Instant timestamp = incomeJournalDAL.saveVehicleSalesJournal(
 				request.getDealerID(), requestedDeparmentID, journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
 		return timestamp;
 	}
 
@@ -145,20 +144,20 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Performance
 	@Override
 	public GetVehicleSalesJournalResponse getVehicleSalesRevenue(
-			Integer dealerID, Integer departmentID, String validDate) {
+			Integer dealerID, Option<Integer> departmentID, String validDate, Option<Integer> categoryID) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
-		if ( departmentID != null ) {
+		if ( departmentID.isSome() ) {
 			Preconditions.checkArgument(
-				refDataDAL.getDepartment(departmentID) != null,
+				refDataQueryService.getDepartment(departmentID.some()) != null,
 				"unknown department id " + departmentID);
 		}
 		final GetVehicleSalesJournalResponse response = new GetVehicleSalesJournalResponse();
-		final Integer requestedDeparmentID = departmentID == null ? DEFAULT_VEHICLE_DEPARTMENT_ID
-				: departmentID;
+		final Integer requestedDeparmentID = departmentID.isNone() ? DEFAULT_VEHICLE_DEPARTMENT_ID
+				: departmentID.some();
 		final Collection<VehicleSalesJournal> list = incomeJournalDAL
 				.getVehicleSalesJournal(dealerID, requestedDeparmentID,
 						LocalDate.parse(validDate));
@@ -167,12 +166,20 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		response.setDepartmentID(requestedDeparmentID);
 		response.setValidDate(LocalDate.parse(validDate));
 		for (final VehicleSalesJournal journal : list) {
+			final VehicleDetail vehicle = refDataQueryService.getVehicle(journal.getId());
+			if ( categoryID.isSome() ) {
+				if ( !vehicle.getCategoryID().equals(categoryID.some()) ) {
+					continue;
+				}
+			}
 			final VehicleSalesJournalDetail item = new VehicleSalesJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setCount(journal.getCount());
 			item.setMargin(journal.getMargin().doubleValue());
-			item.setName(refDataDAL.getVehicle(journal.getId()).some().getName());
-			item.setVehicleID(journal.getId());
+			item.setName(vehicle.getName());
+			item.setVehicleID(vehicle.getId());
+			item.setCategoryID(vehicle.getCategoryID());
+			item.setCategory(vehicle.getCategory());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -198,10 +205,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(request.getDetail().size() == 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				refDataQueryService.getDepartment(request.getDepartmentID()) != null,
 				"unknown department id " + request.getDepartmentID());
 
 		final List<SalesServiceJournal> journals = Lists.newArrayList();
@@ -213,9 +220,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkArgument(refDataDAL.getSalesServiceJournalItem(detail.getItemID()).isSome(),
-					"unknown item id");
-			journal.setId(detail.getItemID());
+			journal.setId(refDataQueryService.getSalesServiceRevenueItem(detail.getItemID()).getId());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
@@ -224,10 +229,6 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		}
 		final Instant timestamp = incomeJournalDAL.saveSalesServiceJournal(
 				request.getDealerID(), request.getDepartmentID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
-
 		return timestamp;
 	}
 
@@ -245,15 +246,15 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetSalesServiceJournalResponse getSalesServiceRevenue(
-			Integer dealerID, Integer departmentID, String validDate) {
+			Integer dealerID, Integer departmentID, String validDate, Option<Integer> categoryID) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(departmentID, "department id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(departmentID) != null,
+				refDataQueryService.getDepartment(departmentID) != null,
 				"unknown department id " + departmentID);
 		
 		final GetSalesServiceJournalResponse response = new GetSalesServiceJournalResponse();
@@ -265,13 +266,20 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		response.setDepartmentID(departmentID);
 		response.setValidDate(LocalDate.parse(validDate));
 		for (final SalesServiceJournal journal : list) {
+			final SalesServiceJournalItemDetail itemDetail = refDataQueryService.getSalesServiceRevenueItem(journal.getId());
+			if ( categoryID.isSome() ) {
+				if ( !itemDetail.getCategoryID().equals(categoryID.some()) ) {
+					continue;
+				}
+			}
 			final SalesServiceJournalDetail item = new SalesServiceJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());
 			item.setCount(journal.getCount());
 			item.setMargin(journal.getMargin().doubleValue());
-			item.setName(refDataDAL.getSalesServiceJournalItem(journal.getId())
-					.some().getName());
-			item.setItemID(journal.getId());
+			item.setName(itemDetail.getName());
+			item.setItemID(itemDetail.getId());
+			item.setCategory(itemDetail.getCategory());
+			item.setCategoryID(itemDetail.getCategoryID());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -295,7 +303,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions
 				.checkNotNull(request.getTax(), "tax amount can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 
 		final List<TaxJournal> journals = Lists.newArrayList();
@@ -307,9 +315,6 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		journals.add(taxJournal);
 		final Instant timestamp = incomeJournalDAL.saveTaxJournal(
 				request.getDealerID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
 		return timestamp;
 	}
 
@@ -328,7 +333,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Performance
 	public GetTaxResponse getIncomeTax(Integer dealerID, String validDate) {
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 		
 		final GetTaxResponse response = new GetTaxResponse();
@@ -354,7 +359,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	public Instant saveDealerEntryItemStatus(
 			final SaveDealerEntryItemStatusRequest request) {
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 
 		final List<DealerEntryItemStatus> journals = Lists.newArrayList();
@@ -366,9 +371,6 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		journals.add(journal);
 		final Instant timestamp = incomeJournalDAL.saveDealerEntryItemStatus(
 				request.getDealerID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
 		return timestamp;
 	}
 
@@ -388,7 +390,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 
 		final GetDealerEntryItemStatusResponse response = new GetDealerEntryItemStatusResponse();
@@ -400,7 +402,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		for (final DealerEntryItemStatus journal : list) {
 			final DealerEntryItemStatusDetail status = new DealerEntryItemStatusDetail();
 			status.setId(journal.getEntryItemID());
-			status.setName(refDataDAL.getMenu(status.getId()).getName());
+			status.setName(refDataQueryService.getMenu(status.getId()).getName());
 			status.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(status);
 		}
@@ -419,10 +421,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(request.getDetail().size() == 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				refDataQueryService.getDepartment(request.getDepartmentID()) != null,
 				"unknown department id " + request.getDepartmentID());
 
 		
@@ -433,9 +435,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkArgument(refDataDAL.getGeneralJournalItem(detail.getItemID()).isSome(),
-					"unknown item id " + detail.getItemID());
-			journal.setId(detail.getItemID());
+			journal.setId(refDataQueryService.getGeneralIncomeItem(detail.getItemID()).getId());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
@@ -443,25 +443,21 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		}
 		final Instant timestamp = incomeJournalDAL.saveGeneralJournal(
 				request.getDealerID(), request.getDepartmentID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
-
 		return timestamp;
 	}
 
 	@Override
 	@Performance
 	public GetGeneralJournalResponse getGeneralIncome(Integer dealerID,
-			Integer departmentID, String validDate) {
+			Integer departmentID, String validDate, Option<Integer> categoryID) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(departmentID, "department id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(departmentID) != null,
+				refDataQueryService.getDepartment(departmentID) != null,
 				"unknown department id " + departmentID);
 		
 		final GetGeneralJournalResponse response = new GetGeneralJournalResponse();
@@ -473,11 +469,18 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		response.setDepartmentID(departmentID);
 		response.setValidDate(LocalDate.parse(validDate));
 		for (final GeneralJournal journal : list) {
+			final GeneralJournalItemDetail itemDetail = refDataQueryService.getGeneralIncomeItem(journal.getId());
+			if ( categoryID.isSome() ) {
+				if ( !itemDetail.getCategoryID().equals(categoryID.some()) ) {
+					continue;
+				}
+			}
 			final GeneralJournalDetail item = new GeneralJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());
-			item.setName(refDataDAL.getGeneralJournalItem(journal.getId())
-					.some().getName());
-			item.setItemID(journal.getId());
+			item.setName(itemDetail.getName());
+			item.setItemID(itemDetail.getId());
+			item.setCategory(itemDetail.getCategory());
+			item.setCategoryID(itemDetail.getCategoryID());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -496,7 +499,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(request.getDetail().size() == 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 		
 		final List<AccountReceivableDuration> journals = Lists.newArrayList();
@@ -506,22 +509,14 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkArgument(refDataDAL.getAccountReceivableDurationItem(detail.getItemID()).isSome(),
-					"unknown item id " + detail.getItemID());
-			Preconditions.checkArgument(refDataDAL.getDuration(detail.getDurationID()).isSome(),
-					"unknown duration id " + detail.getDurationID());
-			journal.setId(detail.getItemID());
-			journal.setDurationID(detail.getDurationID());
+			journal.setId(refDataQueryService.getAccountReceivableDurationItem(detail.getItemID()).getId());
+			journal.setDurationID(refDataQueryService.getDuration(detail.getDurationID()).getId());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
 			journals.add(journal);
 		}
 		final Instant timestamp = incomeJournalDAL.saveAccountReceivableDuration(
 				request.getDealerID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
-
 		return timestamp;
 	}
 
@@ -532,7 +527,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 
 		final GetAccountReceivableDurationResponse response = new GetAccountReceivableDurationResponse();
@@ -545,11 +540,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		for (final AccountReceivableDuration journal : list) {
 			final AccountReceivableDurationDetail item = new AccountReceivableDurationDetail();
 			item.setAmount(journal.getAmount().doubleValue());
-			item.setName(refDataDAL.getAccountReceivableDurationItem(journal.getId())
-					.some().getName());
+			item.setName(refDataQueryService.getAccountReceivableDurationItem(journal.getId()).getName());
 			item.setItemID(journal.getId());
 			item.setDurationID(journal.getDurationID());
-			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()).some(), refDataDAL));
+			item.setDurationDesc(Utils.getDurationDesc(refDataQueryService.getDuration(journal.getDurationID()), refDataQueryService));
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -567,10 +561,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(request.getDetail().size() == 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				refDataQueryService.getDepartment(request.getDepartmentID()) != null,
 				"unknown department id " + request.getDepartmentID());
 		
 		final List<InventoryDuration> journals = Lists.newArrayList();
@@ -580,23 +574,15 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkArgument(refDataDAL.getInventoryDurationItem(detail.getItemID()).isSome(),
-					"unknown item id " + detail.getItemID());
-			Preconditions.checkArgument(refDataDAL.getDuration(detail.getDurationID()).isSome(),
-					"unknown duration id " + detail.getDurationID());
-			journal.setId(detail.getItemID());
+			journal.setId(refDataQueryService.getInventoryDurationItem(detail.getItemID()).getId());
 			journal.setDepartmentID(request.getDepartmentID());
-			journal.setDurationID(detail.getDurationID());
+			journal.setDurationID(refDataQueryService.getDuration(detail.getDurationID()).getId());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
 			journals.add(journal);
 		}
 		final Instant timestamp = incomeJournalDAL.saveInventoryDuration(
 				request.getDealerID(), request.getDepartmentID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
-
 		return timestamp;
 	}
 
@@ -607,10 +593,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(departmentID) != null,
+				refDataQueryService.getDepartment(departmentID) != null,
 				"unknown department id " + departmentID);
 		
 		final GetInventoryDurationResponse response = new GetInventoryDurationResponse();
@@ -624,11 +610,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		for (final InventoryDuration journal : list) {
 			final InventoryDurationDetail item = new InventoryDurationDetail();
 			item.setAmount(journal.getAmount().doubleValue());
-			item.setName(refDataDAL.getInventoryDurationItem(journal.getId())
-					.some().getName());
+			item.setName(refDataQueryService.getInventoryDurationItem(journal.getId()).getName());
 			item.setItemID(journal.getId());
 			item.setDurationID(journal.getDurationID());
-			item.setDurationDesc(Utils.getDurationDesc(refDataDAL.getDuration(journal.getDurationID()).some(), refDataDAL));
+			item.setDurationDesc(Utils.getDurationDesc(refDataQueryService.getDuration(journal.getDurationID()), refDataQueryService));
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -646,10 +631,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(request.getDetail().size() == 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				refDataQueryService.getDepartment(request.getDepartmentID()) != null,
 				"unknown department id " + request.getDepartmentID());
 		
 		final List<EmployeeFee> journals = Lists.newArrayList();
@@ -659,13 +644,11 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
+
 			Preconditions.checkArgument(
-					refDataDAL.getEmployeeFeeItem(detail.getItemID()).isSome(),
-					"unknown item id " + detail.getItemID());
-			Preconditions.checkArgument(
-					refDataDAL.getEnumValue("FeeType", detail.getFeeTypeID()).isSome(),
+					refDataQueryService.getEnumValue("FeeType", detail.getFeeTypeID()).isSome(),
 					"unknown fee type id " + detail.getFeeTypeID());
-			journal.setId(detail.getItemID());
+			journal.setId(refDataQueryService.getEmployeeFeeItem(detail.getItemID()).getId());
 			journal.setFeeTypeID(detail.getFeeTypeID());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
@@ -674,10 +657,6 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		}
 		final Instant timestamp = incomeJournalDAL.saveEmployeeFee(
 				request.getDealerID(), request.getDepartmentID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
-
 		return timestamp;
 	}
 
@@ -688,10 +667,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(departmentID) != null,
+				refDataQueryService.getDepartment(departmentID) != null,
 				"unknown department id " + departmentID);
 		
 		final GetEmployeeFeeResponse response = new GetEmployeeFeeResponse();
@@ -705,11 +684,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		for (final EmployeeFee journal : list) {
 			final EmployeeFeeDetail item = new EmployeeFeeDetail();
 			item.setAmount(journal.getAmount().doubleValue());
-			item.setName(refDataDAL.getEmployeeFeeItem(journal.getId())
-					.some().getName());
+			item.setName(refDataQueryService.getEmployeeFeeItem(journal.getId()).getName());
 			item.setItemID(journal.getId());
 			item.setFeeTypeID(journal.getFeeTypeID());
-			item.setFeeType(refDataDAL.getEnumValue("FeeType", journal.getFeeTypeID()).some().getName());
+			item.setFeeType(refDataQueryService.getEnumValue("FeeType", journal.getFeeTypeID()).some().getName());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -727,10 +705,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(request.getDetail().size() == 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				refDataQueryService.getDepartment(request.getDepartmentID()) != null,
 				"unknown department id " + request.getDepartmentID());
 		
 		final List<EmployeeFeeSummary> journals = Lists.newArrayList();
@@ -740,10 +718,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkArgument(
-					refDataDAL.getEmployeeFeeSummaryItem(detail.getItemID()).isSome(),
-					"unknown item id " + detail.getItemID());
-			journal.setId(detail.getItemID());
+			journal.setId(refDataQueryService.getEmployeeFeeSummaryItem(detail.getItemID()).getId());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
@@ -751,10 +726,6 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		}
 		final Instant timestamp = incomeJournalDAL.saveEmployeeFeeSummary(
 				request.getDealerID(), request.getDepartmentID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
-
 		return timestamp;
 	}
 
@@ -765,10 +736,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(departmentID) != null,
+				refDataQueryService.getDepartment(departmentID) != null,
 				"unknown department id " + departmentID);
 		
 		final GetEmployeeFeeSummaryResponse response = new GetEmployeeFeeSummaryResponse();
@@ -782,8 +753,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		for (final EmployeeFeeSummary journal : list) {
 			final EmployeeFeeSummaryDetail item = new EmployeeFeeSummaryDetail();
 			item.setAmount(journal.getAmount().doubleValue());
-			item.setName(refDataDAL.getEmployeeFeeSummaryItem(journal.getId())
-					.some().getName());
+			item.setName(refDataQueryService.getEmployeeFeeSummaryItem(journal.getId()).getName());
 			item.setItemID(journal.getId());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
@@ -803,10 +773,10 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(request.getDetail().size() == 0,
 				"no detail is posted");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(request.getDealerID()) != null,
+				refDataQueryService.getDealer(request.getDealerID()) != null,
 				"unknown dealer id " + request.getDealerID());
 		Preconditions.checkArgument(
-				refDataDAL.getDepartment(request.getDepartmentID()) != null,
+				refDataQueryService.getDepartment(request.getDepartmentID()) != null,
 				"unknown department id " + request.getDepartmentID());
 		
 		final List<HumanResourceAllocation> journals = Lists.newArrayList();
@@ -816,10 +786,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-			Preconditions.checkArgument(
-					refDataDAL.getJobPosition(detail.getItemID()).isSome(),
-					"unknown job position id " + detail.getItemID());
-			journal.setId(detail.getItemID());
+			journal.setId(refDataQueryService.getHumanResourceAllocationItem(detail.getItemID()).getId());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
@@ -827,9 +794,6 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		}
 		final Instant timestamp = incomeJournalDAL.saveHumanResourceAllocation(
 				request.getDealerID(), request.getDepartmentID(), journals);
-		if (timestamp == null) {
-			throw new RuntimeException("Database save returns null timestamp!");
-		}
 
 		return timestamp;
 	}
@@ -841,7 +805,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
-				refDataDAL.getDealer(dealerID) != null,
+				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
 		
 		final GetHumanResourceAllocationResponse response = new GetHumanResourceAllocationResponse();
@@ -854,8 +818,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		for (final HumanResourceAllocation journal : list) {
 			final HumanResourceAllocationDetail item = new HumanResourceAllocationDetail();
 			item.setAllocation(journal.getAllocation().doubleValue());
-			item.setName(refDataDAL.getJobPosition(journal.getId())
-					.some().getName());
+			item.setName(refDataQueryService.getHumanResourceAllocationItem(journal.getId()).getName());
 			item.setItemID(journal.getId());
 			item.setDepartmentID(journal.getDepartmentID());
 			item.setTimestamp(journal.getTimestamp());

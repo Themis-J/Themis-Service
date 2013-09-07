@@ -7,11 +7,24 @@ import javax.persistence.Id;
 import javax.time.Instant;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDefs;
+import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 
+@FilterDefs(
+		{
+			@org.hibernate.annotations.FilterDef(name="vechicleFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="categoryID", type="integer")}), 
+		}
+		)
+@Filters( {
+    @Filter(name="vechicleFilter", condition="categoryID = :categoryID")
+} )
 @TypeDef(
 		   name = "datetime",
 		   typeClass = PersistentTimestamp.class
@@ -20,6 +33,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class Vehicle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	public static String FILTER = "vechicleFilter";
+	
 	@Id
 	private Integer id;
 	private String name;

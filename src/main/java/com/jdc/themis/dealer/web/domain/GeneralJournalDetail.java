@@ -28,6 +28,21 @@ public class GeneralJournalDetail implements Serializable {
 	private String name;
 	private Instant timestamp;
 	private Double amount;
+	private String category;
+	private Integer categoryID;
+	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public Integer getCategoryID() {
+		return categoryID;
+	}
+	public void setCategoryID(Integer categoryID) {
+		this.categoryID = categoryID;
+	}
 	
 	public Integer getItemID() {
 		return itemID;

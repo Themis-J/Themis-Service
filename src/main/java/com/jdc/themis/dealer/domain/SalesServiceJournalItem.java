@@ -6,11 +6,25 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDefs;
+import org.hibernate.annotations.Filters;
 
+@FilterDefs(
+		{
+			@org.hibernate.annotations.FilterDef(name="ssjiFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="categoryID", type="integer")}), 
+		}
+		)
+@Filters( {
+    @Filter(name="ssjiFilter", condition="categoryID = :categoryID")
+} )
 @Entity
 public class SalesServiceJournalItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	public static String FILTER = "ssjiFilter";
 	
 	private Integer id;
 	private String name;

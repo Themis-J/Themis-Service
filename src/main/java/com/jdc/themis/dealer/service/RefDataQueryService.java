@@ -3,6 +3,7 @@ package com.jdc.themis.dealer.service;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.web.domain.AccountReceivableDurationItemDetail;
 import com.jdc.themis.dealer.web.domain.DealerDetail;
 import com.jdc.themis.dealer.web.domain.DepartmentDetail;
@@ -26,6 +27,8 @@ import com.jdc.themis.dealer.web.domain.MenuDetail;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.VehicleDetail;
 
+import fj.data.Option;
+
 public interface RefDataQueryService {
 	
 	@Transactional(readOnly=true)
@@ -47,21 +50,21 @@ public interface RefDataQueryService {
 	DepartmentDetail getDepartment(Integer id);
 	
 	@Transactional(readOnly=true)
-	GetVehicleResponse getVehicles();
+	GetVehicleResponse getVehicles(Option<Integer> categoryID);
 	
 	@Transactional(readOnly=true)
 	@Cacheable("vehicle")
 	VehicleDetail getVehicle(Integer id);
 	
 	@Transactional(readOnly=true)
-	GetSalesServiceJournalItemResponse getSalesServiceRevenueItems();
+	GetSalesServiceJournalItemResponse getSalesServiceRevenueItems(Option<Integer> categoryID);
 	
 	@Transactional(readOnly=true)
 	@Cacheable("salesServiceJournalItem")
 	SalesServiceJournalItemDetail getSalesServiceRevenueItem(Integer id);
 	
 	@Transactional(readOnly=true)
-	GetGeneralJournalItemResponse getGeneralIncomeItems();
+	GetGeneralJournalItemResponse getGeneralIncomeItems(Option<Integer> categoryID);
 	
 	@Transactional(readOnly=true)
 	@Cacheable("generalJournalItem")
@@ -105,4 +108,10 @@ public interface RefDataQueryService {
 	@Transactional(readOnly=true)
 	@Cacheable("duration")
 	DurationDetail getDuration(Integer id);
+	
+	@Transactional(readOnly=true)
+	Option<EnumValue> getEnumValue(String enumType, Integer enumValue);
+	
+	@Transactional(readOnly=true)
+	Option<EnumValue> getEnumValue(String enumType, String enumValue);
 }

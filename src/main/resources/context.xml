@@ -20,6 +20,8 @@
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 	<import resource="classpath:database-config.xml"/>
+	<import resource="classpath:job.xml"/>
+	<import resource="classpath:security.xml"/>
 	<context:property-placeholder />
 	<context:annotation-config />
 	<aop:aspectj-autoproxy/>

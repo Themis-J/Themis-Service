@@ -22,12 +22,13 @@
 		<cxf.version>2.7.6</cxf.version>
 		<org.eclipse.jetty.version>8.1.8.v20121106</org.eclipse.jetty.version>
 		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
+		<org.springframework.security.version>3.1.4.RELEASE</org.springframework.security.version>
 		<jetty.plugin.version>6.1.25</jetty.plugin.version>
 		<javax.validation.version>1.1.0.CR3</javax.validation.version>
 		<hazelcast.version>2.6</hazelcast.version>
 		<jackson.version>1.9.13</jackson.version>
 		<hibernate.version>3.6.10.Final</hibernate.version>
-		<quartz.version>2.2.0</quartz.version>
+		<quartz.version>1.8.5</quartz.version>
 	</properties>
 
 	<dependencies>
@@ -39,11 +40,6 @@
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<version>${quartz.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz-jobs</artifactId>
 			<version>${quartz.version}</version>
 		</dependency>
 		<dependency>
@@ -123,6 +119,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
@@ -135,6 +136,26 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${org.springframework.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${org.springframework.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${org.springframework.security.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
