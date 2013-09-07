@@ -9,6 +9,8 @@ import javax.persistence.Version;
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
@@ -52,9 +54,9 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class VehicleSalesJournal implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "vehicleSalesFilter";
-	public static String FILTER_VALIDATE = "vehicleSalesDateFilter";
-	public static String FILTER_SINGLEITEM = "vehicleSalesFilterSingleItem";
+	public static final String FILTER = "vehicleSalesFilter";
+	public static final String FILTER_VALIDATE = "vehicleSalesDateFilter";
+	public static final String FILTER_SINGLEITEM = "vehicleSalesFilterSingleItem";
 
 	@Id
 	private Integer id;
@@ -172,5 +174,10 @@ public class VehicleSalesJournal implements TemporalEntity, Serializable {
 				.append("timeEnd", timeEnd)
 				.append("validDate", validDate).getStringBuffer().toString();
 	}
-
+	public boolean equals(Object other) {
+		return EqualsBuilder.reflectionEquals(this, other);
+	}
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 }

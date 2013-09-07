@@ -6,19 +6,16 @@ import java.util.GregorianCalendar;
 
 import javax.time.calendar.LocalDate;
 
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 import com.jdc.themis.dealer.service.DealerIncomeReportService;
 import com.jdc.themis.dealer.utils.Performance;
 
 @Service
-public class DealerIncomeReportGeneratorJob extends QuartzJobBean {
+public class DealerIncomeReportGeneratorJob { // extends QuartzJobBean {
 	private final static Logger logger = LoggerFactory.getLogger(DealerIncomeReportGeneratorJob.class);
 	
 	@Autowired
@@ -31,16 +28,26 @@ public class DealerIncomeReportGeneratorJob extends QuartzJobBean {
 	public void setService(DealerIncomeReportService service) {
 		this.service = service;
 	}
-
-	@Override
+	
+	public void init() {
+		// TODO: setup timer here
+	}
+	
 	@Performance
-	protected void executeInternal(JobExecutionContext context)
-			throws JobExecutionException {
+	public void run() {
 		final Calendar c = new GregorianCalendar();
 		c.setTime(new Date());
 		final LocalDate value = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, 1);
 		logger.info("Importing report data for date {}", value);
 		service.importReportData(value);
 	}
+	/*protected void executeInternal(JobExecutionContext context)
+			throws JobExecutionException {
+		final Calendar c = new GregorianCalendar();
+		c.setTime(new Date());
+		final LocalDate value = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, 1);
+		logger.info("Importing report data for date {}", value);
+		service.importReportData(value);
+	}*/
 
 }

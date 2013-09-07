@@ -43,7 +43,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 		)
 @Filters( {
     @Filter(name="generalFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="generalFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="generalFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"),
+    @Filter(name="generalDateFilter", condition="validDate = :referenceDate and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
@@ -51,9 +52,9 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class GeneralJournal implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "generalFilter";
-	public static String FILTER_SINGLEITEM = "generalFilterSingleItem";
-	public static String FILTER_VALIDATE = "generalDateFilter";
+	public static final String FILTER = "generalFilter";
+	public static final String FILTER_SINGLEITEM = "generalFilterSingleItem";
+	public static final String FILTER_VALIDATE = "generalDateFilter";
 
 	@Id
 	private Integer id;

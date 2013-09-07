@@ -20,6 +20,7 @@ import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.EmployeeFee;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummary;
 import com.jdc.themis.dealer.domain.GeneralJournal;
+import com.jdc.themis.dealer.domain.HumanResourceAllocation;
 import com.jdc.themis.dealer.domain.InventoryDuration;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.TaxJournal;
@@ -190,6 +191,33 @@ public class TestIncomeJournalDAOImpl {
 	} 
 	
 	@Test
+	public void insertTwoDealerEntryItemStatus2() {
+		final DealerEntryItemStatus status1 = new DealerEntryItemStatus();
+		status1.setDealerID(1);
+		status1.setEntryItemID(1);
+		status1.setValidDate(LocalDate.of(2013, 8, 1));
+		status1.setUpdateBy("test2");
+		incomeJournalDAL.saveDealerEntryItemStatus(1, Lists.newArrayList(status1));
+		
+		final DealerEntryItemStatus status2 = new DealerEntryItemStatus();
+		status2.setDealerID(1);
+		status2.setEntryItemID(1);
+		status2.setValidDate(LocalDate.of(2013, 8, 1));
+		status2.setUpdateBy("test2");
+		incomeJournalDAL.saveDealerEntryItemStatus(1, Lists.newArrayList(status2));
+		
+		int hasJournal = 0;
+		for (final DealerEntryItemStatus journal : incomeJournalDAL.getDealerEntryItemStatus(1, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test2", journal.getUpdateBy());
+			Assert.assertEquals(1, journal.getDealerID().intValue());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
 	public void insertOneVehicleSalesJournal() {
 		final VehicleSalesJournal status = new VehicleSalesJournal();
 		status.setDealerID(10);
@@ -304,6 +332,16 @@ public class TestIncomeJournalDAOImpl {
 			Assert.assertEquals(10, journal.getDealerID().intValue());
 		} 
 		Assert.assertEquals(1, hasJournal);
+		
+		hasJournal = 0;
+		for (final SalesServiceJournal journal : incomeJournalDAL.getSalesServiceJournal(LocalDate.of(2013, 8, 1), Utils.currentTimestamp())) {
+			hasJournal++;
+			System.out.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		} 
+		Assert.assertEquals(1, hasJournal);
 	} 
 	
 	@Test
@@ -393,6 +431,14 @@ public class TestIncomeJournalDAOImpl {
 			Assert.assertEquals(10, journal.getDealerID().intValue());
 		}
 		Assert.assertEquals(1, hasJournal);
+		
+		hasJournal = 0;
+		for (final GeneralJournal journal : incomeJournalDAL.getGeneralJournal(LocalDate.of(2013, 8, 1), Utils.currentTimestamp())) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+		}
+		Assert.assertEquals(2, hasJournal);
 	} 
 	
 	@Test
@@ -638,6 +684,62 @@ public class TestIncomeJournalDAOImpl {
 			Assert.assertEquals("test2", journal.getUpdatedBy());
 			Assert.assertEquals(10, journal.getDealerID().intValue());
 		}
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void insertTwoInventoryDurationWithZeroAmount() {
+		final InventoryDuration status = new InventoryDuration();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setDepartmentID(2);
+		status.setAmount(new BigDecimal("1234.343"));
+		status.setDurationID(1);
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveInventoryDuration(10, 2, Lists.newArrayList(status));
+		
+		final InventoryDuration status2 = new InventoryDuration();
+		status2.setDealerID(10);
+		status2.setId(1);
+		status2.setDepartmentID(2);
+		status2.setAmount(null);
+		status2.setDurationID(1);
+		status2.setValidDate(LocalDate.of(2013, 8, 1));
+		status2.setUpdatedBy("test2");
+		incomeJournalDAL.saveInventoryDuration(10, 2, Lists.newArrayList(status2));
+		
+		int hasJournal = 0;
+		for (final InventoryDuration journal : incomeJournalDAL.getInventoryDuration(10, 2, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test2", journal.getUpdatedBy());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		}
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void insertOneHRAllocation() {
+		final HumanResourceAllocation status = new HumanResourceAllocation();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setDepartmentID(2);
+		status.setAllocation(new BigDecimal("1234.343"));
+
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveHumanResourceAllocation(10, 2, Lists.newArrayList(status));
+		
+		int hasJournal = 0;
+		for (final HumanResourceAllocation journal : incomeJournalDAL.getHumanResourceAllocation(10, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.out.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		} 
 		Assert.assertEquals(1, hasJournal);
 	} 
 }

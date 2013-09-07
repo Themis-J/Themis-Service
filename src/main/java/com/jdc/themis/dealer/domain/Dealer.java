@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
@@ -57,6 +58,9 @@ public class Dealer implements Serializable {
 				.getStringBuffer().toString();
 	}
 	public boolean equals(Object other) {
-		return EqualsBuilder.reflectionEquals(this, other, new String[]{"fullName", "city", "code"});
+		return EqualsBuilder.reflectionEquals(this, other);
+	}
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }

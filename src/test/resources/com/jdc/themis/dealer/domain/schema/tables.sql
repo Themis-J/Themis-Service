@@ -8,10 +8,14 @@ CREATE TABLE EntitlementResource ( id integer,  name varchar(20),      resourceT
 CREATE TABLE UserRoleEntitlement ( roleID integer,  resourceID integer ) 
 CREATE TABLE UserInfo (    id integer,     username varchar(20),     password varchar(50),     userRoleID integer,    dealerID integer,    active boolean,     timestamp timestamp ) 
 
+CREATE TABLE Dealer (   id integer,   name varchar(100) NOT NULL,   fullName varchar(250) NOT NULL,    code varchar(10) NOT NULL,    city varchar(20),    timestamp timestamp ) 
+
 CREATE TABLE Menu (id integer PRIMARY KEY, name varchar(100) NOT NULL, displayText varchar(100)) 
 CREATE TABLE MenuHierachy (parentID integer, childID integer, itemOrder integer) 
 
 CREATE TABLE Department (   id integer,    name varchar(100),    timestamp timestamp)
+
+CREATE TABLE HumanResourceAllocation(   timestamp timestamp,   timeEnd timestamp,    validDate date NOT NULL,    dealerID integer NOT NULL,   departmentID integer NOT NULL,   id integer NOT NULL,   version integer,   allocation double,   updatedBy varchar(20) NOT NULL,    CONSTRAINT HRA_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, version)) 
 
 CREATE TABLE JobPosition (   id integer,    name varchar(100),    timestamp timestamp)
 CREATE TABLE Vehicle (    id integer,  name varchar(100), categoryID integer, timestamp timestamp) 

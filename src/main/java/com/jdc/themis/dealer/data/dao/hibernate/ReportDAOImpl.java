@@ -71,7 +71,7 @@ public class ReportDAOImpl implements ReportDAO {
 
 	@Override
 	@Performance
-	public synchronized void importVehicleSalesJournal(final LocalDate validDate) {
+	public void importVehicleSalesJournal(final LocalDate validDate) {
 		logger.info("Importing vehicle sales journal to income revenue");
 		
 		final Collection<VehicleSalesJournal> list = incomeJournalDAL.getVehicleSalesJournal(validDate, Utils.currentTimestamp());
@@ -110,7 +110,7 @@ public class ReportDAOImpl implements ReportDAO {
 
 	@Override
 	@Performance
-	public synchronized void importSalesServiceJournal(final LocalDate validDate) {
+	public void importSalesServiceJournal(final LocalDate validDate) {
 		logger.info("Importing sales & service journal to income revenue");
 		
 		final Collection<SalesServiceJournal> list = incomeJournalDAL.getSalesServiceJournal(validDate, Utils.currentTimestamp());
@@ -148,7 +148,7 @@ public class ReportDAOImpl implements ReportDAO {
 	}
 
 	@Override
-	public synchronized void importGeneralJournal(final LocalDate validDate) {
+	public void importGeneralJournal(final LocalDate validDate) {
 		logger.info("Importing general journal to income revenue");
 		
 		final Collection<GeneralJournal> list = incomeJournalDAL.getGeneralJournal(validDate, Utils.currentTimestamp());
@@ -369,7 +369,7 @@ public class ReportDAOImpl implements ReportDAO {
 
 	@Override
 	public void saveDealerIncomeExpenseFacts(
-			final Collection<DealerIncomeExpenseFact> journals) {
+			Collection<DealerIncomeExpenseFact> journals) {
 		final Session session = sessionFactory.getCurrentSession();
 		for (DealerIncomeExpenseFact newJournal: journals) {
 			// check whether this journal has been inserted before

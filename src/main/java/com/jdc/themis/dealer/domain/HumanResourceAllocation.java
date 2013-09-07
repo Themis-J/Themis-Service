@@ -46,8 +46,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class HumanResourceAllocation implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "hrFilter";
-	public static String FILTER_SINGLEITEM = "hrFilterSingleItem";
+	public static final String FILTER = "hrFilter";
+	public static final String FILTER_SINGLEITEM = "hrFilterSingleItem";
 
 	@Id
 	private Integer id;

@@ -45,8 +45,8 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static String FILTER = "dealerEntryItemStatusFilter";
-	public static String FILER_SINGLEENTRYITEM = "dealerEntryItemStatusFilterSingleEntryItem";
+	public static final String FILTER = "dealerEntryItemStatusFilter";
+	public static final String FILER_SINGLEENTRYITEM = "dealerEntryItemStatusFilterSingleEntryItem";
 
 	@Id
 	private Integer entryItemID;

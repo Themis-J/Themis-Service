@@ -48,8 +48,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class InventoryDuration implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "idFilter";
-	public static String FILTER_SINGLEITEM = "idFilterSingleItem";
+	public static final String FILTER = "idFilter";
+	public static final String FILTER_SINGLEITEM = "idFilterSingleItem";
 
 	@Id
 	private Integer id;

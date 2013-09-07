@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
@@ -27,7 +30,7 @@ import org.hibernate.annotations.Filters;
 public class ReportItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "reportItemFilter";
+	public static final String FILTER = "reportItemFilter";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -74,5 +77,11 @@ public class ReportItem implements Serializable {
 				.append("sourceItemID", sourceItemID)
 				.append("itemCategory", itemCategory)
 				.append("itemSource", itemSource).getStringBuffer().toString();
+	}
+	public boolean equals(Object other) {
+		return EqualsBuilder.reflectionEquals(this, other);
+	}
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }

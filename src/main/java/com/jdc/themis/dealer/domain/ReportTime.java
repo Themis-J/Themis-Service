@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.time.calendar.LocalDate;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
@@ -47,9 +49,9 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class ReportTime implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "reportTimeValidDateFilter";
-	public static String FILTER_YEAR = "reportTimeYearFilter";
-	public static String FILTER_MONTH = "reportTimeMonthFilter";
+	public static final String FILTER = "reportTimeValidDateFilter";
+	public static final String FILTER_YEAR = "reportTimeYearFilter";
+	public static final String FILTER_MONTH = "reportTimeMonthFilter";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -91,5 +93,11 @@ public class ReportTime implements Serializable {
 				.append("month", monthOfYear)
 				.append("year", year)
 				.append("validDate", validDate).getStringBuffer().toString();
+	}
+	public boolean equals(Object other) {
+		return EqualsBuilder.reflectionEquals(this, other);
+	}
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }

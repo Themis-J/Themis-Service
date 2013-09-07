@@ -562,6 +562,39 @@ public class TestDealerIncomeEntryServiceImpl {
 	}
 	
 	@Test
+	public void saveEmployeeFeeSuccessfullyWithZeroAmount() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(2);
+		dealer.setName("Dealer2");
+		when(refDataDAL.getDealer(2)).thenReturn(dealer);
+		
+		final DepartmentDetail department = new DepartmentDetail();
+		department.setId(4);
+		department.setName("Department4");
+		when(refDataDAL.getDepartment(4)).thenReturn(department);
+		when(refDataDAL.getEmployeeFeeItem(3)).thenReturn(new EmployeeFeeItemDetail());
+		when(refDataDAL.getEnumValue("FeeType", 1)).thenReturn(Option.<EnumValue>some(new EnumValue()));
+		
+		final Instant timestamp = LocalDateTime.parse("2013-02-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		when(dal.saveEmployeeFee(eq(2), eq(4), anyCollectionOf(EmployeeFee.class))).thenReturn(timestamp);
+		
+		final SaveEmployeeFeeRequest request = new SaveEmployeeFeeRequest();
+		request.setDealerID(2);
+		request.setDepartmentID(4);
+		request.setValidDate(LocalDate.of(2013, 6, 1).toString());
+		
+		final EmployeeFeeDetail detail = new EmployeeFeeDetail();
+		detail.setAmount(null);
+		detail.setItemID(3);
+		detail.setFeeTypeID(1);
+		request.getDetail().add(detail);
+		
+		final Instant result = service.saveEmployeeFee(request);
+		
+		Assert.assertEquals("2013-02-01T00:00:00.001Z", result.toString());
+	}
+	
+	@Test
 	public void getEmployeeFeeSuccessfully() {
 		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(2);

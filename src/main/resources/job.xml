@@ -18,6 +18,16 @@
     http://cxf.apache.org/jaxrs
 	http://cxf.apache.org/schemas/jaxrs.xsd">
 
+
+    <bean id="importReportDataJob" class="com.jdc.themis.dealer.report.job.DealerIncomeReportGeneratorJob">
+    </bean>
+
+<!-- 
+	<bean id="importReportDataJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="myjob" />
+	  <property name="targetMethod" value="run" />
+	</bean>
+
 	<bean name="importReportDataJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 		<property name="jobClass" value="com.jdc.themis.dealer.report.job.DealerIncomeReportGeneratorJob" />
 		<property name="jobDataAsMap">
@@ -26,28 +36,24 @@
 			</map>
 		</property>	 
 	</bean>
+	 -->
 	<!-- Cron Trigger, run every 30 mins -->
 	
 	<!-- 
 	<bean id="cronTrigger"
-		class="org.springframework.scheduling.quartz.CronTriggerBean">
- 
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="startDelay" value="2000"/>
 		<property name="jobDetail" ref="importReportDataJob" />
-		<property name="cronExpression" value="0 0/30 * * * ?" />
- 
+		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
-	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-		<property name="jobDetails">
-			<list>
-				<ref bean="importReportDataJob" />
-			</list>
-		</property>
- 
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="true">
 		<property name="triggers">
 			<list>
 				<ref bean="cronTrigger" />
 			</list>
 		</property>
+		<property name="autoStartup" value="true" />
+		
 	</bean>
-	 -->
+	  -->
 </beans>

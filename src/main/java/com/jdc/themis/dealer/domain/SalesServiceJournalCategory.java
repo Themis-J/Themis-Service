@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 @Entity
 public class SalesServiceJournalCategory implements Serializable {
 
@@ -26,5 +29,10 @@ public class SalesServiceJournalCategory implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	public boolean equals(Object other) {
+		return EqualsBuilder.reflectionEquals(this, other);
+	}
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 }

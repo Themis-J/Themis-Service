@@ -42,7 +42,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveVehicleSalesRevenue(
+	Instant saveVehicleSalesRevenue(
 			final SaveVehicleSalesJournalRequest request);
 
 	/**
@@ -55,7 +55,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetVehicleSalesJournalResponse getVehicleSalesRevenue(
+	GetVehicleSalesJournalResponse getVehicleSalesRevenue(
 			Integer dealerID,
 			Option<Integer> departmentID,
 			String validDate, 
@@ -68,7 +68,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveSalesServiceRevenue(
+	Instant saveSalesServiceRevenue(
 			final SaveSalesServiceRevenueRequest request);
 
 	/**
@@ -83,7 +83,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetSalesServiceJournalResponse getSalesServiceRevenue(
+	GetSalesServiceJournalResponse getSalesServiceRevenue(
 			Integer dealerID,
 			Integer departmentID,
 			String validDate, Option<Integer> categoryID);
@@ -95,7 +95,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveIncomeTax(final SaveTaxRequest request);
+	Instant saveIncomeTax(final SaveTaxRequest request);
 
 	/**
 	 * Get a list sales & service revenue per sales item.
@@ -109,7 +109,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetTaxResponse getIncomeTax(Integer dealerID,
+	GetTaxResponse getIncomeTax(Integer dealerID,
 			String validDate);
 
 	/**
@@ -119,7 +119,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveDealerEntryItemStatus(
+	Instant saveDealerEntryItemStatus(
 			final SaveDealerEntryItemStatusRequest request);
 
 	/**
@@ -132,7 +132,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public GetDealerEntryItemStatusResponse getDealerEntryItemStatus(Integer dealerID, String validDate);
+	GetDealerEntryItemStatusResponse getDealerEntryItemStatus(Integer dealerID, String validDate);
 	
 	/**
 	 * Save a list of general income journals.
@@ -141,7 +141,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveGeneralIncome(
+	Instant saveGeneralIncome(
 			final SaveGeneralJournalRequest request);
 
 	/**
@@ -156,7 +156,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetGeneralJournalResponse getGeneralIncome(
+	GetGeneralJournalResponse getGeneralIncome(
 			Integer dealerID,
 			Integer departmentID,
 			String validDate, Option<Integer> categoryID);
@@ -168,7 +168,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveAccountReceivableDuration(
+	Instant saveAccountReceivableDuration(
 			final SaveAccountReceivableDurationRequest request);
 
 	/**
@@ -183,7 +183,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetAccountReceivableDurationResponse getAccountReceivableDuration(
+	GetAccountReceivableDurationResponse getAccountReceivableDuration(
 			Integer dealerID,
 			String validDate);
 	
@@ -194,7 +194,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveInventoryDuration(
+	Instant saveInventoryDuration(
 			final SaveInventoryDurationRequest request);
 
 	/**
@@ -209,7 +209,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetInventoryDurationResponse getInventoryDuration(
+	GetInventoryDurationResponse getInventoryDuration(
 			Integer dealerID,
 			Integer departmentID, 
 			String validDate);
@@ -221,7 +221,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveEmployeeFee(
+	Instant saveEmployeeFee(
 			final SaveEmployeeFeeRequest request);
 
 	/**
@@ -236,7 +236,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetEmployeeFeeResponse getEmployeeFee (
+	GetEmployeeFeeResponse getEmployeeFee (
 			Integer dealerID,
 			Integer departmentID, 
 			String validDate);
@@ -248,7 +248,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveEmployeeFeeSummary (
+	Instant saveEmployeeFeeSummary (
 			final SaveEmployeeFeeSummaryRequest request);
 
 	/**
@@ -263,7 +263,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetEmployeeFeeSummaryResponse getEmployeeFeeSummary (
+	GetEmployeeFeeSummaryResponse getEmployeeFeeSummary (
 			Integer dealerID,
 			Integer departmentID, 
 			String validDate);
@@ -275,7 +275,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional
-	public Instant saveHumanResourceAllocation (
+	Instant saveHumanResourceAllocation (
 			final SaveHumanResourceAllocationRequest request);
 
 	/**
@@ -290,7 +290,7 @@ public interface DealerIncomeEntryService {
 	 * @return
 	 */
 	@Transactional(readOnly=true)
-	public GetHumanResourceAllocationResponse getHumanResourceAllocation (
+	GetHumanResourceAllocationResponse getHumanResourceAllocation (
 			Integer dealerID,
 			String validDate);
 

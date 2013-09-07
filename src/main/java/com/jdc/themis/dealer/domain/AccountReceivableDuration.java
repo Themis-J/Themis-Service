@@ -45,8 +45,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class AccountReceivableDuration implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "ardFilter";
-	public static String FILTER_SINGLEITEM = "ardFilterSingleItem";
+	public static final String FILTER = "ardFilter";
+	public static final String FILTER_SINGLEITEM = "ardFilterSingleItem";
 
 	@Id
 	private Integer id;

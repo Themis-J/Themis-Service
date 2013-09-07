@@ -10,6 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.Duration;
+import com.jdc.themis.dealer.domain.GeneralJournalCategory;
 
 import fj.data.Option;
 
@@ -57,6 +59,27 @@ public class TestRefDataDAOImpl {
 	@Test
 	public void getTaxJournalItemListSize() {
 		Assert.assertEquals(1, refDataDAO.getTaxJournalItems().size());
+	}
+	
+	@Test
+	public void getDurationListSize() {
+		Assert.assertEquals(2, refDataDAO.getDurations().size());
+	}
+	
+	@Test
+	public void getGeneralJournalCategoryListSize() {
+		Assert.assertEquals(0, refDataDAO.getGeneralJournalCategorys().size());
+	}
+	
+	@Test
+	public void getGeneralJournalCategory() {
+		Assert.assertEquals(Option.<GeneralJournalCategory>none(), refDataDAO.getGeneralJournalCategory(2));
+	}
+	
+	@Test
+	public void getDuration() {
+		Assert.assertEquals(60, refDataDAO.getDuration(2).some().getUpperBound().intValue());
+		Assert.assertEquals(Option.<Duration>none(), refDataDAO.getDuration(4));
 	}
 	
 	@Test
@@ -141,6 +164,16 @@ public class TestRefDataDAOImpl {
 	@Test
 	public void getDepartmentList() {
 		Assert.assertEquals(4, refDataDAO.getDepartments().size());
+	}
+	
+	@Test
+	public void getDealerList() {
+		Assert.assertEquals(4, refDataDAO.getDealers().size());
+	}
+	
+	@Test
+	public void getDealer() {
+		Assert.assertEquals("Dealer2", refDataDAO.getDealer(2).getName());
 	}
 	
 	@Test

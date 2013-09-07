@@ -25,6 +25,14 @@ insert into Menu values (5, 'Expense', 'ExpenseText')
 insert into Vehicle values (1, '微型车 Mini', 1, {ts '2012-09-17 18:47:52.69'})
 insert into Vehicle values (2, '微型车 XXX', 1, {ts '2012-09-17 18:47:52.69'})
 
+insert into Duration values (1, 1, 0, 30)
+insert into Duration values (2, 1, 31, 60)
+
+insert into Dealer values (1, 'Dealer1', '', '', 'D01-1', {ts '2012-09-17 18:47:52.69'})
+insert into Dealer values (2, 'Dealer2', '', '', 'D01-1', {ts '2012-09-17 18:47:52.69'})
+insert into Dealer values (3, 'Dealer3', '', '', 'D01-1', {ts '2012-09-17 18:47:52.69'})
+insert into Dealer values (4, 'Dealer4', '', '', 'D01-1', {ts '2012-09-17 18:47:52.69'})
+
 insert into MenuHierachy values (1, 2, 1)
 insert into MenuHierachy values (1, 3, 2)
 insert into MenuHierachy values (2, 4, 3)

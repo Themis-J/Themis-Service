@@ -167,10 +167,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		response.setValidDate(LocalDate.parse(validDate));
 		for (final VehicleSalesJournal journal : list) {
 			final VehicleDetail vehicle = refDataQueryService.getVehicle(journal.getId());
-			if ( categoryID.isSome() ) {
-				if ( !vehicle.getCategoryID().equals(categoryID.some()) ) {
-					continue;
-				}
+			if ( categoryID.isSome() && !vehicle.getCategoryID().equals(categoryID.some()) ) {
+				continue;
 			}
 			final VehicleSalesJournalDetail item = new VehicleSalesJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());
@@ -267,10 +265,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		response.setValidDate(LocalDate.parse(validDate));
 		for (final SalesServiceJournal journal : list) {
 			final SalesServiceJournalItemDetail itemDetail = refDataQueryService.getSalesServiceRevenueItem(journal.getId());
-			if ( categoryID.isSome() ) {
-				if ( !itemDetail.getCategoryID().equals(categoryID.some()) ) {
-					continue;
-				}
+			if ( categoryID.isSome() && !itemDetail.getCategoryID().equals(categoryID.some()) ) {
+				continue;
 			}
 			final SalesServiceJournalDetail item = new SalesServiceJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());
@@ -470,10 +466,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		response.setValidDate(LocalDate.parse(validDate));
 		for (final GeneralJournal journal : list) {
 			final GeneralJournalItemDetail itemDetail = refDataQueryService.getGeneralIncomeItem(journal.getId());
-			if ( categoryID.isSome() ) {
-				if ( !itemDetail.getCategoryID().equals(categoryID.some()) ) {
-					continue;
-				}
+			if ( categoryID.isSome() && !itemDetail.getCategoryID().equals(categoryID.some()) ) {
+				continue;
 			}
 			final GeneralJournalDetail item = new GeneralJournalDetail();
 			item.setAmount(journal.getAmount().doubleValue());

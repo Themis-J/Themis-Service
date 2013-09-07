@@ -43,7 +43,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 		)
 @Filters( {
     @Filter(name="salesServiceFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="salesServiceFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="salesServiceFilter", condition="validDate = :referenceDate and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"),
+    @Filter(name="salesServiceDateFilter", condition="validDate = :referenceDate and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
@@ -51,9 +52,9 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class SalesServiceJournal implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "salesServiceFilter";
-	public static String FILTER_VALIDATE = "salesServiceDateFilter";
-	public static String FILTER_SINGLEITEM = "salesServiceFilterSingleItem";
+	public static final String FILTER = "salesServiceFilter";
+	public static final String FILTER_VALIDATE = "salesServiceDateFilter";
+	public static final String FILTER_SINGLEITEM = "salesServiceFilterSingleItem";
 
 	@Id
 	private Integer id;

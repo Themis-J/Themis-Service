@@ -35,7 +35,7 @@ public class PersistentLocalDate implements EnhancedUserType, Serializable {
 
 	@Override
 	public boolean equals(Object x, Object y) throws HibernateException {
-		return (x==y) || (x != null && y != null && x.equals(y));
+		return x==y || x != null && y != null && x.equals(y);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class PersistentLocalDate implements EnhancedUserType, Serializable {
 			final Calendar c = new GregorianCalendar();
 			c.set(date.getYear(), date.getMonthOfYear().getValue() - 1, date.getDayOfMonth());
 			logger.debug("Set date {} for field {}", c, index);
-			st.setDate(index, new java.sql.Date(c.getTimeInMillis()));
+			st.setDate(index, new Date(c.getTimeInMillis()));
 		}
 	}
 

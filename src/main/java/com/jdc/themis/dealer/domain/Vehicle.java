@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.time.Instant;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDefs;
@@ -33,7 +35,7 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class Vehicle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "vechicleFilter";
+	public static final String FILTER = "vechicleFilter";
 	
 	@Id
 	private Integer id;
@@ -72,5 +74,11 @@ public class Vehicle implements Serializable {
 		return new ToStringBuilder(this).append("id", id)
 				.append("name", name)
 				.getStringBuffer().toString();
+	}
+	public boolean equals(Object other) {
+		return EqualsBuilder.reflectionEquals(this, other);
+	}
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }

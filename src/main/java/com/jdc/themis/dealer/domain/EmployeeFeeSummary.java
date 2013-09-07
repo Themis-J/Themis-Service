@@ -47,8 +47,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class EmployeeFeeSummary implements TemporalEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static String FILTER = "efsFilter";
-	public static String FILTER_SINGLEITEM = "efsFilterSingleItem";
+	public static final String FILTER = "efsFilter";
+	public static final String FILTER_SINGLEITEM = "efsFilterSingleItem";
 
 	@Id
 	private Integer id;

@@ -45,7 +45,7 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 @Entity
 public class TaxJournal implements TemporalEntity, Serializable {
 	
-	public static String FILTER = "taxJournalFilter";
+	public static final String FILTER = "taxJournalFilter";
 
 	private static final long serialVersionUID = 1L;
 	@Id
