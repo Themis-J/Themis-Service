@@ -18,13 +18,13 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
-import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.data.dao.ReportDAO;
-import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.DealerIncomeExpenseFact;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.service.DealerIncomeReportService;
+import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.Performance;
+import com.jdc.themis.dealer.web.domain.DealerDetail;
 import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
 import com.jdc.themis.dealer.web.domain.ReportDataDealerDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDealerDetailAmount;
@@ -38,13 +38,13 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 	@Autowired
 	private ReportDAO reportDAL;
 	@Autowired
-	private RefDataDAO refDataDAL;
+	private RefDataQueryService refDataDAL;
 
-	public RefDataDAO getRefDataDAL() {
+	public RefDataQueryService getRefDataDAL() {
 		return refDataDAL;
 	}
 
-	public void setRefDataDAL(RefDataDAO refDataDAL) {
+	public void setRefDataDAL(RefDataQueryService refDataDAL) {
 		this.refDataDAL = refDataDAL;
 	}
 
@@ -112,7 +112,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		final ReportDataDetail reportDetail = new ReportDataDetail();
 		reportDetail.setYear(year);
 		final Map<Integer, ReportDataDealerDetail> dealerDetails = Maps.newHashMap();
-		for ( final Dealer dealer : refDataDAL.getDealers() ) {
+		for ( final DealerDetail dealer : refDataDAL.getDealers() ) {
 			dealerDetails.put(dealer.getId(), new ReportDataDealerDetail());
 			dealerDetails.get(dealer.getId()).setId(dealer.getId());
 			dealerDetails.get(dealer.getId()).setName(dealer.getName());

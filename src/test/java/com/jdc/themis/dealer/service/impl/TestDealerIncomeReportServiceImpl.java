@@ -1,10 +1,10 @@
 package com.jdc.themis.dealer.service.impl;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
-import static org.mockito.Mockito.when;
 import javax.time.calendar.LocalDate;
 
 import junit.framework.Assert;
@@ -15,12 +15,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.google.common.collect.Lists;
-import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.data.dao.ReportDAO;
-import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.domain.ReportItem;
 import com.jdc.themis.dealer.domain.ReportTime;
+import com.jdc.themis.dealer.service.RefDataQueryService;
+import com.jdc.themis.dealer.web.domain.DealerDetail;
 import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
 
 import fj.data.Option;
@@ -30,13 +30,13 @@ public class TestDealerIncomeReportServiceImpl {
 	@Mock
 	private ReportDAO dal;
 	@Mock
-	private RefDataDAO refDataDAL;
+	private RefDataQueryService refDataDAL;
 	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks( this );
 		dal = mock(ReportDAO.class);
-		refDataDAL = mock(RefDataDAO.class);
+		refDataDAL = mock(RefDataQueryService.class);
 		service = new DealerIncomeReportServiceImpl();
 		service.setReportDAL(dal);
 		service.setRefDataDAL(refDataDAL);
@@ -44,10 +44,10 @@ public class TestDealerIncomeReportServiceImpl {
 	
 	@Test
 	public void queryYearlyOverallIncomeReport() {
-		final Dealer dealer1 = new Dealer();
+		final DealerDetail dealer1 = new DealerDetail();
 		dealer1.setId(1);
 		dealer1.setName("Dealer1");
-		final Dealer dealer2 = new Dealer();
+		final DealerDetail dealer2 = new DealerDetail();
 		dealer2.setId(2);
 		dealer2.setName("Dealer2");
 		

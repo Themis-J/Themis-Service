@@ -1,11 +1,13 @@
 package com.jdc.themis.dealer.service.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
@@ -371,6 +373,16 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Override
 	public Option<EnumValue> getEnumValue(String enumType, String enumValue) {
 		return refDataDAL.getEnumValue(enumType, enumValue);
+	}
+
+	@Override
+	public Collection<DealerDetail> getDealers() {
+		final List<DealerDetail> dealers = Lists.newArrayList();
+		for (final Dealer dealer : refDataDAL.getDealers()) {
+			final DealerDetail item = getDealer(dealer.getId());
+			dealers.add(item);
+		}
+		return dealers;
 	}
 
 }

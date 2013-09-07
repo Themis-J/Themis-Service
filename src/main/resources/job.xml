@@ -27,6 +27,8 @@
 		</property>	 
 	</bean>
 	<!-- Cron Trigger, run every 30 mins -->
+	
+	<!-- 
 	<bean id="cronTrigger"
 		class="org.springframework.scheduling.quartz.CronTriggerBean">
  
@@ -47,5 +49,5 @@
 			</list>
 		</property>
 	</bean>
-	
+	 -->
 </beans>

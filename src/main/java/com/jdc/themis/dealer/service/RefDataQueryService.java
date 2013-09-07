@@ -1,5 +1,7 @@
 package com.jdc.themis.dealer.service;
 
+import java.util.Collection;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +44,9 @@ public interface RefDataQueryService {
 	@Cacheable("dealer")
 	DealerDetail getDealer(Integer id);
 
+	@Transactional(readOnly=true)
+	Collection<DealerDetail> getDealers();
+	
 	@Transactional(readOnly=true)
 	GetDepartmentResponse getDepartments();
 	
