@@ -16,7 +16,14 @@ public class GeneralJournalCategory implements Serializable {
 	@Id
 	private Integer id;
 	private String name;
+	private Integer categoryType;
 	
+	public Integer getCategoryType() {
+		return categoryType;
+	}
+	public void setCategoryType(Integer categoryType) {
+		this.categoryType = categoryType;
+	}
 	@Id
 	public Integer getId() {
 		return id;

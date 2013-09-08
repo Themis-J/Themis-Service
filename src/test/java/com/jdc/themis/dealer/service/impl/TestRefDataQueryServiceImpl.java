@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -15,18 +16,40 @@ import org.mockito.MockitoAnnotations;
 
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
+import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
+import com.jdc.themis.dealer.domain.Dealer;
+import com.jdc.themis.dealer.domain.Department;
+import com.jdc.themis.dealer.domain.EmployeeFeeItem;
+import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
 import com.jdc.themis.dealer.domain.GeneralJournalCategory;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
+import com.jdc.themis.dealer.domain.InventoryDurationItem;
+import com.jdc.themis.dealer.domain.JobPosition;
 import com.jdc.themis.dealer.domain.Menu;
 import com.jdc.themis.dealer.domain.MenuHierachy;
 import com.jdc.themis.dealer.domain.MenuHierachyId;
 import com.jdc.themis.dealer.domain.SalesServiceJournalCategory;
 import com.jdc.themis.dealer.domain.SalesServiceJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
+import com.jdc.themis.dealer.web.domain.AccountReceivableDurationItemDetail;
+import com.jdc.themis.dealer.web.domain.DealerDetail;
+import com.jdc.themis.dealer.web.domain.DepartmentDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
+import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
+import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
+import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeItemResponse;
+import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryItemResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
+import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetInventoryDurationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
+import com.jdc.themis.dealer.web.domain.HumanResourceAllocationItemDetail;
+import com.jdc.themis.dealer.web.domain.InventoryDurationItemDetail;
+import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 
 import fj.data.Option;
 
@@ -134,6 +157,10 @@ public class TestRefDataQueryServiceImpl {
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
 		Assert.assertEquals("s2", response.getItems().get(1).getName());
+		
+		when(refDataDAL.getSalesServiceJournalItem(1)).thenReturn(Option.<SalesServiceJournalItem>some(v1));
+		final SalesServiceJournalItemDetail item = refDataQueryService.getSalesServiceRevenueItem(1);
+		Assert.assertEquals("s1", item.getName());
 	}
 	
 	@Test
@@ -161,6 +188,184 @@ public class TestRefDataQueryServiceImpl {
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
 		Assert.assertEquals("g2", response.getItems().get(1).getName());
+		
+		when(refDataDAL.getGeneralJournalItem(1)).thenReturn(Option.<GeneralJournalItem>some(v1));
+		final GeneralJournalItemDetail item = refDataQueryService.getGeneralIncomeItem(1);
+		Assert.assertEquals("g1", item.getName());
 	}
 	
+	@Test
+	public void getAllDealers() {
+		final List<Dealer> list = Lists.newArrayList();
+		final Dealer v1 = new Dealer();
+		final Dealer v2 = new Dealer();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v2.setId(2);
+		v2.setName("g2");
+		
+		when(refDataDAL.getDealers()).thenReturn(list);
+		final Collection<DealerDetail> response = refDataQueryService.getDealers();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.size());
+		Assert.assertEquals("g1", response.iterator().next().getName());
+		
+		when(refDataDAL.getDealer(1)).thenReturn(v1);
+		final DealerDetail item = refDataQueryService.getDealer(1);
+		Assert.assertEquals("g1", item.getName());
+	}
+	
+	@Test
+	public void getAllDepartments() {
+		final List<Department> list = Lists.newArrayList();
+		final Department v1 = new Department();
+		final Department v2 = new Department();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v2.setId(2);
+		v2.setName("g2");
+		
+		when(refDataDAL.getDepartments()).thenReturn(list);
+		final GetDepartmentResponse response = refDataQueryService.getDepartments();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g1", response.getItems().get(0).getName());
+		
+		when(refDataDAL.getDepartment(1)).thenReturn(v1);
+		final DepartmentDetail item = refDataQueryService.getDepartment(1);
+		Assert.assertEquals("g1", item.getName());
+	}
+	
+	@Test
+	public void getAllEmployeeFeeItems() {
+		final List<EmployeeFeeItem> list = Lists.newArrayList();
+		final EmployeeFeeItem v1 = new EmployeeFeeItem();
+		final EmployeeFeeItem v2 = new EmployeeFeeItem();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v2.setId(2);
+		v2.setName("g2");
+		
+		when(refDataDAL.getEmployeeFeeItems()).thenReturn(list);
+		final GetEmployeeFeeItemResponse response = refDataQueryService.getEmployeeFeeItems();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g1", response.getItems().get(0).getName());
+		
+		when(refDataDAL.getEmployeeFeeItem(1)).thenReturn(Option.<EmployeeFeeItem>some(v1));
+		final EmployeeFeeItemDetail item = refDataQueryService.getEmployeeFeeItem(1);
+		Assert.assertEquals("g1", item.getName());
+	}
+	
+	@Test
+	public void getAllEmployeeFeeSummaryItems() {
+		final List<EmployeeFeeSummaryItem> list = Lists.newArrayList();
+		final EmployeeFeeSummaryItem v1 = new EmployeeFeeSummaryItem();
+		final EmployeeFeeSummaryItem v2 = new EmployeeFeeSummaryItem();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v2.setId(2);
+		v2.setName("g2");
+		
+		when(refDataDAL.getEmployeeFeeSummaryItems()).thenReturn(list);
+		final GetEmployeeFeeSummaryItemResponse response = refDataQueryService.getEmployeeFeeSummaryItems();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g1", response.getItems().get(0).getName());
+		
+		when(refDataDAL.getEmployeeFeeSummaryItem(1)).thenReturn(Option.<EmployeeFeeSummaryItem>some(v1));
+		final EmployeeFeeSummaryItemDetail item = refDataQueryService.getEmployeeFeeSummaryItem(1);
+		Assert.assertEquals("g1", item.getName());
+	}
+	
+	@Test
+	public void getAllAccountReceivableDurationItems() {
+		final List<AccountReceivableDurationItem> list = Lists.newArrayList();
+		final AccountReceivableDurationItem v1 = new AccountReceivableDurationItem();
+		final AccountReceivableDurationItem v2 = new AccountReceivableDurationItem();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v2.setId(2);
+		v2.setName("g2");
+		
+		when(refDataDAL.getAccountReceivableDurationItems()).thenReturn(list);
+		final GetAccountReceivableDurationItemResponse response = refDataQueryService.getAccountReceivableDurationItems();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g1", response.getItems().get(0).getName());
+		
+		when(refDataDAL.getAccountReceivableDurationItem(1)).thenReturn(Option.<AccountReceivableDurationItem>some(v1));
+		final AccountReceivableDurationItemDetail item = refDataQueryService.getAccountReceivableDurationItem(1);
+		Assert.assertEquals("g1", item.getName());
+	}
+	
+	@Test
+	public void getAllInventoryDurationItems() {
+		final List<InventoryDurationItem> list = Lists.newArrayList();
+		final InventoryDurationItem v1 = new InventoryDurationItem();
+		final InventoryDurationItem v2 = new InventoryDurationItem();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v2.setId(2);
+		v2.setName("g2");
+		
+		when(refDataDAL.getInventoryDurationItems()).thenReturn(list);
+		final GetInventoryDurationItemResponse response = refDataQueryService.getInventoryDurationItems();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g1", response.getItems().get(0).getName());
+		
+		when(refDataDAL.getInventoryDurationItem(1)).thenReturn(Option.<InventoryDurationItem>some(v1));
+		final InventoryDurationItemDetail item = refDataQueryService.getInventoryDurationItem(1);
+		Assert.assertEquals("g1", item.getName());
+	}
+	
+	@Test
+	public void getAllJobPositionItems() {
+		final List<JobPosition> list = Lists.newArrayList();
+		final JobPosition v1 = new JobPosition();
+		final JobPosition v2 = new JobPosition();
+		list.add(v1);
+		list.add(v2);
+		
+		v1.setId(1);
+		v1.setName("g1");
+		v2.setId(2);
+		v2.setName("g2");
+		
+		when(refDataDAL.getJobPositions()).thenReturn(list);
+		final GetHumanResourceAllocationItemResponse response = refDataQueryService.getHumanResourceAllocationItems();
+		
+		Assert.assertNotNull(response);
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g1", response.getItems().get(0).getName());
+		
+		when(refDataDAL.getJobPosition(1)).thenReturn(Option.<JobPosition>some(v1));
+		final HumanResourceAllocationItemDetail item = refDataQueryService.getHumanResourceAllocationItem(1);
+		Assert.assertEquals("g1", item.getName());
+	}
 }

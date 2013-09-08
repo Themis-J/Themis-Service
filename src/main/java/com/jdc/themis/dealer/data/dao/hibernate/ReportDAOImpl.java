@@ -1,5 +1,6 @@
 package com.jdc.themis.dealer.data.dao.hibernate;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -44,30 +45,6 @@ public class ReportDAOImpl implements ReportDAO {
 	private RefDataDAO refDataDAL;
 	@Autowired
 	private IncomeJournalDAO incomeJournalDAL;
-
-	public IncomeJournalDAO getIncomeJournalDAL() {
-		return incomeJournalDAL;
-	}
-
-	public void setIncomeJournalDAL(final IncomeJournalDAO incomeJournalDAL) {
-		this.incomeJournalDAL = incomeJournalDAL;
-	}
-
-	public RefDataDAO getRefDataDAL() {
-		return refDataDAL;
-	}
-
-	public void setRefDataDAL(final RefDataDAO refDataDAL) {
-		this.refDataDAL = refDataDAL;
-	}
-
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(final SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
 
 	@Override
 	@Performance
@@ -152,9 +129,31 @@ public class ReportDAOImpl implements ReportDAO {
 		logger.info("Importing general journal to income revenue");
 		
 		final Collection<GeneralJournal> list = incomeJournalDAL.getGeneralJournal(validDate, Utils.currentTimestamp());
-
-		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
+		
+		final Collection<GeneralJournal> revenueJournals = Lists.newArrayList();
+		final Integer revenueCategory = refDataDAL.getEnumValue("JournalType", "Revenue").some().getValue();
 		for (final GeneralJournal journal : list) {
+			if ( refDataDAL.getGeneralJournalCategory(
+					refDataDAL.getGeneralJournalItem(
+							journal.getId()).some().getCategoryID()).some().getCategoryType()
+								.equals(revenueCategory) ) {
+				revenueJournals.add(journal);
+			}
+		}
+		final Collection<GeneralJournal> expenseJournals = Lists.newArrayList();
+		final Integer expenseCategory = refDataDAL.getEnumValue("JournalType", "Expense").some().getValue();
+		for (final GeneralJournal journal : list) {
+			if ( refDataDAL.getGeneralJournalCategory(
+					refDataDAL.getGeneralJournalItem(
+							journal.getId()).some().getCategoryID()).some().getCategoryType()
+								.equals(expenseCategory) ) {
+				expenseJournals.add(journal);
+			}
+		}
+		
+		
+		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
+		for (final GeneralJournal journal : expenseJournals) {
 			// verify report time
 			Option<ReportTime> reportTime = this.getReportTime(validDate);
 			if ( reportTime.isNone() ) {
@@ -180,7 +179,39 @@ public class ReportDAOImpl implements ReportDAO {
 			fact.setTimeEnd(journal.getTimeEnd());
 			facts.add(fact);
 		}
+		
 		this.saveDealerIncomeExpenseFacts(facts);
+		
+		final List<DealerIncomeRevenueFact> revenueFacts = Lists.newArrayList();
+		for (final GeneralJournal journal : revenueJournals) {
+			// verify report time
+			Option<ReportTime> reportTime = this.getReportTime(validDate);
+			if ( reportTime.isNone() ) {
+				reportTime = this.addReportTime(validDate);
+			} 
+			
+			final DealerIncomeRevenueFact fact = new DealerIncomeRevenueFact();
+			fact.setAmount(journal.getAmount());
+			fact.setMargin(BigDecimal.ZERO);
+			fact.setCount(0);
+			fact.setTimeID(reportTime.some().getId());
+			// verify report item here
+			Option<ReportItem> reportItem = this.getReportItem(journal.getId(), "GeneralJournal");
+			if ( reportItem.isNone() ) {
+				reportItem = 
+						this.addReportItem(journal.getId(), 
+								refDataDAL.getGeneralJournalItem(journal.getId()).some().getName(), 
+								"GeneralJournal", 
+								refDataDAL.getGeneralJournalCategory(journal.getId()).some().getName());
+			} 
+			fact.setDealerID(journal.getDealerID());
+			fact.setDepartmentID(journal.getDepartmentID());
+			fact.setItemID(reportItem.some().getId());
+			fact.setTimestamp(journal.getTimestamp());
+			fact.setTimeEnd(journal.getTimeEnd());
+			revenueFacts.add(fact);
+		}
+		this.saveDealerIncomeRevenueFacts(revenueFacts);
 	}
 
 	@Override

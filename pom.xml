@@ -30,7 +30,7 @@
 		<hazelcast.version>2.6</hazelcast.version>
 		<jackson.version>1.9.13</jackson.version>
 		<hibernate.version>3.6.10.Final</hibernate.version>
-		<quartz.version>2.1.7</quartz.version>
+		<quartz.version>1.8.5</quartz.version>
 	</properties>
 
 	<dependencies>

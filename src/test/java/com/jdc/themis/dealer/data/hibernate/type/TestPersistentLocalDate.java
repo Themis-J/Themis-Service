@@ -84,4 +84,24 @@ public class TestPersistentLocalDate {
 		localDate.nullSafeSet(ps, null, 1);
 		verify(ps).setNull(1, Types.DATE);
 	}
+	
+	@Test
+	public void assemble() {
+		Assert.assertEquals(LocalDate.of(2013, 8, 1), localDate.assemble(LocalDate.of(2013, 8, 1), null));
+	}
+	
+	@Test
+	public void deassemble() {
+		Assert.assertEquals(LocalDate.of(2013, 8, 1), localDate.disassemble(LocalDate.of(2013, 8, 1)));
+	}
+	
+	@Test
+	public void toXMLString() {
+		Assert.assertEquals("2013-08-01", localDate.toXMLString(LocalDate.of(2013, 8, 1)));
+	}
+	
+	@Test
+	public void fromXMLString() {
+		Assert.assertEquals(LocalDate.of(2013, 8, 1), localDate.fromXMLString("2013-08-01"));
+	}
 }

@@ -188,6 +188,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Override
 	public DepartmentDetail getDepartment(Integer id) {
 		final Department department = refDataDAL.getDepartment(id);
+		Preconditions.checkArgument(department != null, "unknown department id");
 		final DepartmentDetail item = new DepartmentDetail();
 		item.setId(department.getId());
 		item.setName(department.getName());
@@ -196,6 +197,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public VehicleDetail getVehicle(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getVehicle(id).isSome(), "unknown vehicle id");
 		final Vehicle vehicle = refDataDAL.getVehicle(id).some();
 		final VehicleDetail item = new VehicleDetail();
 		item.setId(vehicle.getId());
@@ -207,6 +209,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public SalesServiceJournalItemDetail getSalesServiceRevenueItem(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getSalesServiceJournalItem(id).isSome(), "unknown item id");
 		final SalesServiceJournalItem ssj = refDataDAL.getSalesServiceJournalItem(id).some();
 		final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
 		item.setId(ssj.getId());
@@ -218,6 +221,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public GeneralJournalItemDetail getGeneralIncomeItem(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getGeneralJournalItem(id).isSome(), "unknown item id");
 		final GeneralJournalItem gji = refDataDAL.getGeneralJournalItem(id).some();
 		final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 		item.setId(gji.getId());
@@ -229,6 +233,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public InventoryDurationItemDetail getInventoryDurationItem(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getInventoryDurationItem(id).isSome(), "unknown item id");
 		final InventoryDurationItem gji = refDataDAL.getInventoryDurationItem(id).some();
 		final InventoryDurationItemDetail item = new InventoryDurationItemDetail();
 		item.setId(gji.getId());
@@ -239,6 +244,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Override
 	public AccountReceivableDurationItemDetail getAccountReceivableDurationItem(
 			Integer id) {
+		Preconditions.checkArgument(refDataDAL.getAccountReceivableDurationItem(id).isSome(), "unknown item id");
 		final AccountReceivableDurationItem gji = refDataDAL.getAccountReceivableDurationItem(id).some();
 		final AccountReceivableDurationItemDetail item = new AccountReceivableDurationItemDetail();
 		item.setId(gji.getId());
@@ -248,6 +254,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public EmployeeFeeItemDetail getEmployeeFeeItem(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getEmployeeFeeItem(id).isSome(), "unknown item id");
 		final EmployeeFeeItem gji = refDataDAL.getEmployeeFeeItem(id).some();
 		final EmployeeFeeItemDetail item = new EmployeeFeeItemDetail();
 		item.setId(gji.getId());
@@ -257,6 +264,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public EmployeeFeeSummaryItemDetail getEmployeeFeeSummaryItem(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getEmployeeFeeSummaryItem(id).isSome(), "unknown item id");
 		final EmployeeFeeSummaryItem gji = refDataDAL.getEmployeeFeeSummaryItem(id).some();
 		final EmployeeFeeSummaryItemDetail item = new EmployeeFeeSummaryItemDetail();
 		item.setId(gji.getId());
@@ -280,6 +288,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public DurationDetail getDuration(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getDuration(id).isSome(), "unknown duration id");
 		final Duration gji = refDataDAL.getDuration(id).some();
 		final DurationDetail item = new DurationDetail();
 		item.setId(gji.getId());
@@ -291,6 +300,7 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public DealerDetail getDealer(Integer id) {
+		Preconditions.checkArgument(refDataDAL.getDealer(id) != null, "unknown dealer id");
 		final Dealer gji = refDataDAL.getDealer(id);
 		final DealerDetail item = new DealerDetail();
 		item.setId(gji.getId());
@@ -379,7 +389,11 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	public Collection<DealerDetail> getDealers() {
 		final List<DealerDetail> dealers = Lists.newArrayList();
 		for (final Dealer dealer : refDataDAL.getDealers()) {
-			final DealerDetail item = getDealer(dealer.getId());
+			final DealerDetail item = new DealerDetail();
+			item.setId(dealer.getId());
+			item.setName(dealer.getName());
+			item.setCode(dealer.getCode());
+			item.setFullName(dealer.getFullName());
 			dealers.add(item);
 		}
 		return dealers;

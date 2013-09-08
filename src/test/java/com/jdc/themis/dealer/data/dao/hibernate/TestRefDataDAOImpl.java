@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.Duration;
-import com.jdc.themis.dealer.domain.GeneralJournalCategory;
 
 import fj.data.Option;
 
@@ -68,12 +67,12 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getGeneralJournalCategoryListSize() {
-		Assert.assertEquals(0, refDataDAO.getGeneralJournalCategorys().size());
+		Assert.assertEquals(2, refDataDAO.getGeneralJournalCategorys().size());
 	}
 	
 	@Test
 	public void getGeneralJournalCategory() {
-		Assert.assertEquals(Option.<GeneralJournalCategory>none(), refDataDAO.getGeneralJournalCategory(2));
+		Assert.assertEquals("GeneralJournalCate2", refDataDAO.getGeneralJournalCategory(2).some().getName());
 	}
 	
 	@Test
@@ -103,7 +102,7 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getGeneralJournalItemListByCategoryID() {
-		Assert.assertEquals(2, refDataDAO.getGeneralJournalItems(Option.<Integer>some(1)).size());
+		Assert.assertEquals(1, refDataDAO.getGeneralJournalItems(Option.<Integer>some(1)).size());
 	}
 	
 	@Test

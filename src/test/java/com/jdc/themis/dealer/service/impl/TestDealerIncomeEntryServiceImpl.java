@@ -30,6 +30,7 @@ import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.domain.GeneralJournal;
 import com.jdc.themis.dealer.domain.HumanResourceAllocation;
 import com.jdc.themis.dealer.domain.InventoryDuration;
+import com.jdc.themis.dealer.domain.SalesServiceJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.web.domain.AccountReceivableDurationDetail;
@@ -53,12 +54,15 @@ import com.jdc.themis.dealer.web.domain.HumanResourceAllocationDetail;
 import com.jdc.themis.dealer.web.domain.HumanResourceAllocationItemDetail;
 import com.jdc.themis.dealer.web.domain.InventoryDurationDetail;
 import com.jdc.themis.dealer.web.domain.InventoryDurationItemDetail;
+import com.jdc.themis.dealer.web.domain.SalesServiceJournalDetail;
+import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeSummaryRequest;
 import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
 import com.jdc.themis.dealer.web.domain.SaveHumanResourceAllocationRequest;
 import com.jdc.themis.dealer.web.domain.SaveInventoryDurationRequest;
+import com.jdc.themis.dealer.web.domain.SaveSalesServiceRevenueRequest;
 import com.jdc.themis.dealer.web.domain.SaveVehicleSalesJournalRequest;
 import com.jdc.themis.dealer.web.domain.VehicleDetail;
 import com.jdc.themis.dealer.web.domain.VehicleSalesJournalDetail;
@@ -106,6 +110,39 @@ public class TestDealerIncomeEntryServiceImpl {
 		request.getDetail().add(detail);
 		when(refDataDAL.getVehicle(1)).thenReturn(new VehicleDetail());
 		final Instant result = service.saveVehicleSalesRevenue(request);
+		
+		Assert.assertEquals("2014-01-01T00:00:00.001Z", result.toString());
+	}
+	
+	@Test
+	public void saveSalesServiceRevenueSuccessfully() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(1);
+		dealer.setName("Dealer1");
+		when(refDataDAL.getDealer(1)).thenReturn(dealer);
+		
+		final Instant timestamp = LocalDateTime.parse("2014-01-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		when(dal.saveSalesServiceJournal(eq(1), Mockito.anyInt(), anyCollectionOf(SalesServiceJournal.class))).thenReturn(timestamp);
+		final DepartmentDetail department = new DepartmentDetail();
+		department.setId(4);
+		department.setName("Department4");
+		when(refDataDAL.getDepartment(4)).thenReturn(department);
+		
+		when(refDataDAL.getSalesServiceRevenueItem(1)).thenReturn(new SalesServiceJournalItemDetail());
+		
+		final SaveSalesServiceRevenueRequest request = new SaveSalesServiceRevenueRequest();
+		request.setDealerID(1);
+		request.setDepartmentID(4);
+		request.setValidDate(LocalDate.of(2013, 7, 1).toString());
+		
+		final SalesServiceJournalDetail detail = new SalesServiceJournalDetail();
+		detail.setAmount(123.4);
+		detail.setMargin(123.5);
+		detail.setCount(12345);
+		detail.setItemID(1);
+		request.getDetail().add(detail);
+		when(refDataDAL.getVehicle(1)).thenReturn(new VehicleDetail());
+		final Instant result = service.saveSalesServiceRevenue(request);
 		
 		Assert.assertEquals("2014-01-01T00:00:00.001Z", result.toString());
 	}
