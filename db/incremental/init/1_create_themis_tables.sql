@@ -27,8 +27,6 @@ WITH (
 ;
 
 DROP TABLE IF EXISTS UserRole CASCADE;
-DROP TABLE IF EXISTS EntitlementResource CASCADE;
-DROP TABLE IF EXISTS UserRoleEntitlement CASCADE;
 DROP TABLE IF EXISTS UserInfo CASCADE;
 DROP TABLE IF EXISTS Dealer CASCADE;
 
@@ -39,29 +37,6 @@ CREATE TABLE UserRole
    timestamp timestamp NOT NULL, 
    CONSTRAINT UserRoleID_PK PRIMARY KEY (id), 
    CONSTRAINT UserRoleName_Unique UNIQUE (name)
-) 
-WITH (
-  OIDS = FALSE
-)
-;
-CREATE TABLE EntitlementResource
-(
-   id integer, 
-   name varchar(20),  
-   resourceType integer, 
-   timestamp timestamp NOT NULL, 
-   CONSTRAINT ERID_PK PRIMARY KEY (id), 
-   CONSTRAINT ERN_Unique UNIQUE (name, resourceType)
-) 
-WITH (
-  OIDS = FALSE
-)
-;
-CREATE TABLE UserRoleEntitlement
-(
-   roleID integer, 
-   resourceID integer, 
-   CONSTRAINT URE_PK PRIMARY KEY (roleID, resourceID)
 ) 
 WITH (
   OIDS = FALSE

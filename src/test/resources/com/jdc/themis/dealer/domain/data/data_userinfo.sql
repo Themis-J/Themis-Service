@@ -3,18 +3,6 @@ insert into UserRole values (1, 'Admin', {ts '9999-01-01T00:00:00.00Z'})
 insert into UserRole values (2, 'Dealer', {ts '9999-01-01T00:00:00.00Z'})
 insert into UserRole values (3, 'HeadQuater', {ts '9999-01-01T00:00:00.00Z'})
 
-insert into EntitlementResource values (1, 'ALL', 0, {ts '9999-01-01T00:00:00.00Z'})
-insert into EntitlementResource values (2, 'admin', 0, {ts '9999-01-01T00:00:00.00Z'})
-insert into EntitlementResource values (3, 'dealer/tax', 0, {ts '9999-01-01T00:00:00.00Z'})
-insert into EntitlementResource values (4, 'dealer/inventory', 0, {ts '9999-01-01T00:00:00.00Z'})
-insert into EntitlementResource values (5, 'report', 0, {ts '9999-01-01T00:00:00.00Z'})
-
-insert into UserRoleEntitlement values (0, 1)
-insert into UserRoleEntitlement values (1, 2)
-insert into UserRoleEntitlement values (2, 3)
-insert into UserRoleEntitlement values (2, 4)
-insert into UserRoleEntitlement values (3, 5)
-
 insert into UserInfo values (0, 'sa', 'sa', 0, null, true, {ts '9999-01-01T00:00:00.00Z'})
 insert into UserInfo values (1, 'admin', 'admin', 1, null, true, {ts '9999-01-01T00:00:00.00Z'})
 insert into UserInfo values (2, 'guangning', 'guangning', 2, 11, true, {ts '9999-01-01T00:00:00.00Z'})

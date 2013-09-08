@@ -1,10 +1,8 @@
-insert into EnumType values (1, 'EntitlementResourceType')
 insert into EnumType values (2, 'ReportItemSource')
 insert into EnumType values (3, 'DurationUnit')
 insert into EnumType values (4, 'FeeType')
 insert into EnumType values (5, 'JournalType')
 
-insert into EnumValue values (1, 'Service', 0)
 insert into EnumValue values (2, 'VehicleSalesJournal', 0)
 insert into EnumValue values (2, 'SalesServiceJournal', 1)
 insert into EnumValue values (2, 'GeneralJournal', 2)

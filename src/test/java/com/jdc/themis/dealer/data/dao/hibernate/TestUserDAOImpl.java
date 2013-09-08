@@ -22,10 +22,5 @@ public class TestUserDAOImpl {
 	public void getUserRolesSize() {
 		Assert.assertEquals(4, userDAL.getUserRoles().size());
 	}
-	
-	@Test
-	public void getEntitlements() {
-		Assert.assertEquals(2, userDAL.getEntitlements("Service", 2).size());
-	}
-	
+
 }
