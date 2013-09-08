@@ -5,6 +5,8 @@ import java.util.List;
 import com.jdc.themis.dealer.domain.UserInfo;
 import com.jdc.themis.dealer.domain.UserRole;
 
+import fj.data.Option;
+
 /**
  * User information data access layer. 
  * 
@@ -15,12 +17,10 @@ public interface UserDAO {
 
 	List<UserRole> getUserRoles();
 	
-	UserRole getUserRole(Integer roleID);
+	Option<UserRole> getUserRole(Integer roleID);
 	
-	UserInfo getUser(String username);
+	Option<UserInfo> getUser(String username);
 	
 	void saveOrUpdateUser(UserInfo user);
-	
-	Integer getDealerID(String username);
 	
 }

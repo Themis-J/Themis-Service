@@ -70,16 +70,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Autowired
 	private RefDataQueryService refDataQueryService;
 
-	public RefDataQueryService getRefDataQueryService() {
-		return refDataQueryService;
-	}
-
 	public void setRefDataQueryService(RefDataQueryService refDataQueryService) {
 		this.refDataQueryService = refDataQueryService;
-	}
-
-	public IncomeJournalDAO getIncomeJournalDAL() {
-		return incomeJournalDAL;
 	}
 
 	public void setIncomeJournalDAL(IncomeJournalDAO incomeJournalDAL) {
@@ -360,6 +352,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 		final List<DealerEntryItemStatus> journals = Lists.newArrayList();
 		final DealerEntryItemStatus journal = new DealerEntryItemStatus();
+		Preconditions.checkArgument(refDataQueryService.getMenu(request.getItemID()) != null, "unknown item id");
 		journal.setEntryItemID(request.getItemID());
 		journal.setDealerID(request.getDealerID());
 		journal.setUpdateBy(request.getUpdateBy());

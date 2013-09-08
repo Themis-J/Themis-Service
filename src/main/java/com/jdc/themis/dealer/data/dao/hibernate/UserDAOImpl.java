@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.data.dao.UserDAO;
 import com.jdc.themis.dealer.domain.UserInfo;
 import com.jdc.themis.dealer.domain.UserRole;
+
+import fj.data.Option;
 
 @Service
 public class UserDAOImpl implements UserDAO {
@@ -24,25 +26,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	@Autowired
-	private RefDataDAO refDataDAL;
 	
-	public RefDataDAO getRefDataDAL() {
-		return refDataDAL;
-	}
-
-	public void setRefDataDAL(RefDataDAO refDataDAL) {
-		this.refDataDAL = refDataDAL;
-	}
-
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
 	@Override
 	public List<UserRole> getUserRoles() {
 		logger.info("Fetching all user roles");
@@ -62,8 +46,12 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	@Override
-	public UserRole getUserRole(final Integer roleID) {
-		return Maps.uniqueIndex(getUserRoles(), GetUserRoleIDFunction.INSTANCE).get(roleID);
+	public Option<UserRole> getUserRole(final Integer roleID) {
+		final UserRole userRole = Maps.uniqueIndex(getUserRoles(), GetUserRoleIDFunction.INSTANCE).get(roleID);
+		if ( userRole == null ) {
+			return Option.<UserRole>none();
+		}
+		return Option.<UserRole>some(userRole);
 	}
 	
 	private List<UserInfo> getUsers() {
@@ -82,17 +70,19 @@ public class UserDAOImpl implements UserDAO {
 		}
 	}
 	@Override
-	public UserInfo getUser(final String username) {
-		return Maps.uniqueIndex(getUsers(), GetUserNameFunction.INSTANCE).get(username);
-	}
-
-	@Override
-	public Integer getDealerID(final String username) {
-		return getUser(username).getDealerID();
+	public Option<UserInfo> getUser(final String username) {
+		final UserInfo userInfo = Maps.uniqueIndex(getUsers(), GetUserNameFunction.INSTANCE).get(username);
+		if ( userInfo == null ) {
+			return Option.<UserInfo>none();
+		}
+		return Option.<UserInfo>some(userInfo);
 	}
 
 	@Override
 	public void saveOrUpdateUser(final UserInfo user) {
+		Preconditions.checkNotNull(user.getUsername(), "user name can't be null");
+		Preconditions.checkNotNull(user.getPassword(), "password can't be null");
+		Preconditions.checkNotNull(user.getUserRoleID(), "user role can't be null");
 		final Session session = sessionFactory.getCurrentSession();
 		session.saveOrUpdate(user);
 	}

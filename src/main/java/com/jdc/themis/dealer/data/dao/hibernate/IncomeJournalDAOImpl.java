@@ -53,14 +53,6 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
 
 	private final static Integer DEFAULT_INCOME_TAX_ID = 1; // we know our system only have one type of tax now...
 	// notice that database record must have UTC timezone for comparison

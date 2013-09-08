@@ -293,7 +293,8 @@ public class DealerIncomeSystemRestService {
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
 	public Response getGeneralIncomeItems(@QueryParam("categoryID") Integer categoryID) {
-		return Response.ok(this.refDataQueryService.getGeneralIncomeItems(Option.<Integer>iif(categoryID != null, categoryID)))
+		return Response.ok(this.refDataQueryService.getGeneralIncomeItems(
+				Option.<Integer>iif(categoryID != null, categoryID)))
 				.build();
 	}
 

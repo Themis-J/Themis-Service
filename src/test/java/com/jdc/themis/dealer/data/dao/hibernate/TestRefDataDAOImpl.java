@@ -189,4 +189,14 @@ public class TestRefDataDAOImpl {
 	public void getJobPosition() {
 		Assert.assertEquals("JobPosition1", refDataDAO.getJobPosition(1).some().getName());
 	}
+	
+	@Test
+	public void getEnumValueByValue() {
+		Assert.assertEquals("Months", refDataDAO.getEnumValue("DurationUnit", 1).some().getName());
+	}
+	
+	@Test
+	public void getEnumValueByName() {
+		Assert.assertEquals(true, refDataDAO.getEnumValue("DurationUnit", "X").isNone());
+	}
 }

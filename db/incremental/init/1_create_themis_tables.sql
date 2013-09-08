@@ -44,7 +44,7 @@ WITH (
 ;
 CREATE TABLE UserInfo
 (
-   id integer, 
+   id SERIAL, 
    username varchar(20) NOT NULL, 
    password varchar(50), 
    userRoleID integer NOT NULL, 

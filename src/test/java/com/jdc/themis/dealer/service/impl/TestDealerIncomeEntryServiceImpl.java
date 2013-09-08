@@ -24,6 +24,7 @@ import org.mockito.MockitoAnnotations;
 import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDuration;
+import com.jdc.themis.dealer.domain.DealerEntryItemStatus;
 import com.jdc.themis.dealer.domain.EmployeeFee;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummary;
 import com.jdc.themis.dealer.domain.EnumValue;
@@ -45,18 +46,23 @@ import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationResponse;
+import com.jdc.themis.dealer.web.domain.GetDealerEntryItemStatusResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalResponse;
 import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationResponse;
 import com.jdc.themis.dealer.web.domain.GetInventoryDurationResponse;
+import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalResponse;
+import com.jdc.themis.dealer.web.domain.GetVehicleSalesJournalResponse;
 import com.jdc.themis.dealer.web.domain.HumanResourceAllocationDetail;
 import com.jdc.themis.dealer.web.domain.HumanResourceAllocationItemDetail;
 import com.jdc.themis.dealer.web.domain.InventoryDurationDetail;
 import com.jdc.themis.dealer.web.domain.InventoryDurationItemDetail;
+import com.jdc.themis.dealer.web.domain.MenuDetail;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalDetail;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
+import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeSummaryRequest;
 import com.jdc.themis.dealer.web.domain.SaveGeneralJournalRequest;
@@ -115,6 +121,73 @@ public class TestDealerIncomeEntryServiceImpl {
 	}
 	
 	@Test
+	public void saveDealerEntryItemStatusSuccessfully() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(1);
+		dealer.setName("Dealer1");
+		when(refDataDAL.getDealer(1)).thenReturn(dealer);
+		
+		final Instant timestamp = LocalDateTime.parse("2014-01-01T00:00:00.001").atZone(TimeZone.UTC).toInstant();
+		when(dal.saveDealerEntryItemStatus(eq(1), anyCollectionOf(DealerEntryItemStatus.class))).thenReturn(timestamp);
+		
+		final SaveDealerEntryItemStatusRequest request = new SaveDealerEntryItemStatusRequest();
+		request.setDealerID(1);
+		request.setValidDate(LocalDate.of(2013, 7, 1).toString());
+		request.setDealerID(1);
+		request.setItemID(1);
+		when(refDataDAL.getMenu(1)).thenReturn(new MenuDetail());
+		final Instant result = service.saveDealerEntryItemStatus(request);
+		
+		Assert.assertEquals("2014-01-01T00:00:00.001Z", result.toString());
+	}
+	
+	@Test
+	public void getDealerEntryItemStatusSuccessfully() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(1);
+		dealer.setName("Dealer1");
+		when(refDataDAL.getDealer(1)).thenReturn(dealer);
+		
+		final DealerEntryItemStatus detail = new DealerEntryItemStatus();
+		detail.setDealerID(1);
+		detail.setEntryItemID(1);
+		detail.setValidDate(LocalDate.of(2013, 7, 1));
+		
+		final MenuDetail menu = new MenuDetail();
+		menu.setId(1);
+		menu.setName("test");
+		when(refDataDAL.getMenu(1)).thenReturn(menu);
+		when(dal.getDealerEntryItemStatus(eq(1), eq(LocalDate.of(2013, 7, 1)))).thenReturn(Lists.newArrayList(detail));
+		
+		final GetDealerEntryItemStatusResponse result = service.getDealerEntryItemStatus(1, "2013-07-01");
+		
+		Assert.assertEquals(LocalDate.of(2013, 7, 1), result.getValidDate());
+		Assert.assertEquals(1, result.getDetail().size());
+	}
+	
+	@Test
+	public void getVehicleSalesRevenueSuccessfully() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(1);
+		dealer.setName("Dealer1");
+		when(refDataDAL.getDealer(1)).thenReturn(dealer);
+		
+		final VehicleSalesJournal detail = new VehicleSalesJournal();
+		detail.setAmount(new BigDecimal("123.4"));
+		detail.setMargin(new BigDecimal("123.5"));
+		detail.setCount(12345);
+		detail.setId(1);
+		when(refDataDAL.getVehicle(1)).thenReturn(new VehicleDetail());
+		when(dal.getVehicleSalesJournal(eq(1), Mockito.anyInt(), eq(LocalDate.of(2013, 7, 1)))).thenReturn(Lists.newArrayList(detail));
+		
+		final GetVehicleSalesJournalResponse result = service.getVehicleSalesRevenue(1, Option.<Integer>none(), "2013-07-01", Option.<Integer>none());
+		
+		Assert.assertEquals(LocalDate.of(2013, 7, 1), result.getValidDate());
+		Assert.assertEquals(1, result.getDetail().size());
+		Assert.assertEquals(new BigDecimal("123.4").doubleValue(), result.getDetail().get(0).getAmount());
+	}
+	
+	@Test
 	public void saveSalesServiceRevenueSuccessfully() {
 		final DealerDetail dealer = new DealerDetail();
 		dealer.setId(1);
@@ -145,6 +218,35 @@ public class TestDealerIncomeEntryServiceImpl {
 		final Instant result = service.saveSalesServiceRevenue(request);
 		
 		Assert.assertEquals("2014-01-01T00:00:00.001Z", result.toString());
+	}
+	
+	@Test
+	public void getSalesServiceRevenueSuccessfully() {
+		final DealerDetail dealer = new DealerDetail();
+		dealer.setId(1);
+		dealer.setName("Dealer1");
+		when(refDataDAL.getDealer(1)).thenReturn(dealer);
+		
+		final SalesServiceJournal detail = new SalesServiceJournal();
+		detail.setAmount(new BigDecimal("123.4"));
+		detail.setMargin(new BigDecimal("123.5"));
+		detail.setCount(12345);
+		detail.setId(1);
+		when(refDataDAL.getVehicle(1)).thenReturn(new VehicleDetail());
+		when(refDataDAL.getDepartment(1)).thenReturn(new DepartmentDetail());
+		final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
+		item.setId(1);
+		item.setName("item1");
+		item.setCategoryID(1);
+		item.setCategory("C1");
+		when(refDataDAL.getSalesServiceRevenueItem(1)).thenReturn(item);
+		when(dal.getSalesServiceJournal(eq(1), Mockito.anyInt(), eq(LocalDate.of(2013, 7, 1)))).thenReturn(Lists.newArrayList(detail));
+		
+		final GetSalesServiceJournalResponse result = service.getSalesServiceRevenue(1, 1, "2013-07-01", Option.<Integer>none());
+		
+		Assert.assertEquals(LocalDate.of(2013, 7, 1), result.getValidDate());
+		Assert.assertEquals(1, result.getDetail().size());
+		Assert.assertEquals(new BigDecimal("123.4").doubleValue(), result.getDetail().get(0).getAmount());
 	}
 	
 	@Test(expected=RuntimeException.class)

@@ -242,6 +242,31 @@ public class TestIncomeJournalDAOImpl {
 	} 
 	
 	@Test
+	public void insertOneVehicleSalesJournalWithNullAmount() {
+		final VehicleSalesJournal status = new VehicleSalesJournal();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setAmount(null);
+		status.setMargin(null);
+		status.setCount(null);
+		status.setDepartmentID(1);
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveVehicleSalesJournal(10, 1, Lists.newArrayList(status));
+		
+		int hasJournal = 0;
+		for (final VehicleSalesJournal journal : incomeJournalDAL.getVehicleSalesJournal(10, 1, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.out.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(BigDecimal.ZERO, journal.getAmount());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		} 
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
 	public void insertTwoVehicleSalesJournal() {
 		final VehicleSalesJournal status = new VehicleSalesJournal();
 		status.setDealerID(10);
@@ -339,6 +364,31 @@ public class TestIncomeJournalDAOImpl {
 			System.out.println(journal);
 			Assert.assertNotNull(journal);
 			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		} 
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void insertOneSalesServiceJournalWithNullAmount() {
+		final SalesServiceJournal status = new SalesServiceJournal();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setAmount(null);
+		status.setMargin(null);
+		status.setCount(null);
+		status.setDepartmentID(1);
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveSalesServiceJournal(10, 1, Lists.newArrayList(status));
+		
+		int hasJournal = 0;
+		for (final SalesServiceJournal journal : incomeJournalDAL.getSalesServiceJournal(10, 1, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.out.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(BigDecimal.ZERO, journal.getAmount());
 			Assert.assertEquals(10, journal.getDealerID().intValue());
 		} 
 		Assert.assertEquals(1, hasJournal);
@@ -738,6 +788,37 @@ public class TestIncomeJournalDAOImpl {
 			System.out.println(journal);
 			Assert.assertNotNull(journal);
 			Assert.assertEquals("test", journal.getUpdatedBy());
+			Assert.assertEquals(10, journal.getDealerID().intValue());
+		} 
+		Assert.assertEquals(1, hasJournal);
+	} 
+	
+	@Test
+	public void insertTwoHRAllocation() {
+		final HumanResourceAllocation status = new HumanResourceAllocation();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setDepartmentID(2);
+		status.setAllocation(new BigDecimal("1234.343"));
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveHumanResourceAllocation(10, 2, Lists.newArrayList(status));
+		
+		final HumanResourceAllocation status2 = new HumanResourceAllocation();
+		status2.setDealerID(10);
+		status2.setId(1);
+		status2.setDepartmentID(2);
+		status2.setAllocation(new BigDecimal("2222"));
+		status2.setValidDate(LocalDate.of(2013, 8, 1));
+		status2.setUpdatedBy("test2");
+		incomeJournalDAL.saveHumanResourceAllocation(10, 2, Lists.newArrayList(status2));
+		
+		int hasJournal = 0;
+		for (final HumanResourceAllocation journal : incomeJournalDAL.getHumanResourceAllocation(10, LocalDate.of(2013, 8, 1))) {
+			hasJournal++;
+			System.out.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals("test2", journal.getUpdatedBy());
 			Assert.assertEquals(10, journal.getDealerID().intValue());
 		} 
 		Assert.assertEquals(1, hasJournal);

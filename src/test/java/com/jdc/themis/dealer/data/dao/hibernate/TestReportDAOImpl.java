@@ -247,6 +247,15 @@ public class TestReportDAOImpl {
 		
 		hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
+			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(8), Option.<Integer>some(3))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+		} 
+		Assert.assertEquals(1, hasJournal);
+		
+		hasJournal = 0;
+		for (final DealerIncomeRevenueFact journal : 
 			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(7), Option.<Integer>none())) {
 			hasJournal++;
 			System.err.println(journal);
@@ -263,6 +272,15 @@ public class TestReportDAOImpl {
 		} 
 		Assert.assertEquals(1, hasJournal);
 		
+		hasJournal = 0;
+		for (final DealerIncomeExpenseFact journal : 
+			reportDAL.getDealerIncomeExpenseFacts(2013, Option.<Integer>some(7), Option.<Integer>some(3))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+		} 
+		Assert.assertEquals(1, hasJournal);
+		
 		int hasReportItem = 0;
 		for (final ReportItem journal : 
 			reportDAL.getAllReportItem()) {
@@ -273,6 +291,9 @@ public class TestReportDAOImpl {
 		Assert.assertEquals(2, hasReportItem);
 		
 		Assert.assertEquals("GeneralJournalItem1", reportDAL.getReportItem(1, "GeneralJournal").some().getName());
+		
+		final ReportItem item = reportDAL.getReportItem(1, "GeneralJournal").some();
+		Assert.assertEquals("GeneralJournalItem1", reportDAL.getReportItem(item.getId()).some().getName());
 		
 		int hasReportTime = 0;
 		for (final ReportTime journal : 
