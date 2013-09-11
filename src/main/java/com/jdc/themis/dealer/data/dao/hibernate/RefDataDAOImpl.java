@@ -539,5 +539,21 @@ public class RefDataDAOImpl implements RefDataDAO {
 				GeneralJournalCategory.class).list();
 		return ImmutableList.copyOf(list);
 	}
+	private enum GetTaxJournalItemIDFunction implements Function<TaxJournalItem, Integer> {
+	    INSTANCE;
+
+	    @Override
+	    public Integer apply(TaxJournalItem item) {
+	        return item.getId();
+	    }
+	}
+	@Override
+	public Option<TaxJournalItem> getTaxJournalItem(Integer itemID) {
+		final Map<Integer, TaxJournalItem> map = Maps.uniqueIndex(getTaxJournalItems(), GetTaxJournalItemIDFunction.INSTANCE);
+		if ( !map.containsKey(itemID) ) {
+			return Option.<TaxJournalItem>none();
+		}
+		return Option.<TaxJournalItem>some(map.get(itemID));
+	}
 
 }

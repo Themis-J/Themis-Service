@@ -22,11 +22,13 @@ public interface ReportDAO {
 	Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(Integer year,
 			Option<Integer> monthOfYear, Option<Integer> departmentID);
 	
-	void importVehicleSalesJournal(LocalDate validDate);
+	Integer importVehicleSalesJournal(LocalDate validDate);
 	
-	void importSalesServiceJournal(LocalDate validDate);
+	Integer importSalesServiceJournal(LocalDate validDate);
 	
-	void importGeneralJournal(LocalDate validDate);
+	Integer importGeneralJournal(LocalDate validDate);
+	
+	Integer importTaxJournal(LocalDate validDate);
 	
 	Option<ReportTime> getReportTime(LocalDate validDate);
 	

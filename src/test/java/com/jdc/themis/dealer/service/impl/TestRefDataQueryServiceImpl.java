@@ -21,6 +21,7 @@ import com.jdc.themis.dealer.domain.Dealer;
 import com.jdc.themis.dealer.domain.Department;
 import com.jdc.themis.dealer.domain.EmployeeFeeItem;
 import com.jdc.themis.dealer.domain.EmployeeFeeSummaryItem;
+import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.domain.GeneralJournalCategory;
 import com.jdc.themis.dealer.domain.GeneralJournalItem;
 import com.jdc.themis.dealer.domain.InventoryDurationItem;
@@ -142,9 +143,11 @@ public class TestRefDataQueryServiceImpl {
 		
 		v1.setId(1);
 		v1.setName("s1");
+		v1.setJournalType(0);
 		v1.setCategoryID(1);
 		v2.setId(2);
 		v2.setName("s2");
+		v2.setJournalType(1);
 		v2.setCategoryID(1);
 		
 		final SalesServiceJournalCategory category = new SalesServiceJournalCategory();
@@ -152,6 +155,17 @@ public class TestRefDataQueryServiceImpl {
 		category.setName("SSJ1");
 		when(refDataDAL.getSalesServiceJournalItems(Option.<Integer>none())).thenReturn(list);
 		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
+		final EnumValue expense = new EnumValue();
+		expense.setName("Expense");
+		expense.setTypeID(1);
+		expense.setValue(1);
+		final EnumValue revenue = new EnumValue();
+		revenue.setName("Revenue");
+		revenue.setTypeID(1);
+		revenue.setValue(0);
+		when(refDataDAL.getEnumValue("JournalType", "Expense")).thenReturn(Option.<EnumValue>some(expense));
+		when(refDataDAL.getEnumValue("JournalType", "Revenue")).thenReturn(Option.<EnumValue>some(revenue));
+		
 		final GetSalesServiceJournalItemResponse response = refDataQueryService.getSalesServiceRevenueItems(Option.<Integer>none());
 		
 		Assert.assertNotNull(response);
@@ -173,9 +187,11 @@ public class TestRefDataQueryServiceImpl {
 		
 		v1.setId(1);
 		v1.setName("g1");
+		v1.setJournalType(0);
 		v1.setCategoryID(1);
 		v2.setId(2);
 		v2.setName("g2");
+		v2.setJournalType(1);
 		v2.setCategoryID(1);
 		
 		final GeneralJournalCategory category = new GeneralJournalCategory();
@@ -183,6 +199,17 @@ public class TestRefDataQueryServiceImpl {
 		category.setName("GJ1");
 		when(refDataDAL.getGeneralJournalItems(Option.<Integer>none())).thenReturn(list);
 		when(refDataDAL.getGeneralJournalCategory(1)).thenReturn(Option.<GeneralJournalCategory>some(category));
+		final EnumValue expense = new EnumValue();
+		expense.setName("Expense");
+		expense.setTypeID(1);
+		expense.setValue(1);
+		final EnumValue revenue = new EnumValue();
+		revenue.setName("Revenue");
+		revenue.setTypeID(1);
+		revenue.setValue(0);
+		when(refDataDAL.getEnumValue("JournalType", "Expense")).thenReturn(Option.<EnumValue>some(expense));
+		when(refDataDAL.getEnumValue("JournalType", "Revenue")).thenReturn(Option.<EnumValue>some(revenue));
+		
 		final GetGeneralJournalItemResponse response = refDataQueryService.getGeneralIncomeItems(Option.<Integer>none());
 		
 		Assert.assertNotNull(response);

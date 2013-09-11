@@ -31,7 +31,14 @@ public class SalesServiceJournalItem implements Serializable {
 	private Integer id;
 	private String name;
 	private Integer categoryID;
+	private Integer journalType;
 	
+	public Integer getJournalType() {
+		return journalType;
+	}
+	public void setJournalType(Integer journalType) {
+		this.journalType = journalType;
+	}
 	@Id
 	public Integer getId() {
 		return id;

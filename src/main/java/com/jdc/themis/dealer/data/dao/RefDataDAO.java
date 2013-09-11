@@ -99,6 +99,8 @@ public interface RefDataDAO {
 	
 	Option<EmployeeFeeItem> getEmployeeFeeItem(Integer itemID);
 	
+	Option<TaxJournalItem> getTaxJournalItem(Integer itemID);
+	
 	List<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItems();
 	
 	Option<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItem(Integer itemID);

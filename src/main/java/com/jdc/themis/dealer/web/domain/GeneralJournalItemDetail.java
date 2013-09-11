@@ -22,7 +22,14 @@ public class GeneralJournalItemDetail implements Serializable{
 	private String name;
 	private String category;
 	private Integer categoryID;
+	private String journalType;
 	
+	public String getJournalType() {
+		return journalType;
+	}
+	public void setJournalType(String journalType) {
+		this.journalType = journalType;
+	}
 	public Integer getCategoryID() {
 		return categoryID;
 	}

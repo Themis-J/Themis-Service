@@ -93,6 +93,7 @@ public class TestRefDataDAOImpl {
 	@Test
 	public void getSalesServiceJournalItem() {
 		Assert.assertEquals("SalesServiceJournalItem1", refDataDAO.getSalesServiceJournalItem(1).some().getName());
+		Assert.assertEquals(0, refDataDAO.getSalesServiceJournalItem(1).some().getJournalType().intValue());
 	}
 	
 	@Test
@@ -118,6 +119,8 @@ public class TestRefDataDAOImpl {
 	@Test
 	public void getGeneralJournalItem() {
 		Assert.assertEquals("GeneralJournalItem1", refDataDAO.getGeneralJournalItem(1).some().getName());
+		Assert.assertEquals(0, refDataDAO.getGeneralJournalItem(1).some().getJournalType().intValue());
+		Assert.assertEquals(1, refDataDAO.getGeneralJournalItem(2).some().getJournalType().intValue());
 	}
 	
 	@Test

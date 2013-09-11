@@ -16,7 +16,26 @@ public class SalesServiceJournalItemDetail implements Serializable{
 	private String name;
 	private String category;
 	private Integer categoryID;
+	private String journalType;
 	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getJournalType() {
+		return journalType;
+	}
+	public void setJournalType(String journalType) {
+		this.journalType = journalType;
+	}
 	public Integer getCategoryID() {
 		return categoryID;
 	}
@@ -30,18 +49,5 @@ public class SalesServiceJournalItemDetail implements Serializable{
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 	
 }

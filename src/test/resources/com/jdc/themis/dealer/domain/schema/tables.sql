@@ -21,7 +21,7 @@ CREATE TABLE TaxJournalItem (id integer, name varchar(100), timestamp timestamp)
 
 CREATE TABLE SalesServiceJournalCategory (    id integer,    name varchar(100),     timestamp timestamp, CONSTRAINT SSJI_PK PRIMARY KEY (id))
 
-CREATE TABLE SalesServiceJournalItem (id integer, name varchar(100), categoryID integer, timestamp timestamp)
+CREATE TABLE SalesServiceJournalItem (id integer, name varchar(100), categoryID integer, journalType integer, timestamp timestamp)
 
 CREATE TABLE TaxJournal (timestamp timestamp, timeEnd timestamp, validDate date, dealerID integer, id integer, version integer, amount double, updatedBy varchar(50))
 ALTER TABLE TaxJournal ALTER COLUMN timestamp SET NOT NULL
@@ -58,9 +58,9 @@ ALTER TABLE SalesServiceJournal ALTER COLUMN id SET NOT NULL
 ALTER TABLE SalesServiceJournal ALTER COLUMN amount SET NOT NULL
 ALTER TABLE SalesServiceJournal ALTER COLUMN margin SET NOT NULL
 
-CREATE TABLE GeneralJournalCategory (   id integer,    name varchar(100),    categoryType integer, timestamp timestamp) 
+CREATE TABLE GeneralJournalCategory (   id integer,    name varchar(100), timestamp timestamp) 
 
-CREATE TABLE GeneralJournalItem (   id integer,    name varchar(100),    categoryID integer, timestamp timestamp ) 
+CREATE TABLE GeneralJournalItem (   id integer,    name varchar(100),    categoryID integer, journalType integer, timestamp timestamp ) 
 
 CREATE TABLE GeneralJournal (timestamp timestamp, timeEnd timestamp, validDate date, dealerID integer, departmentID integer, id integer, version integer, amount double, updatedBy varchar(40)) 
 ALTER TABLE GeneralJournal ALTER COLUMN timestamp SET NOT NULL

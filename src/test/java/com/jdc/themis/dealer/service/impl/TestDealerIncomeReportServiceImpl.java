@@ -2,6 +2,7 @@ package com.jdc.themis.dealer.service.impl;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 
@@ -40,6 +41,15 @@ public class TestDealerIncomeReportServiceImpl {
 		service = new DealerIncomeReportServiceImpl();
 		service.setReportDAL(dal);
 		service.setRefDataDAL(refDataDAL);
+	}
+	
+	@Test
+	public void importReportData() {
+		service.importReportData(LocalDate.of(2013, 8, 1));
+		verify(dal).importGeneralJournal(LocalDate.of(2013, 8, 1));
+		verify(dal).importTaxJournal(LocalDate.of(2013, 8, 1));
+		verify(dal).importSalesServiceJournal(LocalDate.of(2013, 8, 1));
+		verify(dal).importVehicleSalesJournal(LocalDate.of(2013, 8, 1));
 	}
 	
 	@Test

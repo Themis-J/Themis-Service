@@ -187,7 +187,6 @@ CREATE TABLE GeneralJournalCategory
 (
    id integer, 
    name varchar(100), 
-   categoryType integer, 
    timestamp timestamp without time zone, 
    CONSTRAINT GJC_PK PRIMARY KEY (id)
 ) 
@@ -201,6 +200,7 @@ CREATE TABLE GeneralJournalItem
    id integer, 
    name varchar(100), 
    categoryID integer, 
+   journalType integer,
    timestamp timestamp without time zone, 
    CONSTRAINT GJI_PK PRIMARY KEY (id), 
    CONSTRAINT GJI_Unique UNIQUE (name),
@@ -243,6 +243,7 @@ CREATE TABLE SalesServiceJournalItem
    id integer, 
    name varchar(100), 
    categoryID integer,
+   journalType integer,
    timestamp timestamp without time zone, 
    CONSTRAINT SSJLI_PK PRIMARY KEY (id),
    CONSTRAINT SSJLI_Unique UNIQUE (name),

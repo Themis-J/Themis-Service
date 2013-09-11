@@ -62,6 +62,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		reportDAL.importVehicleSalesJournal(validDate);
 		reportDAL.importSalesServiceJournal(validDate);
 		reportDAL.importGeneralJournal(validDate);
+		reportDAL.importTaxJournal(validDate);
 	}
 
 	private enum GetDealerIDFromRevenueFunction implements Function<DealerIncomeRevenueFact, Integer> {

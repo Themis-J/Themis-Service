@@ -200,22 +200,21 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 		Preconditions.checkArgument(
 				refDataQueryService.getDepartment(request.getDepartmentID()) != null,
 				"unknown department id " + request.getDepartmentID());
-
+		
 		final List<SalesServiceJournal> journals = Lists.newArrayList();
 		for (final SalesServiceJournalDetail detail : request.getDetail()) {
 			final SalesServiceJournal journal = new SalesServiceJournal();
 			journal.setAmount(detail.getAmount() != null ? new BigDecimal(detail.getAmount()) : BigDecimal.ZERO);
-			journal.setMargin(detail.getMargin() != null ? new BigDecimal(detail.getMargin()) : BigDecimal.ZERO);
-			journal.setCount(detail.getCount() != null ? detail.getCount() : 0);
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
 			journal.setId(refDataQueryService.getSalesServiceRevenueItem(detail.getItemID()).getId());
+			journal.setMargin(detail.getMargin() != null && !"Expense".equals(refDataQueryService.getSalesServiceRevenueItem(detail.getItemID()).getJournalType()) ? new BigDecimal(detail.getMargin()) : BigDecimal.ZERO);
+			journal.setCount(detail.getCount() != null && !"Expense".equals(refDataQueryService.getSalesServiceRevenueItem(detail.getItemID()).getJournalType()) ? detail.getCount() : 0);			
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
 			journals.add(journal);
-
 		}
 		final Instant timestamp = incomeJournalDAL.saveSalesServiceJournal(
 				request.getDealerID(), request.getDepartmentID(), journals);

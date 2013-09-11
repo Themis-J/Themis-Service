@@ -140,13 +140,19 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Performance
 	public GetSalesServiceJournalItemResponse getSalesServiceRevenueItems(Option<Integer> categoryID) {
 		final GetSalesServiceJournalItemResponse response = new GetSalesServiceJournalItemResponse();
-
+		final Integer expenseJournalType = refDataDAL.getEnumValue("JournalType", "Expense").some().getValue();
+		final Integer revenueJournalType = refDataDAL.getEnumValue("JournalType", "Revenue").some().getValue();
 		for (final SalesServiceJournalItem ssj : refDataDAL.getSalesServiceJournalItems(categoryID)) {
 			final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
 			item.setId(ssj.getId());
 			item.setName(ssj.getName());
 			item.setCategoryID(ssj.getCategoryID());
 			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(ssj.getCategoryID()).some().getName());
+			if ( ssj.getJournalType().equals(expenseJournalType) ) {
+				item.setJournalType("Expense");
+			} else if ( ssj.getJournalType().equals(revenueJournalType) ) {
+				item.setJournalType("Revenue");
+			} 
 			response.getItems().add(item);
 		}
 		return response;
@@ -155,13 +161,19 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	@Override
 	public GetGeneralJournalItemResponse getGeneralIncomeItems(Option<Integer> categoryID) {
 		final GetGeneralJournalItemResponse response = new GetGeneralJournalItemResponse();
-
+		final Integer expenseJournalType = refDataDAL.getEnumValue("JournalType", "Expense").some().getValue();
+		final Integer revenueJournalType = refDataDAL.getEnumValue("JournalType", "Revenue").some().getValue();
 		for (final GeneralJournalItem gji : refDataDAL.getGeneralJournalItems(categoryID)) {
 			final GeneralJournalItemDetail item = new GeneralJournalItemDetail();
 			item.setId(gji.getId());
 			item.setName(gji.getName());
 			item.setCategoryID(gji.getCategoryID());
 			item.setCategory(this.refDataDAL.getGeneralJournalCategory(gji.getCategoryID()).some().getName());
+			if ( gji.getJournalType().equals(expenseJournalType) ) {
+				item.setJournalType("Expense");
+			} else if ( gji.getJournalType().equals(revenueJournalType) ) {
+				item.setJournalType("Revenue");
+			} 
 			response.getItems().add(item);
 		}
 		return response;

@@ -28,6 +28,7 @@ import com.jdc.themis.dealer.domain.GeneralJournal;
 import com.jdc.themis.dealer.domain.ReportItem;
 import com.jdc.themis.dealer.domain.ReportTime;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
+import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.utils.Utils;
@@ -45,10 +46,12 @@ public class ReportDAOImpl implements ReportDAO {
 	private RefDataDAO refDataDAL;
 	@Autowired
 	private IncomeJournalDAO incomeJournalDAL;
+	
+	//TODO: add lock for importing & querying facts tables
 
 	@Override
 	@Performance
-	public void importVehicleSalesJournal(final LocalDate validDate) {
+	public Integer importVehicleSalesJournal(final LocalDate validDate) {
 		logger.info("Importing vehicle sales journal to income revenue");
 		
 		final Collection<VehicleSalesJournal> list = incomeJournalDAL.getVehicleSalesJournal(validDate, Utils.currentTimestamp());
@@ -83,11 +86,12 @@ public class ReportDAOImpl implements ReportDAO {
 			facts.add(fact);
 		}
 		this.saveDealerIncomeRevenueFacts(facts);
+		return facts.size();
 	}
 
 	@Override
 	@Performance
-	public void importSalesServiceJournal(final LocalDate validDate) {
+	public Integer importSalesServiceJournal(final LocalDate validDate) {
 		logger.info("Importing sales & service journal to income revenue");
 		
 		final Collection<SalesServiceJournal> list = incomeJournalDAL.getSalesServiceJournal(validDate, Utils.currentTimestamp());
@@ -122,31 +126,32 @@ public class ReportDAOImpl implements ReportDAO {
 			facts.add(fact);
 		}
 		this.saveDealerIncomeRevenueFacts(facts);
+		
+		//TODO: import expenses to expense facts table
+		return facts.size();
 	}
 
 	@Override
-	public void importGeneralJournal(final LocalDate validDate) {
-		logger.info("Importing general journal to income revenue");
+	public Integer importGeneralJournal(final LocalDate validDate) {
+		logger.info("Importing general journal to income revenue and expense");
 		
 		final Collection<GeneralJournal> list = incomeJournalDAL.getGeneralJournal(validDate, Utils.currentTimestamp());
 		
 		final Collection<GeneralJournal> revenueJournals = Lists.newArrayList();
-		final Integer revenueCategory = refDataDAL.getEnumValue("JournalType", "Revenue").some().getValue();
+		final Integer revenueJournalType = refDataDAL.getEnumValue("JournalType", "Revenue").some().getValue();
 		for (final GeneralJournal journal : list) {
-			if ( refDataDAL.getGeneralJournalCategory(
-					refDataDAL.getGeneralJournalItem(
-							journal.getId()).some().getCategoryID()).some().getCategoryType()
-								.equals(revenueCategory) ) {
+			if ( refDataDAL.getGeneralJournalItem(
+							journal.getId()).some().getJournalType()
+								.equals(revenueJournalType) ) {
 				revenueJournals.add(journal);
 			}
 		}
 		final Collection<GeneralJournal> expenseJournals = Lists.newArrayList();
-		final Integer expenseCategory = refDataDAL.getEnumValue("JournalType", "Expense").some().getValue();
+		final Integer expenseJournalType = refDataDAL.getEnumValue("JournalType", "Expense").some().getValue();
 		for (final GeneralJournal journal : list) {
-			if ( refDataDAL.getGeneralJournalCategory(
-					refDataDAL.getGeneralJournalItem(
-							journal.getId()).some().getCategoryID()).some().getCategoryType()
-								.equals(expenseCategory) ) {
+			if ( refDataDAL.getGeneralJournalItem(
+							journal.getId()).some().getJournalType()
+								.equals(expenseJournalType) ) {
 				expenseJournals.add(journal);
 			}
 		}
@@ -212,6 +217,7 @@ public class ReportDAOImpl implements ReportDAO {
 			revenueFacts.add(fact);
 		}
 		this.saveDealerIncomeRevenueFacts(revenueFacts);
+		return list.size();
 	}
 
 	@Override
@@ -464,6 +470,42 @@ public class ReportDAOImpl implements ReportDAO {
 			}
 		} 
 		return facts;
+	}
+
+	@Override
+	public Integer importTaxJournal(LocalDate validDate) {
+		logger.info("Importing tax journal to income expense");
+		
+		final Collection<TaxJournal> list = incomeJournalDAL.getTaxJournal(validDate, Utils.currentTimestamp());
+
+		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
+		for (final TaxJournal journal : list) {
+			// verify report time
+			Option<ReportTime> reportTime = this.getReportTime(validDate);
+			if ( reportTime.isNone() ) {
+				reportTime = this.addReportTime(validDate);
+			} 
+			
+			final DealerIncomeExpenseFact fact = new DealerIncomeExpenseFact();
+			fact.setAmount(journal.getAmount());
+			fact.setTimeID(reportTime.some().getId());
+			// verify report item here
+			Option<ReportItem> reportItem = this.getReportItem(journal.getId(), "TaxJournal");
+			if ( reportItem.isNone() ) {
+				reportItem = 
+						this.addReportItem(journal.getId(), 
+								refDataDAL.getTaxJournalItem(journal.getId()).some().getName(), 
+								"TaxJournal", 
+								refDataDAL.getGeneralJournalCategory(journal.getId()).some().getName());
+			} 
+			fact.setDealerID(journal.getDealerID());
+			fact.setItemID(reportItem.some().getId());
+			fact.setTimestamp(journal.getTimestamp());
+			fact.setTimeEnd(journal.getTimeEnd());
+			facts.add(fact);
+		}
+		this.saveDealerIncomeExpenseFacts(facts);
+		return facts.size();
 	}
 
 }

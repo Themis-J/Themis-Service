@@ -35,6 +35,11 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="id", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="taxDateFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate")}),
+			
 		}
 		)
 @Filters( {
@@ -46,6 +51,7 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 public class TaxJournal implements TemporalEntity, Serializable {
 	
 	public static final String FILTER = "taxJournalFilter";
+	public static final String FILTER_VALIDATE = "taxDateFilter";
 
 	private static final long serialVersionUID = 1L;
 	@Id

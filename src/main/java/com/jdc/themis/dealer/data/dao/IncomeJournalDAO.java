@@ -28,6 +28,8 @@ public interface IncomeJournalDAO {
 	
 	Collection<TaxJournal> getTaxJournal(Integer dealerID, LocalDate validDate);
 	
+	Collection<TaxJournal> getTaxJournal(LocalDate validDate, Instant timestamp);
+	
 	Instant saveDealerEntryItemStatus(Integer dealerID, Collection<DealerEntryItemStatus> journals);
 	
 	Collection<DealerEntryItemStatus> getDealerEntryItemStatus(Integer dealerID, LocalDate validDate);

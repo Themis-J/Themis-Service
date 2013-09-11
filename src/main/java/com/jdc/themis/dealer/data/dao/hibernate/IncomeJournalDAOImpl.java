@@ -874,4 +874,18 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 		return list;
 	}
 
+	@Override
+	public Collection<TaxJournal> getTaxJournal(LocalDate validDate,
+			Instant timestamp) {
+		final Session session = sessionFactory.getCurrentSession();
+		session.enableFilter(TaxJournal.FILTER_VALIDATE)
+			.setParameter("referenceDate", validDate)
+			.setParameter("referenceTime", timestamp);
+		@SuppressWarnings("unchecked")
+		final List<TaxJournal> list = session.createCriteria(
+				TaxJournal.class).list();
+		session.disableFilter(TaxJournal.FILTER_VALIDATE);
+		return list;
+	}
+
 }
