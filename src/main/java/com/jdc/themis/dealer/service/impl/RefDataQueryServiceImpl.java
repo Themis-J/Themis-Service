@@ -199,8 +199,8 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public DepartmentDetail getDepartment(Integer id) {
-		final Department department = refDataDAL.getDepartment(id);
-		Preconditions.checkArgument(department != null, "unknown department id");
+		Preconditions.checkArgument(refDataDAL.getDepartment(id).isSome(), "unknown department id");
+		final Department department = refDataDAL.getDepartment(id).some();
 		final DepartmentDetail item = new DepartmentDetail();
 		item.setId(department.getId());
 		item.setName(department.getName());
@@ -312,8 +312,8 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 
 	@Override
 	public DealerDetail getDealer(Integer id) {
-		Preconditions.checkArgument(refDataDAL.getDealer(id) != null, "unknown dealer id");
-		final Dealer gji = refDataDAL.getDealer(id);
+		Preconditions.checkArgument(refDataDAL.getDealer(id).isSome(), "unknown dealer id");
+		final Dealer gji = refDataDAL.getDealer(id).some();
 		final DealerDetail item = new DealerDetail();
 		item.setId(gji.getId());
 		item.setName(gji.getName());

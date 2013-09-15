@@ -2,16 +2,19 @@ package com.jdc.themis.dealer.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jdc.themis.dealer.web.domain.AddNewUserRequest;
 import com.jdc.themis.dealer.web.domain.GetUserInfoResponse;
 
 public interface UserService {
 
-	void createNewUser();
+	@Transactional
+	void addNewUser(AddNewUserRequest request);
 	
-	void deactivateUser(String username);
+	@Transactional
+	void disableUser(String username);
 	
-	@Transactional(readOnly=true)
-	void getUserEntitlements(String username);
+	@Transactional
+	void enableUser(String username);
 	
 	@Transactional(readOnly=true)
 	GetUserInfoResponse getUser(String username);

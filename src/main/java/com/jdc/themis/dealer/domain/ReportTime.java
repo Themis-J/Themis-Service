@@ -11,9 +11,6 @@ import javax.time.calendar.LocalDate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDefs;
-import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -21,37 +18,12 @@ import org.hibernate.annotations.TypeDefs;
 import com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate;
 import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 
-@FilterDefs(
-		{
-			@org.hibernate.annotations.FilterDef(name="reportTimeValidDateFilter", 
-					parameters = {
-					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate")
-					}), 
-			@org.hibernate.annotations.FilterDef(name="reportTimeYearFilter", 
-					parameters = {
-					@org.hibernate.annotations.ParamDef(name="year", type="integer")
-					}), 
-			@org.hibernate.annotations.FilterDef(name="reportTimeMonthFilter", 
-					parameters = {
-					@org.hibernate.annotations.ParamDef(name="year", type="integer"),
-					@org.hibernate.annotations.ParamDef(name="monthOfYear", type="integer")
-					}), 
-		}
-		)
-@Filters( {
-    @Filter(name="reportTimeValidDateFilter", condition="validDate = :referenceDate"), 
-    @Filter(name="reportTimeYearFilter", condition="year = :year"), 
-    @Filter(name="reportTimeMonthFilter", condition="year = :year and monthOfYear = :monthOfYear")
-} )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
 @Entity
 public class ReportTime implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static final String FILTER = "reportTimeValidDateFilter";
-	public static final String FILTER_YEAR = "reportTimeYearFilter";
-	public static final String FILTER_MONTH = "reportTimeMonthFilter";
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

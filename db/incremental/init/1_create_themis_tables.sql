@@ -480,6 +480,9 @@ WITH (
 )
 ;
 DROP TABLE IF EXISTS DealerIncomeRevenueFact CASCADE;
+DROP TABLE IF EXISTS DealerIncomeExpenseFact CASCADE;
+DROP TABLE IF EXISTS DealerEmployeeFeeFact CASCADE;
+DROP TABLE IF EXISTS DealerInventoryFact CASCADE;
 DROP TABLE IF EXISTS ReportTime CASCADE;
 DROP TABLE IF EXISTS ReportItem CASCADE;
 
@@ -501,7 +504,7 @@ CREATE TABLE ReportItem
    name varchar(100) NOT NULL, 
    sourceItemID integer NOT NULL, 
    itemSource integer NOT NULL, 
-   itemCategory varchar(100) NOT NULL, 
+   itemCategory varchar(100), 
    CONSTRAINT ReportItem_PK PRIMARY KEY (id)
 ) 
 WITH (
@@ -537,6 +540,39 @@ CREATE TABLE DealerIncomeExpenseFact
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
    CONSTRAINT DIEF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE DealerEmployeeFeeFact
+(
+   timeID integer NOT NULL, 
+   dealerID integer NOT NULL,
+   departmentID integer NOT NULL,
+   itemID integer NOT NULL,
+   version integer,
+   amount double precision,
+   timestamp timestamp without time zone NOT NULL, 
+   timeEnd timestamp without time zone NOT NULL, 
+   CONSTRAINT DIEF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE DealerInventoryFact
+(
+   timeID integer NOT NULL, 
+   dealerID integer NOT NULL,
+   departmentID integer NOT NULL,
+   itemID integer NOT NULL,
+   durationID integer NOT NULL,
+   version integer,
+   amount double precision,
+   timestamp timestamp without time zone NOT NULL, 
+   timeEnd timestamp without time zone NOT NULL, 
+   CONSTRAINT DIEF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, durationID, version)
 ) 
 WITH (
   OIDS = FALSE

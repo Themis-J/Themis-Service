@@ -55,11 +55,11 @@ public interface RefDataDAO {
 	
 	List<Dealer> getDealers();
 	
-	Dealer getDealer(Integer dealerID);
+	Option<Dealer> getDealer(Integer dealerID);
 	
 	List<Department> getDepartments();
 	
-	Department getDepartment(Integer departmentID);
+	Option<Department> getDepartment(Integer departmentID);
 	
 	List<TaxJournalItem> getTaxJournalItems();
 

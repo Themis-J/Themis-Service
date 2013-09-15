@@ -30,11 +30,9 @@ import org.hibernate.annotations.Type;
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="timeID", type="long"), 
 					}), 
-			@org.hibernate.annotations.FilterDef(name="dirfDepFilter", 
+			@org.hibernate.annotations.FilterDef(name="dirfRefTimeFilter", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
-					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer"),
-					@org.hibernate.annotations.ParamDef(name="timeID", type="long"), 
 					}), 
 		}
 		)
@@ -50,7 +48,7 @@ public class DealerIncomeRevenueFact implements Serializable, TemporalEntity {
 	
 	public static final String FILTER = "dirfFilter";
 	public static final String FILTER_ALL = "dirfAllFilter";
-	public static final String FILTER_DEP = "dirfDepFilter";
+	public static final String FILTER_REFTIME = "dirfRefTimeFilter";
 
 	@Id
 	private Long timeID;

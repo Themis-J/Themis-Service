@@ -241,7 +241,7 @@ public class TestRefDataQueryServiceImpl {
 		Assert.assertEquals(2, response.size());
 		Assert.assertEquals("g1", response.iterator().next().getName());
 		
-		when(refDataDAL.getDealer(1)).thenReturn(v1);
+		when(refDataDAL.getDealer(1)).thenReturn(Option.<Dealer>some(v1));
 		final DealerDetail item = refDataQueryService.getDealer(1);
 		Assert.assertEquals("g1", item.getName());
 	}
@@ -266,7 +266,7 @@ public class TestRefDataQueryServiceImpl {
 		Assert.assertEquals(2, response.getItems().size());
 		Assert.assertEquals("g1", response.getItems().get(0).getName());
 		
-		when(refDataDAL.getDepartment(1)).thenReturn(v1);
+		when(refDataDAL.getDepartment(1)).thenReturn(Option.<Department>some(v1));
 		final DepartmentDetail item = refDataQueryService.getDepartment(1);
 		Assert.assertEquals("g1", item.getName());
 	}

@@ -652,9 +652,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 					if ( newJournal.getAmount() == null ) {
 						newJournal.setAmount(BigDecimal.ZERO);
 					}
-					if ( newJournal.getCount() == null ) {
-						newJournal.setCount(0);
-					}
+
 					newJournal.setTimeEnd(INFINITE_TIMEEND);
 					session.save(newJournal);
 					session.flush();

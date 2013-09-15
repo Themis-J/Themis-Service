@@ -14,21 +14,31 @@ public interface ReportDAO {
 
 	void saveDealerIncomeRevenueFacts(Collection<DealerIncomeRevenueFact> journals);
 	
-	Collection<DealerIncomeRevenueFact> getDealerIncomeRevenueFacts(Integer year,
-			Option<Integer> monthOfYear, Option<Integer> departmentID);
+	Collection<DealerIncomeRevenueFact> getDealerIncomeRevenueFacts(
+			Integer year,
+			Collection<Integer> monthOfYear, 
+			Collection<Integer> departmentID,
+			Collection<Integer> itemSource,
+			Collection<String> itemCategory, 
+			Collection<Integer> itemID);
 	
 	void saveDealerIncomeExpenseFacts(Collection<DealerIncomeExpenseFact> journals);
 	
-	Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(Integer year,
-			Option<Integer> monthOfYear, Option<Integer> departmentID);
+	Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(
+			Integer year,
+			Collection<Integer> monthOfYear, 
+			Collection<Integer> departmentID, 
+			Collection<Integer> itemSource,
+			Collection<String> itemCategory, 
+			Collection<Integer> itemID);
 	
-	Integer importVehicleSalesJournal(LocalDate validDate);
+	void importVehicleSalesJournal(LocalDate validDate);
 	
-	Integer importSalesServiceJournal(LocalDate validDate);
+	void importSalesServiceJournal(LocalDate validDate);
 	
-	Integer importGeneralJournal(LocalDate validDate);
+	void importGeneralJournal(LocalDate validDate);
 	
-	Integer importTaxJournal(LocalDate validDate);
+	void importTaxJournal(LocalDate validDate);
 	
 	Option<ReportTime> getReportTime(LocalDate validDate);
 	

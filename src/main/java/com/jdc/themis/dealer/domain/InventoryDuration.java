@@ -69,7 +69,6 @@ public class InventoryDuration implements TemporalEntity, Serializable {
 	private String updatedBy;
 	@Id
 	private Integer durationID;
-	private Integer count;
 	private Integer version;
 
 	 @Version
@@ -80,15 +79,6 @@ public class InventoryDuration implements TemporalEntity, Serializable {
 	//DO NOT set this field manually, it is set by hibernate to achieve optimistic locking
 	protected void setVersion(Integer version) {
 		this.version = version;
-	}
-
-	
-	public Integer getCount() {
-		return count;
-	}
-
-	public void setCount(Integer count) {
-		this.count = count;
 	}
 
 	@Id
@@ -172,7 +162,6 @@ public class InventoryDuration implements TemporalEntity, Serializable {
 				.append("durationID", durationID)
 				.append("departmentID", departmentID)
 				.append("amount", amount)
-				.append("count", count)
 				.append("updatedBy", updatedBy)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)

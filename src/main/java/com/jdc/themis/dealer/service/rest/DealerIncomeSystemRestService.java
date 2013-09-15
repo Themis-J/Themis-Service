@@ -1,6 +1,5 @@
 package com.jdc.themis.dealer.service.rest;
 
-import javax.time.calendar.LocalDate;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,9 +15,11 @@ import org.springframework.stereotype.Service;
 import com.jdc.themis.dealer.service.DealerIncomeEntryService;
 import com.jdc.themis.dealer.service.DealerIncomeReportService;
 import com.jdc.themis.dealer.service.RefDataQueryService;
+import com.jdc.themis.dealer.service.UserService;
 import com.jdc.themis.dealer.utils.RestServiceErrorHandler;
 import com.jdc.themis.dealer.utils.Utils;
 import com.jdc.themis.dealer.web.domain.GeneralResponse;
+import com.jdc.themis.dealer.web.domain.ImportReportDataRequest;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
@@ -49,6 +50,9 @@ public class DealerIncomeSystemRestService {
 	
 	@Autowired
 	private DealerIncomeReportService dealerIncomeReportService;
+	
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * Get full list of menu. Each menu includes its parent id and child id
@@ -633,12 +637,12 @@ public class DealerIncomeSystemRestService {
 	@Consumes({ "application/json", "application/xml" })
 	@Path("/report/import")
 	@RestServiceErrorHandler
-	public Response importReportData(@QueryParam("validDate") String validDate) {
+	public Response importReportData(final ImportReportDataRequest request) {
 		final GeneralResponse response = new GeneralResponse();
 		response.setErrorMsg("");
 		response.setSuccess(true);
 		dealerIncomeReportService
-			.importReportData(LocalDate.parse(validDate));
+			.importReportData(request);
 		response.setTimestamp(Utils.currentTimestamp());
 		return Response.ok(response).status(Status.CREATED).build();
 	}
@@ -655,7 +659,21 @@ public class DealerIncomeSystemRestService {
 	@RestServiceErrorHandler
 	public Response queryYearlyOverallIncomeReport(@QueryParam("year") Integer year) {
 		return Response.ok(
-				dealerIncomeReportService.queryYearlyOverallIncomeReport(year)).build();
+				dealerIncomeReportService.queryYearlyOverallIncomeReport(year, Option.<Integer>none())).build();
 	}
 	
+	/**
+	 * Query user information.
+	 * 
+	 * @param username
+	 * @return
+	 */
+	@GET
+	@Path("/user/info")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getUser(@QueryParam("username") String username) {
+		return Response.ok(
+				userService.getUser(username)).build();
+	}
 }

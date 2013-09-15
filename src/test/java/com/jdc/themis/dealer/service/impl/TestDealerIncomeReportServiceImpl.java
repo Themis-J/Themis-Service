@@ -22,6 +22,7 @@ import com.jdc.themis.dealer.domain.ReportItem;
 import com.jdc.themis.dealer.domain.ReportTime;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.web.domain.DealerDetail;
+import com.jdc.themis.dealer.web.domain.ImportReportDataRequest;
 import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
 
 import fj.data.Option;
@@ -45,7 +46,11 @@ public class TestDealerIncomeReportServiceImpl {
 	
 	@Test
 	public void importReportData() {
-		service.importReportData(LocalDate.of(2013, 8, 1));
+		final ImportReportDataRequest request = new ImportReportDataRequest();
+		request.setFromDate(LocalDate.of(2013, 8, 1).toString());
+		request.setToDate(LocalDate.of(2013, 8, 1).toString());
+		
+		service.importReportData(request);
 		verify(dal).importGeneralJournal(LocalDate.of(2013, 8, 1));
 		verify(dal).importTaxJournal(LocalDate.of(2013, 8, 1));
 		verify(dal).importSalesServiceJournal(LocalDate.of(2013, 8, 1));
@@ -129,8 +134,16 @@ public class TestDealerIncomeReportServiceImpl {
 		fact5.setCount(40);
 		
 		//skip timestamp and time end
-		when(dal.getDealerIncomeRevenueFacts(2013, Option.<Integer>none(), Option.<Integer>none())).thenReturn(Lists.newArrayList(fact1, fact2, fact3));
-		when(dal.getDealerIncomeRevenueFacts(2012, Option.<Integer>none(), Option.<Integer>none())).thenReturn(Lists.newArrayList(fact4, fact5));
+		when(dal.getDealerIncomeRevenueFacts(2013, Lists.newArrayList(new Integer[]{}), 
+				Lists.newArrayList(new Integer[]{}), 
+				Lists.newArrayList(new Integer[]{}), 
+				Lists.newArrayList(new String[]{"新轿车零售", "新货车零售", "附加产品业务", "二手车零售", "工时", "配件收入"}), 
+				Lists.newArrayList(new Integer[]{}))).thenReturn(Lists.newArrayList(fact1, fact2, fact3));
+		when(dal.getDealerIncomeRevenueFacts(2012, Lists.newArrayList(new Integer[]{}), 
+				Lists.newArrayList(new Integer[]{}), 
+				Lists.newArrayList(new Integer[]{}), 
+				Lists.newArrayList(new String[]{"新轿车零售", "新货车零售", "附加产品业务", "二手车零售", "工时", "配件收入"}), 
+				Lists.newArrayList(new Integer[]{}))).thenReturn(Lists.newArrayList(fact4, fact5));
 		final ReportItem item1 = new ReportItem();
 		item1.setId(1L);
 		item1.setItemCategory("C1");
@@ -139,7 +152,7 @@ public class TestDealerIncomeReportServiceImpl {
 		item2.setItemCategory("C1");
 		when(dal.getReportItem(1L)).thenReturn(Option.<ReportItem>some(item1));
 		when(dal.getReportItem(2L)).thenReturn(Option.<ReportItem>some(item2));
-		final QueryReportDataResponse response = service.queryYearlyOverallIncomeReport(2013);
+		final QueryReportDataResponse response = service.queryYearlyOverallIncomeReport(2013, Option.<Integer>none());
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getDetail().size());
 		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());

@@ -175,12 +175,12 @@ public class TestRefDataDAOImpl {
 	
 	@Test
 	public void getDealer() {
-		Assert.assertEquals("Dealer2", refDataDAO.getDealer(2).getName());
+		Assert.assertEquals("Dealer2", refDataDAO.getDealer(2).some().getName());
 	}
 	
 	@Test
 	public void getDepartment() {
-		Assert.assertEquals("Department1", refDataDAO.getDepartment(1).getName());
+		Assert.assertEquals("Department1", refDataDAO.getDepartment(1).some().getName());
 	}
 	
 	@Test

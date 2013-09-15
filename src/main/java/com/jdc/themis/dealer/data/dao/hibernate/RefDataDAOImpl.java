@@ -363,8 +363,12 @@ public class RefDataDAOImpl implements RefDataDAO {
 	    }
 	}
 	@Override
-	public Dealer getDealer(Integer dealerID) {
-		return Maps.uniqueIndex(getDealers(), GetDealerIDFunction.INSTANCE).get(dealerID);
+	public Option<Dealer> getDealer(Integer dealerID) {
+		final Dealer dealer = Maps.uniqueIndex(getDealers(), GetDealerIDFunction.INSTANCE).get(dealerID);
+		if ( dealer == null ) {
+			return Option.<Dealer>none();
+		}
+		return Option.<Dealer>some(dealer);
 	}
 
 	@Override
@@ -385,8 +389,12 @@ public class RefDataDAOImpl implements RefDataDAO {
 	    }
 	}
 	@Override
-	public Department getDepartment(Integer departmentID) {
-		return Maps.uniqueIndex(getDepartments(), GetDepartmentIDFunction.INSTANCE).get(departmentID);
+	public Option<Department> getDepartment(Integer departmentID) {
+		final Department department = Maps.uniqueIndex(getDepartments(), GetDepartmentIDFunction.INSTANCE).get(departmentID);
+		if ( department == null ) {
+			return Option.<Department>none();
+		}
+		return Option.<Department>some(department);
 	}
 
 	private enum GetJobPositionIDFunction implements Function<JobPosition, Integer> {

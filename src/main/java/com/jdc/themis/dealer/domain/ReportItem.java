@@ -10,28 +10,13 @@ import javax.persistence.Id;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDefs;
-import org.hibernate.annotations.Filters;
 
-@FilterDefs(
-		{
-			@org.hibernate.annotations.FilterDef(name="reportItemFilter", 
-					parameters = {
-					@org.hibernate.annotations.ParamDef(name="sourceItemID", type="integer"),
-					@org.hibernate.annotations.ParamDef(name="itemSource", type="integer")
-					}), 
-		}
-		)
-@Filters( {
-    @Filter(name="reportItemFilter", condition="sourceItemID = :sourceItemID and itemSource = :itemSource")
-} )
+
 @Entity
 public class ReportItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static final String FILTER = "reportItemFilter";
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jdc.themis.dealer.service.DealerIncomeReportService;
+import com.jdc.themis.dealer.web.domain.ImportReportDataRequest;
 
 @Service
 public class DealerIncomeReportGeneratorJob { // extends QuartzJobBean {
@@ -20,21 +21,16 @@ public class DealerIncomeReportGeneratorJob { // extends QuartzJobBean {
 	@Autowired
 	private DealerIncomeReportService service;
 
-	public DealerIncomeReportService getService() {
-		return service;
-	}
-
-	public void setService(DealerIncomeReportService service) {
-		this.service = service;
-	}
-
 	public void execute() {
 		final Calendar c = new GregorianCalendar();
 		c.setTime(new Date());
 		final LocalDate value = LocalDate.of(c.get(Calendar.YEAR),
 				c.get(Calendar.MONTH) + 1, 1);
 		logger.info("Importing report data for date {}", value);
-		service.importReportData(value);
+		final ImportReportDataRequest request = new ImportReportDataRequest();
+		request.setFromDate(value.toString());
+		request.setToDate(value.toString());
+		service.importReportData(request);
 	}
 
 }

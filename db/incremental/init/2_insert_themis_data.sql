@@ -13,6 +13,7 @@ INSERT INTO EnumValue VALUES (4, '有效工时比率', 1);
 INSERT INTO EnumValue VALUES (4, '技工平均工资', 2);
 INSERT INTO EnumValue VALUES (5, 'Revenue', 0);
 INSERT INTO EnumValue VALUES (5, 'Expense', 1);
+INSERT INTO EnumValue VALUES (5, 'Other', 2);
 
 INSERT INTO UserRole SELECT 0, 'Super', current_timestamp;
 INSERT INTO UserRole SELECT 1, 'Admin', current_timestamp;
@@ -265,7 +266,7 @@ INSERT INTO GeneralJournalCategory SELECT 6, '非经营性损益进项', current
 INSERT INTO GeneralJournalCategory SELECT 7, '非经营性损益削项', current_timestamp;
 INSERT INTO GeneralJournalCategory SELECT 8, '其它进项', current_timestamp;
 INSERT INTO GeneralJournalCategory SELECT 9, '其它削项', current_timestamp;
-INSERT INTO GeneralJournalCategory SELECT 10, '税收', current_timestamp;
+INSERT INTO GeneralJournalCategory SELECT 10, '应收帐款', current_timestamp;
 
 INSERT INTO GeneralJournalItem SELECT 1, '销售顾问薪酬', 1, 1, current_timestamp;
 INSERT INTO GeneralJournalItem SELECT 2, '金融保险顾问薪酬', 1, 1, current_timestamp;
@@ -324,5 +325,6 @@ INSERT INTO GeneralJournalItem SELECT 54, '市场营销补贴', 8, 0, current_ti
 INSERT INTO GeneralJournalItem SELECT 55, '满意度奖励', 8, 0, current_timestamp;
 INSERT INTO GeneralJournalItem SELECT 56, '其他奖励', 8, 0, current_timestamp;
 INSERT INTO GeneralJournalItem SELECT 57, '员工/团队奖金', 9, 1, current_timestamp;
+INSERT INTO GeneralJournalItem SELECT 58, '坏帐准备金', 10, 2, current_timestamp;
 
 INSERT INTO TaxJournalItem SELECT 1, '所得税', current_timestamp;

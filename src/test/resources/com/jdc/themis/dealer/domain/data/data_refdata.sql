@@ -13,6 +13,7 @@ insert into EnumValue values (4, '有效工时比率', 1)
 insert into EnumValue values (4, '技工平均工资', 2)
 insert into EnumValue values (5, 'Revenue', 0)
 insert into EnumValue values (5, 'Expense', 1)
+insert into EnumValue values (5, 'Other', 2)
 
 insert into Menu values (1, 'DealerEntrySystem', 'DealerEntrySystemText')
 insert into Menu values (2, 'DealerDataEntry', 'DealerDataEntryText')

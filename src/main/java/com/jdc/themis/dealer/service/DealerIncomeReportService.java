@@ -1,16 +1,18 @@
 package com.jdc.themis.dealer.service;
 
-import javax.time.calendar.LocalDate;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jdc.themis.dealer.web.domain.ImportReportDataRequest;
 import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
+
+import fj.data.Option;
 
 public interface DealerIncomeReportService {
 
 	@Transactional
-	void importReportData(LocalDate validDate);
+	void importReportData(ImportReportDataRequest request);
 	
 	@Transactional(readOnly=true)
-	QueryReportDataResponse queryYearlyOverallIncomeReport(Integer year);
+	QueryReportDataResponse queryYearlyOverallIncomeReport(Integer year, Option<Integer> monthOfYear);
 }

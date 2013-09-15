@@ -2,7 +2,6 @@ package com.jdc.themis.dealer.service.impl;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import javax.time.calendar.LocalDate;
@@ -25,6 +24,7 @@ import com.jdc.themis.dealer.service.DealerIncomeReportService;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.web.domain.DealerDetail;
+import com.jdc.themis.dealer.web.domain.ImportReportDataRequest;
 import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
 import com.jdc.themis.dealer.web.domain.ReportDataDealerDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDealerDetailAmount;
@@ -57,12 +57,14 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 	}
 
 	@Override
-	public void importReportData(LocalDate validDate) {
-		Preconditions.checkNotNull(validDate, "valid date can't be null");
-		reportDAL.importVehicleSalesJournal(validDate);
-		reportDAL.importSalesServiceJournal(validDate);
-		reportDAL.importGeneralJournal(validDate);
-		reportDAL.importTaxJournal(validDate);
+	public void importReportData(final ImportReportDataRequest request) {
+		Preconditions.checkNotNull(request.getFromDate(), "from date can't be null");
+		Preconditions.checkNotNull(request.getToDate(), "to date can't be null");
+		
+		reportDAL.importVehicleSalesJournal(LocalDate.parse(request.getFromDate()));
+		reportDAL.importSalesServiceJournal(LocalDate.parse(request.getFromDate()));
+		reportDAL.importGeneralJournal(LocalDate.parse(request.getFromDate()));
+		reportDAL.importTaxJournal(LocalDate.parse(request.getFromDate()));
 	}
 
 	private enum GetDealerIDFromRevenueFunction implements Function<DealerIncomeRevenueFact, Integer> {
@@ -92,7 +94,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 	
 	@Override
 	@Performance
-	public QueryReportDataResponse queryYearlyOverallIncomeReport(final Integer year) {
+	public QueryReportDataResponse queryYearlyOverallIncomeReport(final Integer year, final Option<Integer> monthOfYear) {
 		Preconditions.checkNotNull(year, "year can't be null");
 		final QueryReportDataResponse response = new QueryReportDataResponse();
 		response.setReportName("YearlyOverallIncomeReport");
@@ -128,19 +130,16 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		}
 		
 		// Get all revenues
-		final Collection<DealerIncomeRevenueFact> revenueFacts = reportDAL.getDealerIncomeRevenueFacts(year, Option.<Integer>none(), Option.<Integer>none());
+		final Collection<DealerIncomeRevenueFact> revenueFacts = 
+				reportDAL.getDealerIncomeRevenueFacts(year, 
+						Lists.newArrayList(new Integer[]{}), 
+						Lists.newArrayList(new Integer[]{}), 
+						Lists.newArrayList(new Integer[]{}), 
+						Lists.newArrayList(new String[]{"新轿车零售", "新货车零售", "附加产品业务", "二手车零售", "工时", "配件收入"}), 
+						Lists.newArrayList(new Integer[]{}));
 		
 		final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts = Multimaps
-				.index(fj.data.List.iterableList(revenueFacts).filter(new fj.F<DealerIncomeRevenueFact, Boolean>() {
-		
-					private final List<String> excluding = Lists.newArrayList("非经营性损益进项", "其它进项");
-					
-					@Override
-					public Boolean f(DealerIncomeRevenueFact a) {
-						return !excluding.contains(reportDAL.getReportItem(((DealerIncomeRevenueFact) a).getItemID()).some());
-					}
-					
-				}).toCollection(), GetDealerIDFromRevenueFunction.INSTANCE);
+				.index(revenueFacts, GetDealerIDFromRevenueFunction.INSTANCE);
 		// Calculate total revenue
 		for ( final Integer dealerID : dealerRevenueFacts.keySet() ) {
 			final BigDecimal totalAmount = Lambda.sumFrom(dealerRevenueFacts.get(dealerID), DealerIncomeRevenueFact.class).getAmount();
@@ -168,19 +167,16 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 			dealerDetails.get(dealerID).setMargin(amount);
 		}
 		// Get all expenses
-		final Collection<DealerIncomeExpenseFact> expenseFacts = reportDAL.getDealerIncomeExpenseFacts(year, Option.<Integer>none(), Option.<Integer>none());
+		final Collection<DealerIncomeExpenseFact> expenseFacts = 
+				reportDAL.getDealerIncomeExpenseFacts(year, 
+						Lists.newArrayList(new Integer[]{}), 
+						Lists.newArrayList(new Integer[]{}), 
+						Lists.newArrayList(new Integer[]{}), 
+						Lists.newArrayList(new String[]{"变动费用", "销售费用", "人工费用", "半固定费用", "固定费用"}), 
+						Lists.newArrayList(new Integer[]{}));
 		
 		final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerExpenseFacts = Multimaps
-				.index(fj.data.List.iterableList(expenseFacts).filter(new fj.F<DealerIncomeExpenseFact, Boolean>() {
-		
-					private final List<String> excluding = Lists.newArrayList("非经营性损益削项", "其它削项");
-					
-					@Override
-					public Boolean f(DealerIncomeExpenseFact a) {
-						return !excluding.contains(reportDAL.getReportItem(((DealerIncomeExpenseFact) a).getItemID()).some());
-					}
-					
-				}).toCollection(), GetDealerIDFromExpenseFunction.INSTANCE);
+				.index(expenseFacts, GetDealerIDFromExpenseFunction.INSTANCE);
 		// Get total expense
 		for ( final Integer dealerID : dealerExpenseFacts.keySet() ) {
 			final BigDecimal totalExpense = Lambda.sumFrom(dealerExpenseFacts.get(dealerID), DealerIncomeExpenseFact.class).getAmount();
@@ -195,48 +191,6 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 			dealerDetails.get(dealerID).setExpense(amount);
 		}
 		
-		final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerNonRecurrentPnLRevenueFacts = Multimaps
-				.index(fj.data.List.iterableList(revenueFacts).filter(new fj.F<DealerIncomeRevenueFact, Boolean>() {
-		
-					private final List<String> including = Lists.newArrayList("非经营性损益进项");
-					
-					@Override
-					public Boolean f(DealerIncomeRevenueFact a) {
-						return including.contains(reportDAL.getReportItem(((DealerIncomeRevenueFact) a).getItemID()).some());
-					}
-					
-				}).toCollection(), GetDealerIDFromRevenueFunction.INSTANCE);
-		for ( final Integer dealerID : dealerNonRecurrentPnLRevenueFacts.keySet() ) {
-			final BigDecimal totalAmount = Lambda.sumFrom(dealerNonRecurrentPnLRevenueFacts.get(dealerID), DealerIncomeRevenueFact.class).getAmount();
-			final ReportDataDealerDetailAmount amount = new ReportDataDealerDetailAmount();
-			amount.setAmount(totalAmount.doubleValue());
-			dealerDetails.get(dealerID).setNonRecurrentPnL(amount);
-		}
-		final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerNonRecurrentPnLExpenseFacts = Multimaps
-				.index(fj.data.List.iterableList(expenseFacts).filter(new fj.F<DealerIncomeExpenseFact, Boolean>() {
-		
-					private final List<String> including = Lists.newArrayList("非经营性损益削项");
-					
-					@Override
-					public Boolean f(DealerIncomeExpenseFact a) {
-						return including.contains(reportDAL.getReportItem(((DealerIncomeExpenseFact) a).getItemID()).some());
-					}
-					
-				}).toCollection(), GetDealerIDFromExpenseFunction.INSTANCE);
-		// Get total expense
-		for ( final Integer dealerID : dealerNonRecurrentPnLExpenseFacts.keySet() ) {
-			final BigDecimal totalExpense = Lambda.sumFrom(dealerNonRecurrentPnLExpenseFacts.get(dealerID), DealerIncomeExpenseFact.class).getAmount();
-			final ReportDataDealerDetailAmount amount = new ReportDataDealerDetailAmount();
-			amount.setAmount(totalExpense.doubleValue());
-			dealerDetails.get(dealerID).getNonRecurrentPnL().setAmount(dealerDetails.get(dealerID).getNonRecurrentPnL().getAmount() - totalExpense.doubleValue());
-			
-			if ( dealerPreviousYearDetailOption.isSome() &&
-					dealerPreviousYearDetailOption.some().get(dealerID).getNonRecurrentPnL().getAmount() != 0.0) {
-				// YOY Percentage = (this year amount - last year amount) / last year amount
-				amount.setPercentage((dealerDetails.get(dealerID).getNonRecurrentPnL().getAmount().doubleValue() - dealerPreviousYearDetailOption.some().get(dealerID).getNonRecurrentPnL().getAmount()) / 
-						dealerPreviousYearDetailOption.some().get(dealerID).getNonRecurrentPnL().getAmount());
-			}
-		}
 		reportDetail.getDetail().addAll(dealerDetails.values());
 		
 		return reportDetail;

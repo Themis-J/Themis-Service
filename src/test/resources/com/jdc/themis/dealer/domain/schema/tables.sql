@@ -109,7 +109,7 @@ ALTER TABLE EmployeeFeeSummary ALTER COLUMN amount SET NOT NULL
 
 CREATE TABLE InventoryDurationItem (   id integer,    name varchar(100),    timestamp timestamp) 
 
-CREATE TABLE InventoryDuration (timestamp timestamp, timeEnd timestamp, validDate date, dealerID integer, departmentID integer, durationID integer, id integer, version integer, amount double, count integer, updatedBy varchar(20)) 
+CREATE TABLE InventoryDuration (timestamp timestamp, timeEnd timestamp, validDate date, dealerID integer, departmentID integer, durationID integer, id integer, version integer, amount double, updatedBy varchar(20)) 
       ALTER TABLE InventoryDuration ALTER COLUMN timestamp SET NOT NULL
 ALTER TABLE InventoryDuration ALTER COLUMN timeEnd SET NOT NULL
 ALTER TABLE InventoryDuration ALTER COLUMN validDate SET NOT NULL

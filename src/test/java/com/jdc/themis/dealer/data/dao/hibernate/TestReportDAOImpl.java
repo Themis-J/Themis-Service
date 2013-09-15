@@ -79,7 +79,12 @@ public class TestReportDAOImpl {
 		
 		int hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(8), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, 
+					Lists.newArrayList(new Integer[]{8}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -88,7 +93,12 @@ public class TestReportDAOImpl {
 		
 		hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(7), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, 
+					Lists.newArrayList(new Integer[]{7}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -149,6 +159,17 @@ public class TestReportDAOImpl {
 		status6.setUpdatedBy("test");
 		incomeJournalDAL.saveSalesServiceJournal(10, 3, Lists.newArrayList(status6));
 		
+		final SalesServiceJournal status7 = new SalesServiceJournal();
+		status7.setDealerID(10);
+		status7.setId(3); // this is a expense item
+		status7.setAmount(BigDecimal.ZERO);
+		status7.setMargin(new BigDecimal("335"));
+		status7.setCount(0);
+		status7.setDepartmentID(3);
+		status7.setValidDate(LocalDate.of(2013, 7, 1));
+		status7.setUpdatedBy("test");
+		incomeJournalDAL.saveSalesServiceJournal(10, 3, Lists.newArrayList(status7));
+		
 		reportDAL.importSalesServiceJournal(LocalDate.of(2013, 8, 1));
 		reportDAL.importSalesServiceJournal(LocalDate.of(2013, 7, 1));
 		// force to populate twice
@@ -157,7 +178,12 @@ public class TestReportDAOImpl {
 		
 		int hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(8), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, 
+					Lists.newArrayList(new Integer[]{8}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -165,8 +191,27 @@ public class TestReportDAOImpl {
 		Assert.assertEquals(2, hasJournal);
 		
 		hasJournal = 0;
+		for (final DealerIncomeExpenseFact journal : 
+			reportDAL.getDealerIncomeExpenseFacts(2013, Lists.newArrayList(new Integer[]{7}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+			Assert.assertEquals(new BigDecimal("335"), journal.getAmount());
+		} 
+		Assert.assertEquals(1, hasJournal);
+		
+		hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(7), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, 
+					Lists.newArrayList(new Integer[]{7}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -180,7 +225,7 @@ public class TestReportDAOImpl {
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
 		} 
-		Assert.assertEquals(2, hasReportItem);
+		Assert.assertEquals(3, hasReportItem);
 		
 		int hasReportTime = 0;
 		for (final ReportTime journal : 
@@ -238,7 +283,12 @@ public class TestReportDAOImpl {
 		
 		int hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(8), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, 
+					Lists.newArrayList(new Integer[]{8}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -247,7 +297,12 @@ public class TestReportDAOImpl {
 		
 		hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(8), Option.<Integer>some(3))) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, 
+					Lists.newArrayList(new Integer[]{8}), 
+					Lists.newArrayList(new Integer[]{3}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -256,7 +311,12 @@ public class TestReportDAOImpl {
 		
 		hasJournal = 0;
 		for (final DealerIncomeRevenueFact journal : 
-			reportDAL.getDealerIncomeRevenueFacts(2013, Option.<Integer>some(7), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeRevenueFacts(2013, 
+					Lists.newArrayList(new Integer[]{7}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -265,7 +325,11 @@ public class TestReportDAOImpl {
 		
 		hasJournal = 0;
 		for (final DealerIncomeExpenseFact journal : 
-			reportDAL.getDealerIncomeExpenseFacts(2013, Option.<Integer>some(7), Option.<Integer>none())) {
+			reportDAL.getDealerIncomeExpenseFacts(2013, Lists.newArrayList(new Integer[]{7}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);
@@ -274,7 +338,11 @@ public class TestReportDAOImpl {
 		
 		hasJournal = 0;
 		for (final DealerIncomeExpenseFact journal : 
-			reportDAL.getDealerIncomeExpenseFacts(2013, Option.<Integer>some(7), Option.<Integer>some(3))) {
+			reportDAL.getDealerIncomeExpenseFacts(2013, Lists.newArrayList(new Integer[]{7}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
 			Assert.assertNotNull(journal);

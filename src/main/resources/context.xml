@@ -43,8 +43,10 @@
 	
 	<bean id="dealerIncomeReportService" class="com.jdc.themis.dealer.service.impl.DealerIncomeReportServiceImpl" />
 	
+	<bean id="userService" class="com.jdc.themis.dealer.service.impl.UserServiceImpl" />
+    
 	<bean id="dealerRestService" class="com.jdc.themis.dealer.service.rest.DealerIncomeSystemRestService" />
-				
+
 	<jaxrs:server id="dealerEntryServer" address="/dealer">
 		<jaxrs:serviceBeans>
       		<ref bean="dealerRestService" />
@@ -71,7 +73,7 @@
             </hz:network>
             <hz:map name="default"
                 backup-count="0"
-                max-size="5000"
+                max-size="10000"
                 eviction-percentage="30"
                 cache-value="true"
                 eviction-policy="LRU"
