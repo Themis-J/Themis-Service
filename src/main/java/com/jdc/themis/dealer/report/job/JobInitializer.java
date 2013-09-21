@@ -49,7 +49,7 @@ public class JobInitializer {
 					cronTriggerFactoryBean.setName("DealerIncomeReportGeneratorJobTrigger");
 					cronTriggerFactoryBean.setStartDelay(2000);
 					cronTriggerFactoryBean.setJobDetail(methodInvokingJobDetailFactoryBean.getObject());
-					cronTriggerFactoryBean.setCronExpression("0 0/1 * * * ?");
+					cronTriggerFactoryBean.setCronExpression("0 0/45 * * * ?");
 					cronTriggerFactoryBean.afterPropertiesSet();
 					
 					schedulerFactoryBean = new SchedulerFactoryBean();

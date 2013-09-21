@@ -23,6 +23,8 @@ public class ReportDataDetail implements Serializable{
 	private Integer month;
 	@XmlElement(name = "dealer")
 	private List<ReportDataDealerDetail> detail = Lists.newArrayList();
+	@XmlElement(name = "department")
+	private List<ReportDataDepartmentDetail> departmentDetail = Lists.newArrayList();
 	
 	public Integer getYear() {
 		return year;
@@ -39,10 +41,14 @@ public class ReportDataDetail implements Serializable{
 	public List<ReportDataDealerDetail> getDetail() {
 		return detail;
 	}
+	public List<ReportDataDepartmentDetail> getDepartmentDetail() {
+		return departmentDetail;
+	}
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("year", year)
 				.append("month", month)
 				.append("dealer", detail)
+				.append("department", departmentDetail)
 				.getStringBuffer().toString();
 	}
 }

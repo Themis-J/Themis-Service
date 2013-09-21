@@ -115,8 +115,10 @@ public interface RefDataQueryService {
 	DurationDetail getDuration(Integer id);
 	
 	@Transactional(readOnly=true)
+	@Cacheable("enumValueInt")
 	Option<EnumValue> getEnumValue(String enumType, Integer enumValue);
 	
 	@Transactional(readOnly=true)
+	@Cacheable("enumValueStr")
 	Option<EnumValue> getEnumValue(String enumType, String enumValue);
 }

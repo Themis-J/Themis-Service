@@ -45,6 +45,10 @@ public class DealerIncomeSystemRestService {
 	@Autowired
 	private RefDataQueryService refDataQueryService;
 
+	public void setRefDataQueryService(RefDataQueryService refDataQueryService) {
+		this.refDataQueryService = refDataQueryService;
+	}
+
 	@Autowired
 	private DealerIncomeEntryService dealerIncomeEntryService;
 	
@@ -92,7 +96,7 @@ public class DealerIncomeSystemRestService {
 	@RestServiceErrorHandler
 	public Response getVehicles(@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
-				this.refDataQueryService.getVehicles(Option.<Integer>iif(categoryID != null, categoryID))).build();
+				this.refDataQueryService.getVehicles(Option.<Integer>fromNull(categoryID))).build();
 	}
 
 	/**
@@ -106,7 +110,7 @@ public class DealerIncomeSystemRestService {
 	@RestServiceErrorHandler
 	public Response getSalesServiceRevenueItems(@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
-				this.refDataQueryService.getSalesServiceRevenueItems(Option.<Integer>iif(categoryID != null, categoryID)))
+				this.refDataQueryService.getSalesServiceRevenueItems(Option.fromNull(categoryID)))
 				.build();
 	}
 
@@ -152,9 +156,9 @@ public class DealerIncomeSystemRestService {
 		return Response.ok(
 				dealerIncomeEntryService.getVehicleSalesRevenue(
 						dealerID,
-						Option.<Integer>iif(departmentID != null, departmentID), 
+						Option.fromNull(departmentID), 
 						validDate, 
-						Option.<Integer>iif(categoryID != null, categoryID))).build();
+						Option.fromNull(categoryID))).build();
 	}
 
 	/**
@@ -200,7 +204,7 @@ public class DealerIncomeSystemRestService {
 			@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
 				dealerIncomeEntryService.getSalesServiceRevenue(dealerID,
-						departmentID, validDate, Option.<Integer>iif(categoryID != null, categoryID))).build();
+						departmentID, validDate, Option.fromNull(categoryID))).build();
 	}
 
 	/**
@@ -298,7 +302,7 @@ public class DealerIncomeSystemRestService {
 	@RestServiceErrorHandler
 	public Response getGeneralIncomeItems(@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(this.refDataQueryService.getGeneralIncomeItems(
-				Option.<Integer>iif(categoryID != null, categoryID)))
+				Option.fromNull(categoryID)))
 				.build();
 	}
 
@@ -344,7 +348,7 @@ public class DealerIncomeSystemRestService {
 			@QueryParam("categoryID") Integer categoryID) {
 		return Response.ok(
 				dealerIncomeEntryService.getGeneralIncome(dealerID,
-						departmentID, validDate, Option.<Integer>iif(categoryID != null, categoryID))).build();
+						departmentID, validDate, Option.fromNull(categoryID))).build();
 	}
 	
 	/**
@@ -648,18 +652,26 @@ public class DealerIncomeSystemRestService {
 	}
 
 	/**
-	 * Query yearly income report.
+	 * Query overall income report.
 	 * 
 	 * @param year
 	 * @return
 	 */
 	@GET
-	@Path("/report/yearlyOverallIncomeReport")
+	@Path("/report/query/overallIncomeReport")
 	@Produces({ "application/json", "application/xml" })
 	@RestServiceErrorHandler
-	public Response queryYearlyOverallIncomeReport(@QueryParam("year") Integer year) {
+	public Response queryDealerOverallIncomeReport(
+			@QueryParam("year") Integer year, 
+			@QueryParam("monthOfYear") Integer monthOfYear, 
+			@QueryParam("departmentID") Integer departmentID, 
+			@QueryParam("denominator") Integer denominator) {
 		return Response.ok(
-				dealerIncomeReportService.queryYearlyOverallIncomeReport(year, Option.<Integer>none())).build();
+				dealerIncomeReportService.queryOverallIncomeReport(
+						year, 
+						Option.fromNull(monthOfYear), 
+						Option.fromNull(departmentID),
+						Option.fromNull(denominator))).build();
 	}
 	
 	/**

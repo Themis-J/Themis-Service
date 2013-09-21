@@ -1,17 +1,13 @@
 package com.jdc.themis.dealer.web.domain;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-
-import com.google.common.collect.Lists;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -21,29 +17,23 @@ public class ReportDataDealerDetail implements Serializable{
 	private Integer id;
 	private String name;
 	private String code;
-	private ReportDataDealerDetailAmount revenue = new ReportDataDealerDetailAmount();
-	private ReportDataDealerDetailAmount expense = new ReportDataDealerDetailAmount();
-	private ReportDataDealerDetailAmount margin = new ReportDataDealerDetailAmount();
-	private ReportDataDealerDetailAmount nonRecurrentPnL = new ReportDataDealerDetailAmount();
-	@XmlElement(name = "department")
-	private List<ReportDataDealerDepartmentDetail> detail = Lists.newArrayList();
-
+	private ReportDataDetailAmount revenue = new ReportDataDetailAmount();
+	private ReportDataDetailAmount expense = new ReportDataDetailAmount();
+	private ReportDataDetailAmount margin = new ReportDataDetailAmount();
+	private ReportDataDetailAmount opProfit = new ReportDataDetailAmount();
+	private ReportDataDetailAmount netProfit = new ReportDataDetailAmount();
+	
 	public String getCode() {
 		return code;
 	}
 	public void setCode(String code) {
 		this.code = code;
 	}
-	public ReportDataDealerDetailAmount getNonRecurrentPnL() {
-		return nonRecurrentPnL;
-	}
-	public void setNonRecurrentPnL(ReportDataDealerDetailAmount nonRecurrentPnL) {
-		this.nonRecurrentPnL = nonRecurrentPnL;
-	}
-	public ReportDataDealerDetailAmount getMargin() {
+
+	public ReportDataDetailAmount getMargin() {
 		return margin;
 	}
-	public void setMargin(ReportDataDealerDetailAmount margin) {
+	public void setMargin(ReportDataDetailAmount margin) {
 		this.margin = margin;
 	}
 	public Integer getId() {
@@ -58,29 +48,39 @@ public class ReportDataDealerDetail implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public ReportDataDealerDetailAmount getRevenue() {
+	public ReportDataDetailAmount getRevenue() {
 		return revenue;
 	}
-	public void setRevenue(ReportDataDealerDetailAmount revenue) {
+	public void setRevenue(ReportDataDetailAmount revenue) {
 		this.revenue = revenue;
 	}
-	public ReportDataDealerDetailAmount getExpense() {
+	public ReportDataDetailAmount getExpense() {
 		return expense;
 	}
-	public void setExpense(ReportDataDealerDetailAmount expense) {
+	public void setExpense(ReportDataDetailAmount expense) {
 		this.expense = expense;
 	}
-	public List<ReportDataDealerDepartmentDetail> getDetail() {
-		return detail;
+	public ReportDataDetailAmount getOpProfit() {
+		return opProfit;
 	}
+	public void setOpProfit(ReportDataDetailAmount opProfit) {
+		this.opProfit = opProfit;
+	}
+	public ReportDataDetailAmount getNetProfit() {
+		return netProfit;
+	}
+	public void setNetProfit(ReportDataDetailAmount netProfit) {
+		this.netProfit = netProfit;
+	}
+	
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", id)
 				.append("name", name)
 				.append("revenue", revenue)
 				.append("margin", margin)
 				.append("expense", expense)
-				.append("nonRecurrentPnL", nonRecurrentPnL)
-				.append("dealer", detail)
+				.append("opProfit", opProfit)
+				.append("netProfit", netProfit)
 				.getStringBuffer().toString();
 	}
 }

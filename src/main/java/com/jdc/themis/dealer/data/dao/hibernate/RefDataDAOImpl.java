@@ -365,10 +365,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<Dealer> getDealer(Integer dealerID) {
 		final Dealer dealer = Maps.uniqueIndex(getDealers(), GetDealerIDFunction.INSTANCE).get(dealerID);
-		if ( dealer == null ) {
-			return Option.<Dealer>none();
-		}
-		return Option.<Dealer>some(dealer);
+		return Option.<Dealer>fromNull(dealer);
 	}
 
 	@Override
@@ -391,10 +388,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<Department> getDepartment(Integer departmentID) {
 		final Department department = Maps.uniqueIndex(getDepartments(), GetDepartmentIDFunction.INSTANCE).get(departmentID);
-		if ( department == null ) {
-			return Option.<Department>none();
-		}
-		return Option.<Department>some(department);
+		return Option.<Department>fromNull(department);
 	}
 
 	private enum GetJobPositionIDFunction implements Function<JobPosition, Integer> {
@@ -408,10 +402,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<JobPosition> getJobPosition(Integer positionID) {
 		final Map<Integer, JobPosition> map = Maps.uniqueIndex(getJobPositions(), GetJobPositionIDFunction.INSTANCE);
-		if ( !map.containsKey(positionID) ) {
-			return Option.<JobPosition>none();
-		}
-		return Option.<JobPosition>some(map.get(positionID));
+		return Option.<JobPosition>iif(map.containsKey(positionID), map.get(positionID));
 	}
 
 	private enum GetAccountReceivableDurationItemIDFunction implements Function<AccountReceivableDurationItem, Integer> {
@@ -424,11 +415,9 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 	@Override
 	public Option<AccountReceivableDurationItem> getAccountReceivableDurationItem(Integer itemID) {
-		final Map<Integer, AccountReceivableDurationItem> map = Maps.uniqueIndex(getAccountReceivableDurationItems(), GetAccountReceivableDurationItemIDFunction.INSTANCE);
-		if ( !map.containsKey(itemID) ) {
-			return Option.<AccountReceivableDurationItem>none();
-		}
-		return Option.<AccountReceivableDurationItem>some(map.get(itemID));
+		final Map<Integer, AccountReceivableDurationItem> map = 
+				Maps.uniqueIndex(getAccountReceivableDurationItems(), GetAccountReceivableDurationItemIDFunction.INSTANCE);
+		return Option.<AccountReceivableDurationItem>iif(map.containsKey(itemID), map.get(itemID));
 	}
 
 	private enum GetDurationIDFunction implements Function<Duration, Integer> {
@@ -442,10 +431,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<Duration> getDuration(Integer durationID) {
 		final Map<Integer, Duration> map = Maps.uniqueIndex(getDurations(), GetDurationIDFunction.INSTANCE);
-		if ( !map.containsKey(durationID) ) {
-			return Option.<Duration>none();
-		}
-		return Option.<Duration>some(map.get(durationID));
+		return Option.<Duration>iif(map.containsKey(durationID), map.get(durationID));
 	}
 	private enum GetEmployeeFeeItemIDFunction implements Function<EmployeeFeeItem, Integer> {
 	    INSTANCE;
@@ -458,10 +444,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<EmployeeFeeItem> getEmployeeFeeItem(Integer itemID) {
 		final Map<Integer, EmployeeFeeItem> map = Maps.uniqueIndex(getEmployeeFeeItems(), GetEmployeeFeeItemIDFunction.INSTANCE);
-		if ( !map.containsKey(itemID) ) {
-			return Option.<EmployeeFeeItem>none();
-		}
-		return Option.<EmployeeFeeItem>some(map.get(itemID));
+		return Option.<EmployeeFeeItem>iif(map.containsKey(itemID), map.get(itemID));
 	}
 	private enum GetEmployeeFeeSummaryItemIDFunction implements Function<EmployeeFeeSummaryItem, Integer> {
 	    INSTANCE;
@@ -473,11 +456,9 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 	@Override
 	public Option<EmployeeFeeSummaryItem> getEmployeeFeeSummaryItem(Integer itemID) {
-		final Map<Integer, EmployeeFeeSummaryItem> map = Maps.uniqueIndex(getEmployeeFeeSummaryItems(), GetEmployeeFeeSummaryItemIDFunction.INSTANCE);
-		if ( !map.containsKey(itemID) ) {
-			return Option.<EmployeeFeeSummaryItem>none();
-		}
-		return Option.<EmployeeFeeSummaryItem>some(map.get(itemID));
+		final Map<Integer, EmployeeFeeSummaryItem> map = 
+				Maps.uniqueIndex(getEmployeeFeeSummaryItems(), GetEmployeeFeeSummaryItemIDFunction.INSTANCE);
+		return Option.<EmployeeFeeSummaryItem>iif(map.containsKey(itemID), map.get(itemID));
 	}
 
 	@Override
@@ -500,10 +481,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<InventoryDurationItem> getInventoryDurationItem(Integer itemID) {
 		final Map<Integer, InventoryDurationItem> map = Maps.uniqueIndex(getInventoryDurationItems(), GetInventoryDurationItemIDFunction.INSTANCE);
-		if ( !map.containsKey(itemID) ) {
-			return Option.<InventoryDurationItem>none();
-		}
-		return Option.<InventoryDurationItem>some(map.get(itemID));
+		return Option.<InventoryDurationItem>iif(map.containsKey(itemID), map.get(itemID));
 	}
 
 	private enum GetGeneralJournalItemIDFunction implements Function<GeneralJournalItem, Integer> {
@@ -517,10 +495,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<GeneralJournalItem> getGeneralJournalItem(Integer itemID) {
 		final Map<Integer, GeneralJournalItem> map = Maps.uniqueIndex(getGeneralJournalItems(Option.<Integer>none()), GetGeneralJournalItemIDFunction.INSTANCE);
-		if ( !map.containsKey(itemID) ) {
-			return Option.<GeneralJournalItem>none();
-		}
-		return Option.<GeneralJournalItem>some(map.get(itemID));
+		return Option.<GeneralJournalItem>iif(map.containsKey(itemID), map.get(itemID));
 	}
 	private enum GetGeneralJournalCategoryIDFunction implements Function<GeneralJournalCategory, Integer> {
 	    INSTANCE;
@@ -533,10 +508,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<GeneralJournalCategory> getGeneralJournalCategory(Integer itemID) {
 		final Map<Integer, GeneralJournalCategory> map = Maps.uniqueIndex(getGeneralJournalCategorys(), GetGeneralJournalCategoryIDFunction.INSTANCE);
-		if ( !map.containsKey(itemID) ) {
-			return Option.<GeneralJournalCategory>none();
-		}
-		return Option.<GeneralJournalCategory>some(map.get(itemID));
+		return Option.<GeneralJournalCategory>iif(map.containsKey(itemID), map.get(itemID));
 	}
 
 	@Override
@@ -558,10 +530,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	@Override
 	public Option<TaxJournalItem> getTaxJournalItem(Integer itemID) {
 		final Map<Integer, TaxJournalItem> map = Maps.uniqueIndex(getTaxJournalItems(), GetTaxJournalItemIDFunction.INSTANCE);
-		if ( !map.containsKey(itemID) ) {
-			return Option.<TaxJournalItem>none();
-		}
-		return Option.<TaxJournalItem>some(map.get(itemID));
+		return Option.<TaxJournalItem>iif(map.containsKey(itemID), map.get(itemID));
 	}
 
 }

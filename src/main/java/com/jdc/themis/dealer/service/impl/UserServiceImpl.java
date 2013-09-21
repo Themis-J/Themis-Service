@@ -30,18 +30,15 @@ public class UserServiceImpl implements UserService {
 	@Performance
 	public void addNewUser(final AddNewUserRequest request) {
 		Preconditions.checkNotNull(request.getUsername(), "user name can't be null");
-		Preconditions.checkNotNull(userDAL.getUser(request.getUsername()).isNone(), "user name already exists");
-		
+		Preconditions.checkArgument(userDAL.getUser(request.getUsername()).isNone(), "user name already exists");
 		Preconditions.checkNotNull(request.getPassword(), "password can't be null");
 		Preconditions.checkNotNull(request.getUserRole(), "user role can't be null");
-		if ( request.getDealerID() != null ) {
-			Preconditions.checkArgument(refDataQueryDAL.getDealer(request.getDealerID()) != null, "unknown dealer id");
-		} 
+		
 		final UserInfo user = new UserInfo();
 		user.setUsername(request.getUsername());
 		user.setPassword(request.getPassword());
 		user.setActive(Boolean.TRUE);
-		user.setDealerID(request.getDealerID());
+		user.setDealerID(refDataQueryDAL.getDealer(request.getDealerID()).getId());
 		userDAL.saveOrUpdateUser(user);
 	}
 
@@ -49,7 +46,7 @@ public class UserServiceImpl implements UserService {
 	@Performance
 	public void disableUser(String username) {
 		Preconditions.checkNotNull(username, "username can't be null");
-		Preconditions.checkNotNull(userDAL.getUser(username).isSome(), "unknown user name");
+		Preconditions.checkArgument(userDAL.getUser(username).isSome(), "unknown user name");
 
 		final UserInfo user = userDAL.getUser(username).some();
 		user.setActive(Boolean.FALSE);
@@ -60,11 +57,13 @@ public class UserServiceImpl implements UserService {
 	@Performance
 	public GetUserInfoResponse getUser(String username) {
 		Preconditions.checkNotNull(username, "username can't be null");
-		Preconditions.checkNotNull(userDAL.getUser(username).isSome(), "unknown user name");
+		Preconditions.checkArgument(userDAL.getUser(username).isSome(), "unknown user name");
 
 		final GetUserInfoResponse response = new GetUserInfoResponse();
 		response.setUsername(username);
-		response.setDealer(refDataQueryDAL.getDealer(userDAL.getUser(username).some().getDealerID()));
+		if ( userDAL.getUser(username).some().getDealerID() != null ) {
+			response.setDealer(refDataQueryDAL.getDealer(userDAL.getUser(username).some().getDealerID()));
+		} 
 		response.setRole(userDAL.getUserRole(userDAL.getUser(username).some().getUserRoleID()).some().getName());
 		return response;
 	}

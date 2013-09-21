@@ -6,6 +6,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ImportReportDataRequest  implements Serializable{
@@ -27,5 +30,10 @@ public class ImportReportDataRequest  implements Serializable{
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
-
+	public boolean equals(Object other) {
+		return EqualsBuilder.reflectionEquals(this, other);
+	}
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 }

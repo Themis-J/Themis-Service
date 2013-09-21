@@ -55,5 +55,23 @@ public class TestUserDAOImpl {
 		userDAL.saveOrUpdateUser(userInfo);
 		Assert.assertEquals("xxx", userDAL.getUser("test").some().getPassword());
 	}
+	
+	@Test
+	public void disableUser() {
+		final UserInfo userInfo = new UserInfo();
+		userInfo.setActive(true);
+		userInfo.setDealerID(null);
+		userInfo.setPassword("xxx");
+		userInfo.setUsername("test");
+		userInfo.setUserRoleID(2);
+		userDAL.saveOrUpdateUser(userInfo);
+		Assert.assertEquals("xxx", userDAL.getUser("test").some().getPassword());
+		
+		final UserInfo existingUserInfo = userDAL.getUser("test").some();
+		existingUserInfo.setActive(false);
+		userDAL.saveOrUpdateUser(existingUserInfo);
+		
+		Assert.assertEquals(false, userDAL.getUser("test").some().getActive().booleanValue());
+	}
 
 }

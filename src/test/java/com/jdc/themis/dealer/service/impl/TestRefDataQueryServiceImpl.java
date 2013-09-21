@@ -50,6 +50,7 @@ import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
 import com.jdc.themis.dealer.web.domain.HumanResourceAllocationItemDetail;
 import com.jdc.themis.dealer.web.domain.InventoryDurationItemDetail;
+import com.jdc.themis.dealer.web.domain.MenuDetail;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 
 import fj.data.Option;
@@ -96,7 +97,9 @@ public class TestRefDataQueryServiceImpl {
 		when(refDataDAL.getMenu(2)).thenReturn(menu2);
 		
 		final GetMenuResponse response = refDataQueryService.getMenu();
-		
+		final MenuDetail menuDetail1 = refDataQueryService.getMenu(1);
+		Assert.assertNotNull(menuDetail1);
+		Assert.assertEquals("Menu1", menuDetail1.getName());
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
 		Assert.assertEquals("Menu1Text", response.getItems().get(0).getDisplayText());
@@ -123,9 +126,11 @@ public class TestRefDataQueryServiceImpl {
 		category.setId(1);
 		category.setName("VC1");
 		when(refDataDAL.getVehicles(Option.<Integer>none())).thenReturn(list);
+		when(refDataDAL.getVehicle(1)).thenReturn(Option.<Vehicle>some(v1));
 		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
 		final GetVehicleResponse response = refDataQueryService.getVehicles(Option.<Integer>none());
-		
+		Assert.assertNotNull(refDataQueryService.getVehicle(1));
+		Assert.assertEquals("v1", refDataQueryService.getVehicle(1).getName());
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getItems().size());
 		Assert.assertEquals("v2", response.getItems().get(1).getName());

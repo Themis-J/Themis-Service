@@ -292,6 +292,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 						newJournal.setCount(0);
 					}
 					newJournal.setTimeEnd(INFINITE_TIMEEND);
+				    logger.debug("saving new journal {}", newJournal);
 					session.save(newJournal);
 					session.flush();
 				}

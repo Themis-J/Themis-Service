@@ -21,6 +21,10 @@ public class DealerIncomeReportGeneratorJob { // extends QuartzJobBean {
 	@Autowired
 	private DealerIncomeReportService service;
 
+	public void setService(final DealerIncomeReportService service) {
+		this.service = service;
+	}
+
 	public void execute() {
 		final Calendar c = new GregorianCalendar();
 		c.setTime(new Date());

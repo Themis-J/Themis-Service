@@ -38,6 +38,7 @@ import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.utils.Utils;
 
+import fj.P1;
 import fj.data.Option;
 
 @Service
@@ -66,10 +67,15 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeRevenueFact> facts = Lists.newArrayList();
 		for (final VehicleSalesJournal journal : list) {
 			// verify report time
-			Option<ReportTime> reportTime = this.getReportTime(validDate);
-			if (reportTime.isNone()) {
-				reportTime = this.addReportTime(validDate);
-			}
+			final Option<ReportTime> reportTime = this.getReportTime(validDate)
+					.orElse(new P1<Option<ReportTime>>(){
+
+						@Override
+						public Option<ReportTime> _1() {
+							return ReportDAOImpl.this.addReportTime(validDate);
+						}
+						
+					});
 
 			final DealerIncomeRevenueFact fact = new DealerIncomeRevenueFact();
 			fact.setAmount(journal.getAmount());
@@ -77,20 +83,31 @@ public class ReportDAOImpl implements ReportDAO {
 			fact.setMargin(journal.getMargin());
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
-					"VehicleSalesJournal");
-			if (reportItem.isNone()) {
-				reportItem = this
-						.addReportItem(
-								journal.getId(),
-								refDataDAL.getVehicle(journal.getId()).some()
-										.getName(),
-								"VehicleSalesJournal",
-								refDataDAL
-										.getSalesServiceJournalCategory(
-												journal.getId()).some()
-										.getName());
-			}
+			final Option<ReportItem> reportItem = 
+					this.getReportItem(journal.getId(), "VehicleSalesJournal")
+					.orElse(new P1<Option<ReportItem>>() {
+
+						@Override
+						public Option<ReportItem> _1() {
+							logger.debug("saving journal {}", journal);
+							return ReportDAOImpl.this
+									.addReportItem(
+											journal.getId(),
+											refDataDAL.getVehicle(journal.getId()).some()
+													.getName(),
+											"VehicleSalesJournal",
+											refDataDAL
+													.getSalesServiceJournalCategory(
+															refDataDAL
+															.getVehicle(
+																	journal.getId())
+															.some()
+															.getCategoryID()).some()
+													.getName());
+						}
+						
+					});
+			
 			fact.setDealerID(journal.getDealerID());
 			fact.setDepartmentID(journal.getDepartmentID());
 			fact.setItemID(reportItem.some().getId());
@@ -118,11 +135,15 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeExpenseFact> expenseFacts = Lists.newArrayList();
 		for (final SalesServiceJournal journal : list) {
 			// verify report time
-			Option<ReportTime> reportTime = this.getReportTime(validDate);
-			if (reportTime.isNone()) {
-				reportTime = this.addReportTime(validDate);
-			}
+			final Option<ReportTime> reportTime = this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>(){
 
+				@Override
+				public Option<ReportTime> _1() {
+					return ReportDAOImpl.this.addReportTime(validDate);
+				}
+				
+			});
+			logger.debug("saving journal {}", journal);
 			if (revenueJournalType.equals(refDataDAL
 					.getSalesServiceJournalItem(journal.getId()).some()
 					.getJournalType())) {
@@ -132,26 +153,32 @@ public class ReportDAOImpl implements ReportDAO {
 				fact.setMargin(journal.getMargin());
 				fact.setTimeID(reportTime.some().getId());
 				// verify report item here
-				Option<ReportItem> reportItem = this.getReportItem(
-						journal.getId(), "SalesServiceJournal");
-				if (reportItem.isNone()) {
-					reportItem = this
-							.addReportItem(
-									journal.getId(),
-									refDataDAL
-											.getSalesServiceJournalItem(
-													journal.getId()).some()
-											.getName(),
-									"SalesServiceJournal",
-									refDataDAL
-											.getSalesServiceJournalCategory(
-													refDataDAL
-															.getSalesServiceJournalItem(
-																	journal.getId())
-															.some()
-															.getCategoryID())
-											.some().getName());
-				}
+				final Option<ReportItem> reportItem = this.getReportItem(
+						journal.getId(), "SalesServiceJournal")
+						.orElse(new P1<Option<ReportItem>>() {
+
+							@Override
+							public Option<ReportItem> _1() {
+								return ReportDAOImpl.this
+										.addReportItem(
+												journal.getId(),
+												refDataDAL
+														.getSalesServiceJournalItem(
+																journal.getId()).some()
+														.getName(),
+												"SalesServiceJournal",
+												refDataDAL
+														.getSalesServiceJournalCategory(
+																refDataDAL
+																		.getSalesServiceJournalItem(
+																				journal.getId())
+																		.some()
+																		.getCategoryID())
+														.some().getName());
+							}
+							
+						});
+
 				fact.setDealerID(journal.getDealerID());
 				fact.setDepartmentID(journal.getDepartmentID());
 				fact.setItemID(reportItem.some().getId());
@@ -168,26 +195,32 @@ public class ReportDAOImpl implements ReportDAO {
 														// item
 				fact.setTimeID(reportTime.some().getId());
 				// verify report item here
-				Option<ReportItem> reportItem = this.getReportItem(
-						journal.getId(), "SalesServiceJournal");
-				if (reportItem.isNone()) {
-					reportItem = this
-							.addReportItem(
-									journal.getId(),
-									refDataDAL
-											.getSalesServiceJournalItem(
-													journal.getId()).some()
-											.getName(),
-									"SalesServiceJournal",
-									refDataDAL
-											.getSalesServiceJournalCategory(
-													refDataDAL
-															.getSalesServiceJournalItem(
-																	journal.getId())
-															.some()
-															.getCategoryID())
-											.some().getName());
-				}
+				final Option<ReportItem> reportItem = this.getReportItem(
+						journal.getId(), "SalesServiceJournal")
+						.orElse(new P1<Option<ReportItem>>() {
+
+							@Override
+							public Option<ReportItem> _1() {
+								return ReportDAOImpl.this
+										.addReportItem(
+												journal.getId(),
+												refDataDAL
+														.getSalesServiceJournalItem(
+																journal.getId()).some()
+														.getName(),
+												"SalesServiceJournal",
+												refDataDAL
+														.getSalesServiceJournalCategory(
+																refDataDAL
+																		.getSalesServiceJournalItem(
+																				journal.getId())
+																		.some()
+																		.getCategoryID())
+														.some().getName());
+							}
+							
+						});
+				
 				fact.setDealerID(journal.getDealerID());
 				fact.setDepartmentID(journal.getDepartmentID());
 				fact.setItemID(reportItem.some().getId());
@@ -230,31 +263,41 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
 		for (final GeneralJournal journal : expenseJournals) {
 			// verify report time
-			Option<ReportTime> reportTime = this.getReportTime(validDate);
-			if (reportTime.isNone()) {
-				reportTime = this.addReportTime(validDate);
-			}
+			final Option<ReportTime> reportTime = 
+					this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>() {
+
+						@Override
+						public Option<ReportTime> _1() {
+							return ReportDAOImpl.this.addReportTime(validDate);
+						}
+						
+					});
 
 			final DealerIncomeExpenseFact fact = new DealerIncomeExpenseFact();
 			fact.setAmount(journal.getAmount());
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
-					"GeneralJournal");
-			if (reportItem.isNone()) {
-				reportItem = this.addReportItem(
-						journal.getId(),
-						refDataDAL.getGeneralJournalItem(journal.getId())
-								.some().getName(),
-						"GeneralJournal",
-						refDataDAL
-								.getGeneralJournalCategory(
-										refDataDAL
-												.getGeneralJournalItem(
-														journal.getId()).some()
-												.getCategoryID()).some()
-								.getName());
-			}
+			final Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
+					"GeneralJournal").orElse(new P1<Option<ReportItem>>() {
+
+						@Override
+						public Option<ReportItem> _1() {
+							return ReportDAOImpl.this.addReportItem(
+									journal.getId(),
+									refDataDAL.getGeneralJournalItem(journal.getId())
+											.some().getName(),
+									"GeneralJournal",
+									refDataDAL
+											.getGeneralJournalCategory(
+													refDataDAL
+															.getGeneralJournalItem(
+																	journal.getId()).some()
+															.getCategoryID()).some()
+											.getName());
+						}
+						
+					});
+		    
 			fact.setDealerID(journal.getDealerID());
 			fact.setDepartmentID(journal.getDepartmentID());
 			fact.setItemID(reportItem.some().getId());
@@ -268,10 +311,15 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeRevenueFact> revenueFacts = Lists.newArrayList();
 		for (final GeneralJournal journal : revenueJournals) {
 			// verify report time
-			Option<ReportTime> reportTime = this.getReportTime(validDate);
-			if (reportTime.isNone()) {
-				reportTime = this.addReportTime(validDate);
-			}
+			final Option<ReportTime> reportTime = 
+					this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>() {
+
+				@Override
+				public Option<ReportTime> _1() {
+					return ReportDAOImpl.this.addReportTime(validDate);
+				}
+				
+			});
 
 			final DealerIncomeRevenueFact fact = new DealerIncomeRevenueFact();
 			fact.setAmount(journal.getAmount());
@@ -279,22 +327,27 @@ public class ReportDAOImpl implements ReportDAO {
 			fact.setCount(0);
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
-					"GeneralJournal");
-			if (reportItem.isNone()) {
-				reportItem = this.addReportItem(
-						journal.getId(),
-						refDataDAL.getGeneralJournalItem(journal.getId())
-								.some().getName(),
-						"GeneralJournal",
-						refDataDAL
-								.getGeneralJournalCategory(
-										refDataDAL
-												.getGeneralJournalItem(
-														journal.getId()).some()
-												.getCategoryID()).some()
-								.getName());
-			}
+			final Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
+					"GeneralJournal").orElse(new P1<Option<ReportItem>>() {
+
+						@Override
+						public Option<ReportItem> _1() {
+							return ReportDAOImpl.this.addReportItem(
+									journal.getId(),
+									refDataDAL.getGeneralJournalItem(journal.getId())
+											.some().getName(),
+									"GeneralJournal",
+									refDataDAL
+											.getGeneralJournalCategory(
+													refDataDAL
+															.getGeneralJournalItem(
+																	journal.getId()).some()
+															.getCategoryID()).some()
+											.getName());
+						}
+						
+					});
+
 			fact.setDealerID(journal.getDealerID());
 			fact.setDepartmentID(journal.getDepartmentID());
 			fact.setItemID(reportItem.some().getId());
@@ -341,11 +394,14 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<ReportTime> reportTimeList = session
 				.createCriteria(ReportTime.class)
 				.add(Restrictions.eq("validDate", validDate)).list();
-		if (reportTimeList.isEmpty()) {
-			return Option.<ReportTime> none();
-		}
+		return Option.<ReportTime>iif(!reportTimeList.isEmpty(), new P1<ReportTime>() {
 
-		return Option.<ReportTime> some(reportTimeList.get(0));
+			@Override
+			public ReportTime _1() {
+				return reportTimeList.get(0);
+			}
+			
+		});
 	}
 
 	@Override
@@ -359,10 +415,15 @@ public class ReportDAOImpl implements ReportDAO {
 				.createCriteria(ReportItem.class)
 				.add(Restrictions.eq("sourceItemID", itemID))
 				.add(Restrictions.eq("itemSource", reportItemSource)).list();
-		if (reportItems.isEmpty()) {
-			return Option.<ReportItem> none();
-		}
-		return Option.<ReportItem> some(reportItems.get(0));
+		
+		return Option.<ReportItem>iif(!reportItems.isEmpty(), new P1<ReportItem>() {
+
+			@Override
+			public ReportItem _1() {
+				return reportItems.get(0);
+			}
+			
+		});
 	}
 
 	@Override
@@ -469,10 +530,8 @@ public class ReportDAOImpl implements ReportDAO {
 	public Option<ReportItem> getReportItem(Long id) {
 		final Map<Long, ReportItem> map = Maps.uniqueIndex(getAllReportItem(),
 				GetReportItemFunction.INSTANCE);
-		if (!map.containsKey(id)) {
-			return Option.<ReportItem> none();
-		}
-		return Option.<ReportItem> some(map.get(id));
+		
+		return Option.<ReportItem>iif(map.containsKey(id), map.get(id));
 	}
 
 	@Override
@@ -523,7 +582,7 @@ public class ReportDAOImpl implements ReportDAO {
 	}
 
 	@Override
-	public void importTaxJournal(LocalDate validDate) {
+	public void importTaxJournal(final LocalDate validDate) {
 		logger.info("Importing tax journal to income expense");
 
 		final Collection<TaxJournal> list = incomeJournalDAL.getTaxJournal(
@@ -532,26 +591,35 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
 		for (final TaxJournal journal : list) {
 			// verify report time
-			Option<ReportTime> reportTime = this.getReportTime(validDate);
-			if (reportTime.isNone()) {
-				reportTime = this.addReportTime(validDate);
-			}
+			final Option<ReportTime> reportTime = 
+					this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>() {
+
+						@Override
+						public Option<ReportTime> _1() {
+							return ReportDAOImpl.this.addReportTime(validDate);
+						}
+						
+					});
 
 			final DealerIncomeExpenseFact fact = new DealerIncomeExpenseFact();
 			fact.setAmount(journal.getAmount());
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
-					"TaxJournal");
+			final Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
+					"TaxJournal").orElse(new P1<Option<ReportItem>>() {
 
-			if (reportItem.isNone()) {
-				reportItem = this.addReportItem(
-						journal.getId(),
-						refDataDAL.getTaxJournalItem(journal.getId()).some()
-								.getName(),
-						"TaxJournal",
-						null);
-			}
+						@Override
+						public Option<ReportItem> _1() {
+							return ReportDAOImpl.this.addReportItem(
+									journal.getId(),
+									refDataDAL.getTaxJournalItem(journal.getId()).some()
+											.getName(),
+									"TaxJournal",
+									null);
+						}
+						
+					});
+
 			fact.setDealerID(journal.getDealerID());
 			fact.setItemID(reportItem.some().getId());
 			fact.setTimestamp(journal.getTimestamp());

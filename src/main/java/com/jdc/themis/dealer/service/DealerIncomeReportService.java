@@ -14,5 +14,12 @@ public interface DealerIncomeReportService {
 	void importReportData(ImportReportDataRequest request);
 	
 	@Transactional(readOnly=true)
-	QueryReportDataResponse queryYearlyOverallIncomeReport(Integer year, Option<Integer> monthOfYear);
+	QueryReportDataResponse queryOverallIncomeReport(
+			Integer year, Option<Integer> monthOfYear, Option<Integer> departmentID, Option<Integer> denominator);
+	
+	@Transactional(readOnly=true)
+	QueryReportDataResponse queryDepartmentIncomeReport(
+			Integer year, Option<Integer> monthOfYear, Option<Integer> dealerID);
+	
+	// TODO: new service to query some items in a department by dealer id and year and month information
 }

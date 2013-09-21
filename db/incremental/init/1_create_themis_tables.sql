@@ -555,7 +555,7 @@ CREATE TABLE DealerEmployeeFeeFact
    amount double precision,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
-   CONSTRAINT DIEF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
+   CONSTRAINT DEFF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -572,7 +572,7 @@ CREATE TABLE DealerInventoryFact
    amount double precision,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
-   CONSTRAINT DIEF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, durationID, version)
+   CONSTRAINT DIF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, durationID, version)
 ) 
 WITH (
   OIDS = FALSE

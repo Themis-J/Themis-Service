@@ -150,7 +150,7 @@ INSERT INTO SalesServiceJournalItem SELECT 11, '认证二手车零售', 4, 0, cu
 INSERT INTO SalesServiceJournalItem SELECT 12, '*备注*认证二手车翻新', 4, 1, current_timestamp;
 INSERT INTO SalesServiceJournalItem SELECT 13, '非认证二手车零售', 4, 0, current_timestamp;
 INSERT INTO SalesServiceJournalItem SELECT 14, '*备注*非认证二手车翻新', 4, 1, current_timestamp;
-INSERT INTO SalesServiceJournalItem SELECT 15, '批发零售', 7, 0, current_timestamp;
+INSERT INTO SalesServiceJournalItem SELECT 15, '批发销售', 7, 0, current_timestamp;
 INSERT INTO SalesServiceJournalItem SELECT 16, '库存调整', 7, 0, current_timestamp;
 INSERT INTO SalesServiceJournalItem SELECT 17, '客户付费工时', 5, 0, current_timestamp;
 INSERT INTO SalesServiceJournalItem SELECT 18, '保修工时', 5, 0, current_timestamp;
@@ -208,12 +208,12 @@ INSERT INTO Vehicle SELECT 31, 'SUV - (C) 大型 (C) Large', 2, current_timestam
 INSERT INTO Vehicle SELECT 32, 'SUV - (A) 豪华中型 Luxury Mid-Size', 2, current_timestamp;
 INSERT INTO Vehicle SELECT 33, 'SUV - (B) 豪华中型 Luxury Mid-Size', 2, current_timestamp;
 INSERT INTO Vehicle SELECT 34, 'SUV - (C) 豪华中型 Luxury Mid-Size', 2, current_timestamp;
-INSERT INTO Vehicle SELECT 37, 'SUV - (A) 豪华大型 Luxury Large', 2, current_timestamp;
-INSERT INTO Vehicle SELECT 38, 'SUV - (B) 豪华大型 Luxury Large', 2, current_timestamp;
-INSERT INTO Vehicle SELECT 39, 'SUV - (C) 豪华大型 Luxury Large', 2, current_timestamp;
-INSERT INTO Vehicle SELECT 40, 'MPV (A) 逸致 180G豪华版', 1, current_timestamp;
-INSERT INTO Vehicle SELECT 41, 'MPV (B) Multi-Purpose Vehicle', 2, current_timestamp;
-INSERT INTO Vehicle SELECT 42, 'MPV (C) 埃尔法 3.5 豪华版', 2, current_timestamp;
+INSERT INTO Vehicle SELECT 35, 'SUV - (A) 豪华大型 Luxury Large', 2, current_timestamp;
+INSERT INTO Vehicle SELECT 36, 'SUV - (B) 豪华大型 Luxury Large', 2, current_timestamp;
+INSERT INTO Vehicle SELECT 37, 'SUV - (C) 豪华大型 Luxury Large', 2, current_timestamp;
+INSERT INTO Vehicle SELECT 38, 'MPV (A) 逸致 180G豪华版', 1, current_timestamp;
+INSERT INTO Vehicle SELECT 39, 'MPV (B) Multi-Purpose Vehicle', 2, current_timestamp;
+INSERT INTO Vehicle SELECT 40, 'MPV (C) 埃尔法 3.5 豪华版', 2, current_timestamp;
 
 INSERT INTO InventoryDurationItem SELECT 1, '本品牌新车库存台次', current_timestamp;
 INSERT INTO InventoryDurationItem SELECT 2, '非本品牌新车库存台次', current_timestamp;
