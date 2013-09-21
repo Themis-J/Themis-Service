@@ -246,7 +246,7 @@ CREATE TABLE SalesServiceJournalItem
    journalType integer,
    timestamp timestamp without time zone, 
    CONSTRAINT SSJLI_PK PRIMARY KEY (id),
-   CONSTRAINT SSJLI_Unique UNIQUE (name),
+   CONSTRAINT SSJLI_Unique UNIQUE (name, categoryID),
    CONSTRAINT SSJLI_FK FOREIGN KEY (categoryID) REFERENCES SalesServiceJournalCategory (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 ) 
 WITH (
@@ -441,7 +441,6 @@ CREATE TABLE InventoryDuration
    id integer NOT NULL,
    version integer,
    amount double precision,
-   count integer,
    updatedBy varchar(20) NOT NULL, 
    CONSTRAINT ID_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, durationID, id, version)
 ) 

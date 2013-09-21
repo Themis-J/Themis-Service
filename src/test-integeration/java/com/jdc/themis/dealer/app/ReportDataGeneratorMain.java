@@ -6,8 +6,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ReportDataGeneratorMain {
 
 	public static void main(String[] args) {
-		final ApplicationContext context = new ClassPathXmlApplicationContext("classpath:test-integration-context.xml");
-        //final ApplicationContext context = new ClassPathXmlApplicationContext("classpath:test-integration-context-qa.xml");
+		//final ApplicationContext context = new ClassPathXmlApplicationContext("classpath:test-integration-context.xml");
+        final ApplicationContext context = new ClassPathXmlApplicationContext("classpath:test-integration-context-qa.xml");
         final ReportDataGenerator client = (ReportDataGenerator) context.getBean("reportDataGenerator");
 	
         client.generateRevenues();
