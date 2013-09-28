@@ -54,6 +54,8 @@ public class TestUserDAOImpl {
 		userInfo.setUserRoleID(2);
 		userDAL.saveOrUpdateUser(userInfo);
 		Assert.assertEquals("xxx", userDAL.getUser("test").some().getPassword());
+		
+		System.err.println(userDAL.getUser("test").some());
 	}
 	
 	@Test

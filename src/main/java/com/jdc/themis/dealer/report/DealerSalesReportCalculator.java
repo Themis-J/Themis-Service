@@ -51,21 +51,6 @@ public class DealerSalesReportCalculator {
 		this.year = year;
 		
 	}
-	
-	public enum Denominator {
-		OVERALL, MARGIN;
-		
-		public static Option<Denominator> valueOf(int value) {
-			for ( final Denominator d : Denominator.values() ) {
-				if ( d.ordinal() == value ) {
-					return Option.<Denominator>some(d);
-				}
-			}
-			return Option.<Denominator>none();
-		}
-		
-	}
-	
 	private enum GetDealerIDFromReportDetailFunction implements
 			Function<ReportDataDealerSalesDetail, Integer> {
 		INSTANCE;
@@ -178,6 +163,66 @@ public class DealerSalesReportCalculator {
 		final Double reference = calcReference(Lambda.extract(dealerDetails.values(), 
 												Lambda.on(ReportDataDealerSalesDetail.class).getRetail().getAmount()));
 		Lambda.forEach(dealerDetails.values()).getRetail().setReference(reference);
+		return this;
+	}
+	
+	/**
+	 * Calculate the wholesale. 
+	 * 
+	 * @param dealerRevenueFacts
+	 * @param op
+	 * @return
+	 */
+	public DealerSalesReportCalculator calcWholesale(
+			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts,
+			final JournalOp op) {
+		for (final Integer dealerID : dealerRevenueFacts.keySet()) {
+			final Integer totalSales = Lambda.sumFrom(
+					dealerRevenueFacts.get(dealerID),
+					DealerIncomeRevenueFact.class).getCount();
+			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
+			amount.setAmount(op == JournalOp.SUM ? totalSales.doubleValue()
+					: totalSales.doubleValue() / (monthOfYear.some() * 1.0));
+
+			if (dealerPreviousDetailOption.isSome()) {
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption
+						.some().get(dealerID).getWholesale().getAmount()));
+			}
+			dealerDetails.get(dealerID).setWholesale(amount);
+		}
+		final Double reference = calcReference(Lambda.extract(dealerDetails.values(), 
+												Lambda.on(ReportDataDealerSalesDetail.class).getWholesale().getAmount()));
+		Lambda.forEach(dealerDetails.values()).getWholesale().setReference(reference);
+		return this;
+	}
+	
+	/**
+	 * Calculate the other. 
+	 * 
+	 * @param dealerRevenueFacts
+	 * @param op
+	 * @return
+	 */
+	public DealerSalesReportCalculator calcOther(
+			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts,
+			final JournalOp op) {
+		for (final Integer dealerID : dealerRevenueFacts.keySet()) {
+			final Integer totalSales = Lambda.sumFrom(
+					dealerRevenueFacts.get(dealerID),
+					DealerIncomeRevenueFact.class).getCount();
+			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
+			amount.setAmount(op == JournalOp.SUM ? totalSales.doubleValue()
+					: totalSales.doubleValue() / (monthOfYear.some() * 1.0));
+
+			if (dealerPreviousDetailOption.isSome()) {
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption
+						.some().get(dealerID).getOther().getAmount()));
+			}
+			dealerDetails.get(dealerID).setOther(amount);
+		}
+		final Double reference = calcReference(Lambda.extract(dealerDetails.values(), 
+												Lambda.on(ReportDataDealerSalesDetail.class).getOther().getAmount()));
+		Lambda.forEach(dealerDetails.values()).getOther().setReference(reference);
 		return this;
 	}
 }

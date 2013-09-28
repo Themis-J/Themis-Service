@@ -1,5 +1,7 @@
 package com.jdc.themis.dealer.service.impl;
 
+import javax.time.Instant;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Performance
-	public void addNewUser(final AddNewUserRequest request) {
+	public Instant addNewUser(final AddNewUserRequest request) {
 		Preconditions.checkNotNull(request.getUsername(), "user name can't be null");
 		Preconditions.checkArgument(userDAL.getUser(request.getUsername()).isNone(), "user name already exists");
 		Preconditions.checkNotNull(request.getPassword(), "password can't be null");
@@ -51,18 +53,18 @@ public class UserServiceImpl implements UserService {
 		if ( request.getDealerID() != null ) {
 			user.setDealerID(refDataQueryDAL.getDealer(request.getDealerID()).getId());
 		} 
-		userDAL.saveOrUpdateUser(user);
+		return userDAL.saveOrUpdateUser(user);
 	}
 
 	@Override
 	@Performance
-	public void disableUser(final String username) {
+	public Instant disableUser(final String username) {
 		Preconditions.checkNotNull(username, "username can't be null");
 		Preconditions.checkArgument(userDAL.getUser(username).isSome(), "unknown user name");
 
 		final UserInfo user = userDAL.getUser(username).some();
 		user.setActive(Boolean.FALSE);
-		userDAL.saveOrUpdateUser(user);
+		return userDAL.saveOrUpdateUser(user);
 	}
 
 	@Override
@@ -81,25 +83,45 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void enableUser(final String username) {
+	public Instant enableUser(final String username) {
 		Preconditions.checkNotNull(username, "username can't be null");
 		Preconditions.checkNotNull(userDAL.getUser(username).isSome(), "unknown user name");
 
 		final UserInfo user = userDAL.getUser(username).some();
 		user.setActive(Boolean.TRUE);
-		userDAL.saveOrUpdateUser(user);
+		return userDAL.saveOrUpdateUser(user);
 	}
 
 	@Override
-	public void resetPassword(final ResetPasswordRequest request) {
-		// TODO Auto-generated method stub
+	public Instant resetPassword(final ResetPasswordRequest request) {
+		Preconditions.checkNotNull(request.getUsername(), "user name can't be null");
+		Preconditions.checkNotNull(request.getOldPassword(), "old password can't be null");
+		Preconditions.checkNotNull(request.getNewPassword(), "new password can't be null");
+		Preconditions.checkArgument(userDAL.getUser(request.getUsername()).isSome(), "user name does not exists");
+		Preconditions.checkArgument(!request.getNewPassword().equals(request.getOldPassword()), 
+				"old password equals to the new password");
+		Preconditions.checkArgument(request.getOldPassword().equals(userDAL.getUser(request.getUsername()).some().getPassword()), 
+				"password doesn't match");
 		
+		final UserInfo user = userDAL.getUser(request.getUsername()).some();
+		user.setPassword(request.getNewPassword());
+		return userDAL.saveOrUpdateUser(user);
 	}
 
 	@Override
-	public void modifyUser(ModifyUserRequest request) {
-		// TODO Auto-generated method stub
+	public Instant modifyUser(ModifyUserRequest request) {
+		Preconditions.checkNotNull(request.getUsername(), "user name can't be null");
+		Preconditions.checkNotNull(request.getPassword(), "password can't be null");
+		Preconditions.checkArgument(userDAL.getUser(request.getUsername()).isSome(), "user name does not exists");
+		Preconditions.checkArgument(request.getPassword().equals(userDAL.getUser(request.getUsername()).some().getPassword()), 
+				"password doesn't match");
 		
+		final UserInfo user = userDAL.getUser(request.getUsername()).some();
+		user.setDealerID(request.getDealerID());
+		if ( request.getUserRole() != null ) {
+			user.setUserRoleID(request.getUserRole());
+		} 
+		return userDAL.saveOrUpdateUser(user);
 	}
 
 }

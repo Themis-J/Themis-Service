@@ -30,6 +30,24 @@ DROP TABLE IF EXISTS UserRole CASCADE;
 DROP TABLE IF EXISTS UserInfo CASCADE;
 DROP TABLE IF EXISTS Dealer CASCADE;
 
+
+CREATE TABLE Dealer
+(
+   id integer, 
+   name varchar(100) NOT NULL, 
+   fullName varchar(250) NOT NULL, 
+   code varchar(10) NOT NULL, 
+   city varchar(20), 
+   timestamp timestamp without time zone NOT NULL, 
+   CONSTRAINT Dealer_PK PRIMARY KEY (id), 
+   CONSTRAINT DealerName_Unique UNIQUE (name), 
+   CONSTRAINT DealerCode_Unique UNIQUE (code)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
 CREATE TABLE UserRole
 (
    id integer, 
@@ -44,33 +62,18 @@ WITH (
 ;
 CREATE TABLE UserInfo
 (
-   id SERIAL, 
    username varchar(20) NOT NULL, 
-   password varchar(50), 
+   password varchar(100), 
    userRoleID integer NOT NULL, 
    dealerID integer,
    active boolean, 
+   version integer NOT NULL,
    timestamp timestamp without time zone NOT NULL, 
-   CONSTRAINT UserID_PK PRIMARY KEY (id), 
-   CONSTRAINT UserRole_FK FOREIGN KEY (userRoleID) REFERENCES UserRole (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
-   CONSTRAINT Username_Unique UNIQUE (username)
-) 
-WITH (
-  OIDS = FALSE
-)
-;
-
-CREATE TABLE Dealer
-(
-   id integer, 
-   name varchar(100) NOT NULL, 
-   fullName varchar(250) NOT NULL, 
-   code varchar(10) NOT NULL, 
-   city varchar(20), 
-   timestamp timestamp without time zone NOT NULL, 
-   CONSTRAINT Dealer_PK PRIMARY KEY (id), 
-   CONSTRAINT DealerName_Unique UNIQUE (name), 
-   CONSTRAINT DealerCode_Unique UNIQUE (code)
+   timeEnd timestamp without time zone NOT NULL, 
+   updatedBy varchar(20) NOT NULL, 
+   CONSTRAINT User_Unique UNIQUE (username,timestamp,version), 
+   CONSTRAINT UserRole_FK FOREIGN KEY (userRoleID) REFERENCES UserRole (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+   CONSTRAINT UserDealer_FK FOREIGN KEY (dealerID) REFERENCES Dealer (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 ) 
 WITH (
   OIDS = FALSE

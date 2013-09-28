@@ -62,11 +62,6 @@ INSERT INTO UserRole SELECT 1, 'Admin', current_timestamp;
 INSERT INTO UserRole SELECT 2, 'Dealer', current_timestamp;
 INSERT INTO UserRole SELECT 3, 'HeadQuater', current_timestamp;
 
-INSERT INTO UserInfo SELECT 0, 'sa', 'sa', 0, null, true, current_timestamp;
-INSERT INTO UserInfo SELECT 1, 'admin', 'admin', 1, null, true, current_timestamp;
-INSERT INTO UserInfo SELECT 2, 'guangning', 'guangning', 2, 11, true, current_timestamp;
-INSERT INTO UserInfo SELECT 3, 'manager', 'manager', 3, null, true, current_timestamp;
-
 INSERT INTO Dealer SELECT 1, '重庆长锦', '重庆长锦销售服务有限公司', 'CN-01', '重庆', current_timestamp;
 INSERT INTO Dealer SELECT 2, '长沙长耀', '长沙长耀销售服务有限公司', 'CN-02', '长沙', current_timestamp;
 INSERT INTO Dealer SELECT 3, '广本一店', '广本一店销售服务有限公司', 'CN-03', '广州', current_timestamp;
@@ -87,6 +82,11 @@ INSERT INTO Dealer SELECT 17, '长悦公司', '长悦公司销售服务有限公
 INSERT INTO Dealer SELECT 18, '湖南长坤', '湖南长坤销售服务有限公司', 'CN-19', '长沙', current_timestamp;
 INSERT INTO Dealer SELECT 19, '长佳公司', '长佳公司销售服务有限公司', 'CN-20', '广州', current_timestamp;
 INSERT INTO Dealer SELECT 20, '重庆长冠', '重庆长冠销售服务有限公司', 'CN-21', '重庆', current_timestamp;
+
+INSERT INTO UserInfo SELECT 'sa', 'sa', 0, null, true, 0, current_timestamp, '9999-01-01 08:00:00', 'admin';
+INSERT INTO UserInfo SELECT 'admin', 'admin', 1, null, true, 0, current_timestamp, '9999-01-01 08:00:00', 'admin';
+INSERT INTO UserInfo SELECT 'guangning', 'guangning', 2, 11, true, 0, current_timestamp, '9999-01-01 08:00:00', 'admin';
+INSERT INTO UserInfo SELECT 'manager', 'manager', 3, null, true, 0, current_timestamp, '9999-01-01 08:00:00', 'admin';
 
 INSERT INTO Department SELECT 0, 'NA', current_timestamp;
 INSERT INTO Department SELECT 1, '新车销售部', current_timestamp;

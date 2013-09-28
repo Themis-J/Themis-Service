@@ -3,7 +3,7 @@ CREATE TABLE EnumType (    id integer,     name varchar(100)  )
 CREATE TABLE EnumValue (    typeID integer,     name varchar(100),     value integer   ) 
 
 CREATE TABLE UserRole( id integer,    name varchar(20),     timestamp timestamp) 
-CREATE TABLE UserInfo (    id bigint auto_increment,     username varchar(20),     password varchar(50),     userRoleID integer,    dealerID integer,    active boolean,     timestamp timestamp ) 
+CREATE TABLE UserInfo (username varchar(20),     password varchar(50),     userRoleID integer,    dealerID integer,    active boolean,  version integer,   timestamp timestamp, timeEnd timestamp, updatedBy varchar(20) ) 
 
 CREATE TABLE Dealer (   id integer,   name varchar(100) NOT NULL,   fullName varchar(250) NOT NULL,    code varchar(10) NOT NULL,    city varchar(20),    timestamp timestamp ) 
 

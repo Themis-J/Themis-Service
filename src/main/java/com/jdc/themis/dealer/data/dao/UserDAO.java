@@ -2,6 +2,8 @@ package com.jdc.themis.dealer.data.dao;
 
 import java.util.List;
 
+import javax.time.Instant;
+
 import com.jdc.themis.dealer.domain.UserInfo;
 import com.jdc.themis.dealer.domain.UserRole;
 
@@ -21,6 +23,6 @@ public interface UserDAO {
 	
 	Option<UserInfo> getUser(String username);
 	
-	void saveOrUpdateUser(UserInfo user);
+	Instant saveOrUpdateUser(UserInfo user);
 	
 }

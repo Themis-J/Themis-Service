@@ -1,5 +1,7 @@
 package com.jdc.themis.dealer.data.dao.hibernate;
 
+import static com.jdc.themis.dealer.domain.TemporalEntity.INFINITE_TIMEEND;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -9,8 +11,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.time.Instant;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.TimeZone;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -35,7 +35,6 @@ import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.utils.Utils;
-
 /**
  * Data access layer for income journal items. 
  * 
@@ -55,8 +54,6 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	private SessionFactory sessionFactory;
 
 	private final static Integer DEFAULT_INCOME_TAX_ID = 1; // we know our system only have one type of tax now...
-	// notice that database record must have UTC timezone for comparison
-	private final static Instant INFINITE_TIMEEND = LocalDateTime.parse("9999-01-01T00:00:00.000").atZone(TimeZone.UTC).toInstant();
 	
 	private void checkJournalLock(String lockKey, String key) {
 		synchronized(this) {

@@ -63,7 +63,7 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 	private LocalDate validDate;
 	private Integer version;
 
-	 @Version
+	@Version
 	public Integer getVersion() {
 		return version;
 	}

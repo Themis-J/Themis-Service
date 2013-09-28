@@ -1,5 +1,7 @@
 package com.jdc.themis.dealer.service;
 
+import javax.time.Instant;
+
 import org.springframework.transaction.annotation.Transactional;
 import com.jdc.themis.dealer.web.domain.AddNewUserRequest;
 import com.jdc.themis.dealer.web.domain.ModifyUserRequest;
@@ -9,19 +11,19 @@ import com.jdc.themis.dealer.web.domain.GetUserInfoResponse;
 public interface UserService {
 
 	@Transactional
-	void addNewUser(AddNewUserRequest request);
+	Instant addNewUser(AddNewUserRequest request);
 	
 	@Transactional
-	void modifyUser(ModifyUserRequest request);
+	Instant modifyUser(ModifyUserRequest request);
 	
 	@Transactional
-	void resetPassword(ResetPasswordRequest request);
+	Instant resetPassword(ResetPasswordRequest request);
 	
 	@Transactional
-	void disableUser(String username);
+	Instant disableUser(String username);
 	
 	@Transactional
-	void enableUser(String username);
+	Instant enableUser(String username);
 	
 	@Transactional(readOnly=true)
 	GetUserInfoResponse getUser(String username);
