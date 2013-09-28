@@ -17,13 +17,13 @@ import com.google.common.collect.Multimaps;
 import com.jdc.themis.dealer.domain.DealerIncomeExpenseFact;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.domain.ReportTime;
-import com.jdc.themis.dealer.report.DealerReportCalculator.JournalOp;
+import com.jdc.themis.dealer.report.JournalOp;
 import com.jdc.themis.dealer.web.domain.DealerDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDetail;
 
 import fj.data.Option;
 
-public class TestReportCalculator {
+public class TestDealerReportCalculator {
 
 	private Collection<DealerDetail> dealers;
 
@@ -68,16 +68,6 @@ public class TestReportCalculator {
 		dealers = Lists.newArrayList(dealer1, dealer2, dealer3, dealer4,
 				dealer5, dealer6, dealer7, dealer8, dealer9, dealer10,
 				dealer11, dealer12);
-	}
-
-	@Test
-	public void calculateReference() {
-		final Double result = ReportUtils.calcReference(Lists.newArrayList(
-				10.0D, 10.0D, 10.0D, 10D, 10D, 10D, 10D, 20D, 20D, 20.0D,
-				1000000.0D));
-		Assert.assertEquals(
-				(10.0D + 10.0D + 10D + 10D + 10D + 10D + 20D + 20D + 20.0D) / 9,
-				result);
 	}
 
 	@Test
@@ -436,6 +426,71 @@ public class TestReportCalculator {
 		Assert.assertEquals(fact1.getAmount().add(fact2.getAmount()).doubleValue(), detail.getDetail().get(0).getExpense().getAmount());
 		Assert.assertEquals((fact3.getAmount().doubleValue()) / 9.0, detail.getDetail().get(0).getExpense().getReference());
 		Assert.assertEquals((fact3.getAmount().doubleValue() - fact4.getAmount().doubleValue()) / fact4.getAmount().doubleValue(), detail.getDetail().get(1).getExpense().getPercentage());
+	}
+	
+	@Test
+	public void calcExpenseForYearReportWithPercentage2() {
+		final DealerReportCalculator calc = new DealerReportCalculator(dealers, 2013);
+		final ReportTime time201308 = new ReportTime();
+		time201308.setId(1L);
+		time201308.setMonthOfYear(8);
+		time201308.setYear(2013);
+		time201308.setValidDate(LocalDate.of(2013, 8, 1));
+
+		final ReportTime time201307 = new ReportTime();
+		time201307.setId(2L);
+		time201307.setMonthOfYear(7);
+		time201307.setYear(2013);
+		time201307.setValidDate(LocalDate.of(2013, 7, 1));
+		
+		final ReportTime time201207 = new ReportTime();
+		time201207.setId(3L);
+		time201207.setMonthOfYear(7);
+		time201207.setYear(2012);
+		time201207.setValidDate(LocalDate.of(2012, 7, 1));
+		
+		final DealerIncomeExpenseFact fact1 = new DealerIncomeExpenseFact();
+		fact1.setTimeID(time201308.getId());
+		fact1.setDealerID(1);
+		fact1.setDepartmentID(1);
+		fact1.setItemID(1L);
+		fact1.setAmount(new BigDecimal("-1000.0"));
+		// skip timestamp and time end
+		final DealerIncomeExpenseFact fact2 = new DealerIncomeExpenseFact();
+		fact2.setTimeID(time201308.getId());
+		fact2.setDealerID(1);
+		fact2.setDepartmentID(2);
+		fact2.setItemID(1L);
+		fact2.setAmount(new BigDecimal("-2000.0"));
+		final DealerIncomeExpenseFact fact3 = new DealerIncomeExpenseFact();
+		fact3.setTimeID(time201307.getId());
+		fact3.setDealerID(2);
+		fact3.setDepartmentID(2);
+		fact3.setItemID(2L);
+		fact3.setAmount(new BigDecimal("-2020.0"));
+		
+		final DealerIncomeExpenseFact fact4 = new DealerIncomeExpenseFact();
+		fact4.setTimeID(time201207.getId());
+		fact4.setDealerID(2);
+		fact4.setDepartmentID(2);
+		fact4.setItemID(2L);
+		fact4.setAmount(new BigDecimal("-1010.0"));
+		
+		final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerExpenseFactsPrevious = Multimaps
+				.index(Lists.newArrayList(fact4),
+						GetDealerIDFromExpenseFunction.INSTANCE);
+		
+		final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerExpenseFacts = Multimaps
+				.index(Lists.newArrayList(fact1, fact2, fact3),
+						GetDealerIDFromExpenseFunction.INSTANCE);
+
+		final ReportDataDetail detailPrevious = calc.calcExpenses(dealerExpenseFactsPrevious, JournalOp.SUM).getReportDetail();
+		final ReportDataDetail detail = calc.withPrevious(Option.<ReportDataDetail>some(detailPrevious)).calcExpenses(dealerExpenseFacts, JournalOp.SUM).getReportDetail();
+		System.out.println(detail);
+		Assert.assertNotNull(detail);
+		Assert.assertEquals(fact1.getAmount().add(fact2.getAmount()).doubleValue(), detail.getDetail().get(0).getExpense().getAmount());
+		Assert.assertEquals(0.0, detail.getDetail().get(0).getExpense().getReference());
+		Assert.assertEquals((fact3.getAmount().doubleValue() - fact4.getAmount().doubleValue()) / Math.abs(fact4.getAmount().doubleValue()), detail.getDetail().get(1).getExpense().getPercentage());
 	}
 	
 	public void setRevenueForYearReport(final DealerReportCalculator calc) {

@@ -621,6 +621,7 @@ public class ReportDAOImpl implements ReportDAO {
 					});
 
 			fact.setDealerID(journal.getDealerID());
+			fact.setDepartmentID(0); // put to NA department
 			fact.setItemID(reportItem.some().getId());
 			fact.setTimestamp(journal.getTimestamp());
 			fact.setTimeEnd(journal.getTimeEnd());
@@ -634,7 +635,8 @@ public class ReportDAOImpl implements ReportDAO {
 	public Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(
 			Integer year, Collection<Integer> monthOfYear,
 			Collection<Integer> departmentID, Collection<Integer> itemSource,
-			Collection<String> itemCategory, Collection<Integer> itemID) {
+			Collection<String> itemCategory, Collection<Integer> itemID, 
+			Collection<Integer> dealerID) {
 		Preconditions.checkNotNull(year, "year can't be null");
 		expenseFactLock.readLock().lock();
 		try {
@@ -653,6 +655,10 @@ public class ReportDAOImpl implements ReportDAO {
 					.createCriteria(DealerIncomeExpenseFact.class);
 			criteria.add(Restrictions.in("timeID",
 					Lambda.extractProperty(reportTimes, "id")));
+			if (!dealerID.isEmpty()) {
+				criteria.add(Restrictions.in("dealerID",
+						dealerID));
+			}
 			if (!departmentID.isEmpty()) {
 				criteria.add(Restrictions.in("departmentID",
 						departmentID));
@@ -689,7 +695,8 @@ public class ReportDAOImpl implements ReportDAO {
 	public Collection<DealerIncomeRevenueFact> getDealerIncomeRevenueFacts(
 			Integer year, Collection<Integer> monthOfYear,
 			Collection<Integer> departmentID, Collection<Integer> itemSource,
-			Collection<String> itemCategory, Collection<Integer> itemID) {
+			Collection<String> itemCategory, Collection<Integer> itemID, 
+			Collection<Integer> dealerID) {
 		Preconditions.checkNotNull(year, "year can't be null");
 		expenseFactLock.readLock().lock();
 		try {
@@ -708,6 +715,10 @@ public class ReportDAOImpl implements ReportDAO {
 					.createCriteria(DealerIncomeRevenueFact.class);
 			criteria.add(Restrictions.in("timeID",
 					Lambda.extractProperty(reportTimes, "id")));
+			if (!dealerID.isEmpty()) {
+				criteria.add(Restrictions.in("dealerID",
+						dealerID));
+			}
 			if ( !departmentID.isEmpty() ) {
 				criteria.add(Restrictions.in("departmentID",
 						departmentID));

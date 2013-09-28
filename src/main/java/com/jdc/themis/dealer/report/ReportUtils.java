@@ -1,5 +1,6 @@
 package com.jdc.themis.dealer.report;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +9,6 @@ import ch.lambdaj.Lambda;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.jdc.themis.dealer.report.DealerReportCalculator.AmountComparator;
 
 public abstract class ReportUtils {
 
@@ -24,4 +24,11 @@ public abstract class ReportUtils {
 		return Lambda.avg(topAmounts).doubleValue();
 	}
 
+	public static Double calcPercentage(Double current, Double previous) {
+		if ( previous == BigDecimal.ZERO.doubleValue() ) {
+			return BigDecimal.ZERO.doubleValue();
+		}
+		return (current - previous) / Math.abs(previous);
+	}
+	
 }

@@ -19,7 +19,10 @@ public interface DealerIncomeReportService {
 	
 	@Transactional(readOnly=true)
 	QueryReportDataResponse queryDepartmentIncomeReport(
-			Integer year, Option<Integer> monthOfYear, Option<Integer> dealerID);
+			Integer year, Option<Integer> dealerID, Option<Integer> monthOfYear);
 	
-	// TODO: new service to query some items in a department by dealer id and year and month information
+	@Transactional(readOnly=true)
+	QueryReportDataResponse querySalesReport(
+			Integer year, Option<Integer> monthOfYear, Option<Integer> departmentID, Option<Integer> denominator);
+	
 }

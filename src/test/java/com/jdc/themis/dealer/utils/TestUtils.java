@@ -13,8 +13,6 @@ import com.jdc.themis.dealer.domain.EnumValue;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.web.domain.DurationDetail;
 
-import fj.data.Option;
-
 public class TestUtils {
 
 	@Mock
@@ -42,7 +40,7 @@ public class TestUtils {
 		enumValue.setTypeID(1);
 		enumValue.setValue(1);
 		enumValue.setName("Days");
-		when(refDataDAL.getEnumValue("DurationUnit", 1)).thenReturn(Option.<EnumValue>some(enumValue));
+		when(refDataDAL.getEnumValue("DurationUnit", 1)).thenReturn(enumValue);
 		Assert.assertEquals("0-30 Days", Utils.getDurationDesc(duration, refDataDAL));
 	}
 	

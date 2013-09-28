@@ -43,7 +43,14 @@ public class Vehicle implements Serializable {
 	private Integer categoryID;
 	@Type(type="datetime")
 	private Instant timestamp;
+	private Integer type;
 	
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
 	@Type(type="datetime")
 	public Instant getTimestamp() {
 		return timestamp;

@@ -15,7 +15,7 @@ CREATE TABLE Department (   id integer,    name varchar(100),    timestamp times
 CREATE TABLE HumanResourceAllocation(   timestamp timestamp,   timeEnd timestamp,    validDate date NOT NULL,    dealerID integer NOT NULL,   departmentID integer NOT NULL,   id integer NOT NULL,   version integer,   allocation double,   updatedBy varchar(20) NOT NULL,    CONSTRAINT HRA_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, version)) 
 
 CREATE TABLE JobPosition (   id integer,    name varchar(100),    timestamp timestamp)
-CREATE TABLE Vehicle (    id integer,  name varchar(100), categoryID integer, timestamp timestamp) 
+CREATE TABLE Vehicle (    id integer,  name varchar(100), categoryID integer, type integer, timestamp timestamp) 
 
 CREATE TABLE TaxJournalItem (id integer, name varchar(100), timestamp timestamp)
 

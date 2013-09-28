@@ -37,4 +37,21 @@ public class TestDealerIncomeSystemRestService {
 		service.getVehicles(2);
 		verify(this.refDataQueryService).getVehicles(Option.<Integer>some(2));
 	}
+	
+	@Test
+	public void getAllDealers() {
+		final DealerIncomeSystemRestService service = new DealerIncomeSystemRestService();
+		service.setRefDataQueryService(refDataQueryService);
+		service.getDealers();
+		verify(this.refDataQueryService).getDealers();
+	}
+	
+	@Test
+	public void getAllDepartments() {
+		final DealerIncomeSystemRestService service = new DealerIncomeSystemRestService();
+		service.setRefDataQueryService(refDataQueryService);
+		service.getDepartments();
+		verify(this.refDataQueryService).getDepartments();
+	}
+	
 }

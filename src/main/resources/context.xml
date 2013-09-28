@@ -45,7 +45,10 @@
 	
 	<bean id="userService" class="com.jdc.themis.dealer.service.impl.UserServiceImpl" />
     
+    <!-- RESTFUL services definitions -->
 	<bean id="dealerRestService" class="com.jdc.themis.dealer.service.rest.DealerIncomeSystemRestService" />
+    <bean id="userRestService" class="com.jdc.themis.dealer.service.rest.UserRestService" />
+    <bean id="reportRestService" class="com.jdc.themis.dealer.service.rest.DealerReportRestService" />
 
 	<jaxrs:server id="dealerEntryServer" address="/dealer">
 		<jaxrs:serviceBeans>
@@ -56,6 +59,24 @@
 			<ref bean="jaxbProvider" />
 		</jaxrs:providers>
 	</jaxrs:server>
+	<jaxrs:server id="userServer" address="/user">
+        <jaxrs:serviceBeans>
+            <ref bean="userRestService" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref bean="jsonProvider" />
+            <ref bean="jaxbProvider" />
+        </jaxrs:providers>
+    </jaxrs:server>
+    <jaxrs:server id="reportServer" address="/report">
+        <jaxrs:serviceBeans>
+            <ref bean="reportRestService" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref bean="jsonProvider" />
+            <ref bean="jaxbProvider" />
+        </jaxrs:providers>
+    </jaxrs:server>
 	
 	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
 	<bean id="jaxbProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"></bean>

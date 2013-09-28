@@ -4,7 +4,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -39,6 +38,7 @@ import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetDealerResponse;
 import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeItemResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryItemResponse;
@@ -118,13 +118,20 @@ public class TestRefDataQueryServiceImpl {
 		v1.setId(1);
 		v1.setName("v1");
 		v1.setCategoryID(1);
+		v1.setType(0);
 		v2.setId(2);
 		v2.setName("v2");
 		v2.setCategoryID(1);
+		v2.setType(0);
 		
 		final SalesServiceJournalCategory category = new SalesServiceJournalCategory();
 		category.setId(1);
 		category.setName("VC1");
+		final EnumValue mini = new EnumValue();
+		mini.setName("Mini");
+		mini.setTypeID(6);
+		mini.setValue(0);
+		when(refDataDAL.getEnumValue("VehicleType", 0)).thenReturn(Option.<EnumValue>some(mini));
 		when(refDataDAL.getVehicles(Option.<Integer>none())).thenReturn(list);
 		when(refDataDAL.getVehicle(1)).thenReturn(Option.<Vehicle>some(v1));
 		when(refDataDAL.getSalesServiceJournalCategory(1)).thenReturn(Option.<SalesServiceJournalCategory>some(category));
@@ -240,11 +247,11 @@ public class TestRefDataQueryServiceImpl {
 		v2.setName("g2");
 		
 		when(refDataDAL.getDealers()).thenReturn(list);
-		final Collection<DealerDetail> response = refDataQueryService.getDealers();
+		final GetDealerResponse response = refDataQueryService.getDealers();
 		
 		Assert.assertNotNull(response);
-		Assert.assertEquals(2, response.size());
-		Assert.assertEquals("g1", response.iterator().next().getName());
+		Assert.assertEquals(2, response.getItems().size());
+		Assert.assertEquals("g1", response.getItems().iterator().next().getName());
 		
 		when(refDataDAL.getDealer(1)).thenReturn(Option.<Dealer>some(v1));
 		final DealerDetail item = refDataQueryService.getDealer(1);

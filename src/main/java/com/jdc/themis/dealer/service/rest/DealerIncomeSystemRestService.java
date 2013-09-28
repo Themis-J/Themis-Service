@@ -13,13 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jdc.themis.dealer.service.DealerIncomeEntryService;
-import com.jdc.themis.dealer.service.DealerIncomeReportService;
 import com.jdc.themis.dealer.service.RefDataQueryService;
-import com.jdc.themis.dealer.service.UserService;
 import com.jdc.themis.dealer.utils.RestServiceErrorHandler;
-import com.jdc.themis.dealer.utils.Utils;
 import com.jdc.themis.dealer.web.domain.GeneralResponse;
-import com.jdc.themis.dealer.web.domain.ImportReportDataRequest;
 import com.jdc.themis.dealer.web.domain.SaveAccountReceivableDurationRequest;
 import com.jdc.themis.dealer.web.domain.SaveDealerEntryItemStatusRequest;
 import com.jdc.themis.dealer.web.domain.SaveEmployeeFeeRequest;
@@ -45,18 +41,12 @@ public class DealerIncomeSystemRestService {
 	@Autowired
 	private RefDataQueryService refDataQueryService;
 
-	public void setRefDataQueryService(RefDataQueryService refDataQueryService) {
-		this.refDataQueryService = refDataQueryService;
-	}
-
 	@Autowired
 	private DealerIncomeEntryService dealerIncomeEntryService;
 	
-	@Autowired
-	private DealerIncomeReportService dealerIncomeReportService;
-	
-	@Autowired
-	private UserService userService;
+	public void setRefDataQueryService(final RefDataQueryService refDataQueryService) {
+		this.refDataQueryService = refDataQueryService;
+	}
 
 	/**
 	 * Get full list of menu. Each menu includes its parent id and child id
@@ -70,6 +60,19 @@ public class DealerIncomeSystemRestService {
 	@RestServiceErrorHandler
 	public Response getMenu() {
 		return Response.ok(this.refDataQueryService.getMenu()).build();
+	}
+	
+	/**
+	 * Get all deparment details.
+	 * 
+	 * @return
+	 */
+	@GET
+	@Path("/list")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response getDealers() {
+		return Response.ok(this.refDataQueryService.getDealers()).build();
 	}
 	
 	/**
@@ -630,62 +633,4 @@ public class DealerIncomeSystemRestService {
 				.build();
 	}
 	
-	/**
-	 * Import report data for given year and month.
-	 * 
-	 * @param request
-	 * @return
-	 */
-	@POST
-	@Produces({ "application/json", "application/xml" })
-	@Consumes({ "application/json", "application/xml" })
-	@Path("/report/import")
-	@RestServiceErrorHandler
-	public Response importReportData(final ImportReportDataRequest request) {
-		final GeneralResponse response = new GeneralResponse();
-		response.setErrorMsg("");
-		response.setSuccess(true);
-		dealerIncomeReportService
-			.importReportData(request);
-		response.setTimestamp(Utils.currentTimestamp());
-		return Response.ok(response).status(Status.CREATED).build();
-	}
-
-	/**
-	 * Query overall income report.
-	 * 
-	 * @param year
-	 * @return
-	 */
-	@GET
-	@Path("/report/query/overallIncomeReport")
-	@Produces({ "application/json", "application/xml" })
-	@RestServiceErrorHandler
-	public Response queryDealerOverallIncomeReport(
-			@QueryParam("year") Integer year, 
-			@QueryParam("monthOfYear") Integer monthOfYear, 
-			@QueryParam("departmentID") Integer departmentID, 
-			@QueryParam("denominator") Integer denominator) {
-		return Response.ok(
-				dealerIncomeReportService.queryOverallIncomeReport(
-						year, 
-						Option.fromNull(monthOfYear), 
-						Option.fromNull(departmentID),
-						Option.fromNull(denominator))).build();
-	}
-	
-	/**
-	 * Query user information.
-	 * 
-	 * @param username
-	 * @return
-	 */
-	@GET
-	@Path("/user/info")
-	@Produces({ "application/json", "application/xml" })
-	@RestServiceErrorHandler
-	public Response getUser(@QueryParam("username") String username) {
-		return Response.ok(
-				userService.getUser(username)).build();
-	}
 }

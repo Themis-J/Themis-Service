@@ -112,6 +112,11 @@ public class TestRefDataDAOImpl {
 	}
 	
 	@Test
+	public void getVehicle() {
+		Assert.assertEquals(0, refDataDAO.getVehicles(Option.<Integer>none()).get(0).getType().intValue());
+	}
+	
+	@Test
 	public void getVehicleListByCategoryID() {
 		Assert.assertEquals(2, refDataDAO.getVehicles(Option.<Integer>some(1)).size());
 	}

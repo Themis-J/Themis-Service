@@ -17,9 +17,9 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://115.28.15.122:5432/themis_development" />
-		<property name="username" value="themis_qa" />
-		<property name="password" value="themis_qa" />
+		<property name="url" value="jdbc:postgresql://115.28.15.122:5432/themis_qa" />
+		<property name="username" value="themis" />
+		<property name="password" value="themis" />
 	</bean>
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">

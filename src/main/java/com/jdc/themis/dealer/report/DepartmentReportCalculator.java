@@ -1,8 +1,8 @@
 package com.jdc.themis.dealer.report;
 
+
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 
 import ch.lambdaj.Lambda;
@@ -12,15 +12,16 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.domain.DealerIncomeExpenseFact;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
-import com.jdc.themis.dealer.web.domain.DealerDetail;
-import com.jdc.themis.dealer.web.domain.ReportDataDealerDetail;
-import com.jdc.themis.dealer.web.domain.ReportDataDetailAmount;
+import com.jdc.themis.dealer.web.domain.DepartmentDetail;
+import static com.jdc.themis.dealer.report.ReportUtils.*;
+import com.jdc.themis.dealer.web.domain.ReportDataDepartmentDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDetail;
+import com.jdc.themis.dealer.web.domain.ReportDataDetailAmount;
 
 import fj.data.Option;
 
 /**
- * Calculate the overall income report numbers by dealer. 
+ * Calculate the income report numbers by department. 
  * 
  * The class is not thread-safe.
  * 
@@ -30,48 +31,32 @@ import fj.data.Option;
 public class DepartmentReportCalculator {
 
 	/**
-	 * Mapping between dealer id and dealer report detail.
+	 * Mapping between department id and department report detail.
 	 */
-	private final Map<Integer, ReportDataDealerDetail> dealerDetails = Maps.newHashMap();
+	private final Map<Integer, ReportDataDepartmentDetail> departmentDetails = Maps.newHashMap();
 	
 	private Integer year;
 	private Option<Integer> monthOfYear = Option.<Integer>none();
-	private Option<Map<Integer, ReportDataDealerDetail>> dealerPreviousDetailOption = Option
-			.<Map<Integer, ReportDataDealerDetail>> none();
-	private Option<Denominator> denominatorOption = Option.<Denominator>none();
+	private Option<Map<Integer, ReportDataDepartmentDetail>> dealerPreviousDetailOption = Option
+			.<Map<Integer, ReportDataDepartmentDetail>> none();
 	
-	public DepartmentReportCalculator(final Collection<DealerDetail> dealers, final Integer year) {
-		for (final DealerDetail dealer : dealers) {
-			dealerDetails.put(dealer.getId(), new ReportDataDealerDetail());
-			dealerDetails.get(dealer.getId()).setId(dealer.getId());
-			dealerDetails.get(dealer.getId()).setName(dealer.getName());
-			dealerDetails.get(dealer.getId()).setCode(dealer.getCode());
+	public DepartmentReportCalculator(final Collection<DepartmentDetail> departments, final Integer year) {
+		for (final DepartmentDetail department : departments) {
+			departmentDetails.put(department.getId(), new ReportDataDepartmentDetail());
+			departmentDetails.get(department.getId()).setId(department.getId());
+			departmentDetails.get(department.getId()).setName(department.getName());
 		}
 		
 		this.year = year;
 		
 	}
 	
-	public enum Denominator {
-		REVENUE, MARGIN;
-		
-		public static Option<Denominator> valueOf(int value) {
-			for ( final Denominator d : Denominator.values() ) {
-				if ( d.ordinal() == value ) {
-					return Option.<Denominator>some(d);
-				}
-			}
-			return Option.<Denominator>none();
-		}
-		
-	}
-	
-	private enum GetDealerIDFromReportDetailFunction implements
-			Function<ReportDataDealerDetail, Integer> {
+	private enum GetDepartmentIDFromReportDetailFunction implements
+			Function<ReportDataDepartmentDetail, Integer> {
 		INSTANCE;
 
 		@Override
-		public Integer apply(final ReportDataDealerDetail item) {
+		public Integer apply(final ReportDataDepartmentDetail item) {
 			return item.getId();
 		}
 	}
@@ -87,22 +72,10 @@ public class DepartmentReportCalculator {
 		if ( monthOfYear.isSome() ) {
 			reportDetail.setMonth(monthOfYear.some());
 		} 
-		reportDetail.getDetail().addAll(dealerDetails.values());
+		reportDetail.getDepartmentDetail().addAll(departmentDetails.values());
 		return reportDetail;
 	}
 	
-	/**
-	 * Set denominator for each report numbers.
-	 * 
-	 * @param denominatorOption
-	 * @return
-	 */
-	public DepartmentReportCalculator withDenominator(final Option<Integer> denominatorOption) {
-		if ( denominatorOption.isSome() ) {
-			this.denominatorOption = Denominator.valueOf(denominatorOption.some());
-		} 
-		return this;
-	}
 	
 	/**
 	 * Set month of year. 
@@ -126,11 +99,11 @@ public class DepartmentReportCalculator {
 		if ( previousDetail.isNone() ) {
 			return this;
 		}
-		final Map<Integer, ReportDataDealerDetail> dealerPreviousDetails = Maps
-				.uniqueIndex(previousDetail.some().getDetail(),
-						GetDealerIDFromReportDetailFunction.INSTANCE);
+		final Map<Integer, ReportDataDepartmentDetail> dealerPreviousDetails = Maps
+				.uniqueIndex(previousDetail.some().getDepartmentDetail(),
+						GetDepartmentIDFromReportDetailFunction.INSTANCE);
 		dealerPreviousDetailOption = Option
-				.<Map<Integer, ReportDataDealerDetail>> some(dealerPreviousDetails);
+				.<Map<Integer, ReportDataDepartmentDetail>> some(dealerPreviousDetails);
 		return this;
 	}
 	
@@ -146,7 +119,6 @@ public class DepartmentReportCalculator {
 	public DepartmentReportCalculator calcExpenses(
 			final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerExpenseFacts,
 			final JournalOp op) {
-		final Map<Integer, Double> amounts = newMapForAmounts();
 		for (final Integer dealerID : dealerExpenseFacts.keySet()) {
 			final BigDecimal totalExpense = Lambda.sumFrom(
 					dealerExpenseFacts.get(dealerID),
@@ -155,146 +127,12 @@ public class DepartmentReportCalculator {
 			amount.setAmount(op == JournalOp.SUM ? totalExpense.doubleValue()
 					: totalExpense.doubleValue() / (monthOfYear.some() * 1.0));
 
-			amounts.put(dealerID, amount.getAmount());
-			if (dealerPreviousDetailOption.isSome()
-					&& dealerPreviousDetailOption.some().get(dealerID)
-							.getExpense().getAmount() != 0.0) {
-				// Percentage = (this year OR month amount - last year OR avg amount) / last year OR avg amount
-				amount.setPercentage((amount.getAmount().doubleValue() - dealerPreviousDetailOption
-						.some().get(dealerID).getExpense().getAmount())
-						/ dealerPreviousDetailOption.some().get(dealerID)
-								.getExpense().getAmount());
+			if (dealerPreviousDetailOption.isSome()) {
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(dealerID)
+								.getExpense().getAmount()));
 			}
-			dealerDetails.get(dealerID).setExpense(amount);
+			departmentDetails.get(dealerID).setExpense(amount);
 		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getExpense().setReference(reference);
-		}
-		return this;
-	}
-	
-	/**
-	 * Adjust the expense by using denominator. 
-	 * 
-	 * This has to be called after "prepareDenominators" function is called. 
-	 * 
-	 * @return
-	 */
-	public DepartmentReportCalculator adjustExpenseByDenominator() {
-		if (this.denominatorOption.isNone()) {
-			return this;
-		} 
-		final Map<Integer, Double> amounts = newMapForAmounts();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			final Double amount = dealerDetails.get(dealerID).getExpense().getAmount() / denominators.get(dealerID);
-			dealerDetails.get(dealerID).getExpense().setAmount(amount);
-			amounts.put(dealerID, amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getExpense().setReference(reference);
-		}
-		return this;
-	}
-	
-	/**
-	 * Adjust the margin by using denominator. 
-	 * 
-	 * This has to be called after "prepareDenominators" function is called. 
-	 * 
-	 * @return
-	 */
-	public DepartmentReportCalculator adjustMarginByDenominator() {
-		if (this.denominatorOption.isNone()) {
-			return this;
-		} 
-		final Map<Integer, Double> amounts = newMapForAmounts();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			final Double amount = dealerDetails.get(dealerID).getMargin().getAmount() / denominators.get(dealerID);
-			dealerDetails.get(dealerID).getMargin().setAmount(amount);
-			amounts.put(dealerID, amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getMargin().setReference(reference);
-		}
-		return this;
-	}
-	
-	/**
-	 * Adjust the operational profit by using denominator. 
-	 * 
-	 * This has to be called after "prepareDenominators" function is called. 
-	 * 
-	 * @return
-	 */
-	public DepartmentReportCalculator adjustOpProfitByDenominator() {
-		if (this.denominatorOption.isNone()) {
-			return this;
-		} 
-		final Map<Integer, Double> amounts = newMapForAmounts();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			final Double amount = dealerDetails.get(dealerID).getOpProfit().getAmount() / denominators.get(dealerID);
-			dealerDetails.get(dealerID).getOpProfit().setAmount(amount);
-			amounts.put(dealerID, amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getOpProfit().setReference(reference);
-		}
-		return this;
-	}
-	
-	/**
-	 * Adjust the net profit by using denominator. 
-	 * 
-	 * This has to be called after "prepareDenominators" function is called. 
-	 * 
-	 * @return
-	 */
-	public DepartmentReportCalculator adjustNetProfitByDenominator() {
-		if (this.denominatorOption.isNone()) {
-			return this;
-		} 
-		final Map<Integer, Double> amounts = newMapForAmounts();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			final Double amount = dealerDetails.get(dealerID).getNetProfit().getAmount() / denominators.get(dealerID);
-			dealerDetails.get(dealerID).getNetProfit().setAmount(amount);
-			amounts.put(dealerID, amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getNetProfit().setReference(reference);
-		}
-		return this;
-	}
-	private Map<Integer, Double> denominators;
-	public DepartmentReportCalculator prepareDenominators() {
-		if (this.denominatorOption.isNone()) {
-			return this;
-		} 
-		denominators = Maps.newHashMap();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			if ( this.denominatorOption.some() == Denominator.REVENUE ) {
-				if ( dealerDetails.get(dealerID).getRevenue().getAmount() == 0.0 ) {
-					denominators.put(dealerID, 1.0);
-				} else {
-					denominators.put(dealerID, dealerDetails.get(dealerID).getRevenue().getAmount());
-				}
-			} else if ( this.denominatorOption.some() == Denominator.MARGIN ) {
-				if ( dealerDetails.get(dealerID).getMargin().getAmount() == 0.0 ) {
-					denominators.put(dealerID, 1.0);
-				} else {
-					denominators.put(dealerID, dealerDetails.get(dealerID).getMargin().getAmount());
-				}
-			}
-		} 
 		return this;
 	}
 	
@@ -308,7 +146,6 @@ public class DepartmentReportCalculator {
 	public DepartmentReportCalculator calcMargins(
 			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts,
 			final JournalOp op) {
-		final Map<Integer, Double> amounts = newMapForAmounts();
 		for (final Integer dealerID : dealerRevenueFacts.keySet()) {
 			final BigDecimal totalMargin = Lambda.sumFrom(
 					dealerRevenueFacts.get(dealerID),
@@ -317,21 +154,11 @@ public class DepartmentReportCalculator {
 			amount.setAmount(op == JournalOp.SUM ? totalMargin.doubleValue()
 					: totalMargin.doubleValue() / (monthOfYear.some() * 1.0));
 
-			amounts.put(dealerID, amount.getAmount());
-			if (dealerPreviousDetailOption.isSome()
-					&& dealerPreviousDetailOption.some().get(dealerID)
-							.getMargin().getAmount() != 0.0) {
-				amount.setPercentage((amount.getAmount().doubleValue() - dealerPreviousDetailOption
-						.some().get(dealerID).getMargin().getAmount())
-						/ dealerPreviousDetailOption.some().get(dealerID)
-								.getMargin().getAmount());
+			if (dealerPreviousDetailOption.isSome()) {
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(dealerID)
+								.getMargin().getAmount()));
 			}
-			dealerDetails.get(dealerID).setMargin(amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getMargin().setReference(reference);
+			departmentDetails.get(dealerID).setMargin(amount);
 		}
 		return this;
 	}
@@ -346,7 +173,6 @@ public class DepartmentReportCalculator {
 	public DepartmentReportCalculator calcRevenues(
 			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts,
 			final JournalOp op) {
-		final Map<Integer, Double> amounts = newMapForAmounts();
 		for (final Integer dealerID : dealerRevenueFacts.keySet()) {
 			final BigDecimal totalAmount = Lambda.sumFrom(
 					dealerRevenueFacts.get(dealerID),
@@ -354,123 +180,31 @@ public class DepartmentReportCalculator {
 			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
 			amount.setAmount(op == JournalOp.SUM ? totalAmount.doubleValue()
 					: totalAmount.doubleValue() / (monthOfYear.some() * 1.0));
-			amounts.put(dealerID, amount.getAmount());
-			if (dealerPreviousDetailOption.isSome()
-					&& dealerPreviousDetailOption.some().get(dealerID)
-							.getRevenue().getAmount() != 0.0) {
-				amount.setPercentage((totalAmount.doubleValue() - dealerPreviousDetailOption
-						.some().get(dealerID).getRevenue().getAmount())
-						/ dealerPreviousDetailOption.some().get(dealerID)
-								.getRevenue().getAmount());
-			}
-			dealerDetails.get(dealerID).setRevenue(amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getRevenue().setReference(reference);
+			if (dealerPreviousDetailOption.isSome()) {
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(dealerID)
+								.getRevenue().getAmount()));
+			} 
+			departmentDetails.get(dealerID).setRevenue(amount);
 		}
 		return this;
-	}
-	
-	public DepartmentReportCalculator calcNetProfit(
-			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> otherDealerRevenueFacts,
-			final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> otherDealerExpenseFacts,
-			final JournalOp op) {
-		final Map<Integer, Double> amounts = newMapForAmounts();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			// Net Profit = Margin - Expense + Other Revenue - Other Expense
-			// NonRecurrentPNL is included in other...
-			final Double margin = this.dealerDetails.get(dealerID).getMargin().getAmount();
-			final Double expense = this.dealerDetails.get(dealerID).getExpense().getAmount();
-			final BigDecimal otherRevenue = Lambda.sumFrom(
-					otherDealerRevenueFacts.get(dealerID),
-					DealerIncomeRevenueFact.class).getAmount();
-			final BigDecimal otherExpense = Lambda.sumFrom(
-					otherDealerExpenseFacts.get(dealerID),
-					DealerIncomeExpenseFact.class).getAmount();
-			
-			final Double totalAmount = op == JournalOp.SUM ? 
-						(margin - expense) + otherRevenue.doubleValue() - otherExpense.doubleValue():
-							(margin - expense) + (otherRevenue.doubleValue() - otherExpense.doubleValue()) / (monthOfYear.some() * 1.0);
-			
-			
-			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
-			amount.setAmount(totalAmount);
-
-			amounts.put(dealerID, amount.getAmount());
-			if (dealerPreviousDetailOption.isSome()
-					&& dealerPreviousDetailOption.some().get(dealerID)
-							.getNetProfit().getAmount() != 0.0) {
-				amount.setPercentage((amount.getAmount() - dealerPreviousDetailOption
-						.some().get(dealerID).getNetProfit().getAmount())
-						/ dealerPreviousDetailOption.some().get(dealerID)
-								.getNetProfit().getAmount());
-			}
-			dealerDetails.get(dealerID).setNetProfit(amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getNetProfit().setReference(reference);
-		}
-		return this;
-	}
-
-	private Map<Integer, Double> newMapForAmounts() {
-		final Map<Integer, Double> amounts = Maps.newHashMap();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			amounts.put(dealerID, 0.0);
-		}
-		return amounts;
 	}
 	
 	public DepartmentReportCalculator calcOpProfit() {
-		final Map<Integer, Double> amounts = newMapForAmounts();
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			final ReportDataDetailAmount margin = dealerDetails.get(
+		for (final Integer dealerID : departmentDetails.keySet()) {
+			final ReportDataDetailAmount margin = departmentDetails.get(
 					dealerID).getMargin();
-			final ReportDataDetailAmount expense = dealerDetails.get(
+			final ReportDataDetailAmount expense = departmentDetails.get(
 					dealerID).getExpense();
 			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
 			// Operational Profit = Margin - Expense
 			amount.setAmount(margin.getAmount() - expense.getAmount());
-
-			amounts.put(dealerID, amount.getAmount());
-			if (dealerPreviousDetailOption.isSome()
-					&& dealerPreviousDetailOption.some().get(dealerID)
-							.getOpProfit().getAmount() != 0.0) {
-				amount.setPercentage((amount.getAmount().doubleValue() - dealerPreviousDetailOption
-						.some().get(dealerID).getOpProfit().getAmount())
-						/ dealerPreviousDetailOption.some().get(dealerID)
-								.getOpProfit().getAmount());
+			if (dealerPreviousDetailOption.isSome()) {
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(dealerID)
+								.getOpProfit().getAmount()));
 			}
-			dealerDetails.get(dealerID).setOpProfit(amount);
-		}
-		final Double reference = ReportUtils.calcReference(amounts
-				.values());
-		for (final Integer dealerID : dealerDetails.keySet()) {
-			dealerDetails.get(dealerID).getOpProfit().setReference(reference);
+			departmentDetails.get(dealerID).setOpProfit(amount);
 		}
 		return this;
-	}
-
-	public enum JournalOp {
-		SUM, AVG
-	}
-
-	// comparator for sorting amounts in descending order
-	static class AmountComparator implements Comparator<Double> {
-		private AmountComparator() {
-		}
-
-		public static final AmountComparator INSTANCE = new AmountComparator();
-
-		@Override
-		public int compare(Double arg0, Double arg1) {
-			return -1 * arg0.compareTo(arg1);
-		}
-
 	}
 
 }

@@ -19,7 +19,7 @@ public abstract class Utils {
 		return new StringBuffer()
 			.append(duration.getLowerBound()).append("-")
 			.append(duration.getUpperBound() != null ? duration.getUpperBound() : "MAX").append(" ")
-			.append(refDataDAL.getEnumValue("DurationUnit", duration.getUnit()).some().getName())
+			.append(refDataDAL.getEnumValue("DurationUnit", duration.getUnit()).getName())
 			.toString();
 	}
 }

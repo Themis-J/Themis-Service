@@ -16,6 +16,8 @@ public class VehicleDetail implements Serializable{
 	private String name;
 	private String category;
 	private Integer categoryID;
+	private Integer typeID;
+	private String type;
 	
 	public Integer getCategoryID() {
 		return categoryID;
@@ -42,6 +44,18 @@ public class VehicleDetail implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public Integer getTypeID() {
+		return typeID;
+	}
+	public void setTypeID(Integer typeID) {
+		this.typeID = typeID;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	
 }

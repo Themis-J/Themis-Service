@@ -11,6 +11,8 @@ import com.jdc.themis.dealer.service.UserService;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.web.domain.AddNewUserRequest;
 import com.jdc.themis.dealer.web.domain.GetUserInfoResponse;
+import com.jdc.themis.dealer.web.domain.ModifyUserRequest;
+import com.jdc.themis.dealer.web.domain.ResetPasswordRequest;
 
 /**
  * Service layer to manage user information.
@@ -23,9 +25,17 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDAO userDAL;
+	public void setUserDAL(UserDAO userDAL) {
+		this.userDAL = userDAL;
+	}
+
 	@Autowired
 	private RefDataQueryService refDataQueryDAL;
-	
+
+	public void setRefDataQueryDAL(RefDataQueryService refDataQueryDAL) {
+		this.refDataQueryDAL = refDataQueryDAL;
+	}
+
 	@Override
 	@Performance
 	public void addNewUser(final AddNewUserRequest request) {
@@ -38,13 +48,15 @@ public class UserServiceImpl implements UserService {
 		user.setUsername(request.getUsername());
 		user.setPassword(request.getPassword());
 		user.setActive(Boolean.TRUE);
-		user.setDealerID(refDataQueryDAL.getDealer(request.getDealerID()).getId());
+		if ( request.getDealerID() != null ) {
+			user.setDealerID(refDataQueryDAL.getDealer(request.getDealerID()).getId());
+		} 
 		userDAL.saveOrUpdateUser(user);
 	}
 
 	@Override
 	@Performance
-	public void disableUser(String username) {
+	public void disableUser(final String username) {
 		Preconditions.checkNotNull(username, "username can't be null");
 		Preconditions.checkArgument(userDAL.getUser(username).isSome(), "unknown user name");
 
@@ -55,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Performance
-	public GetUserInfoResponse getUser(String username) {
+	public GetUserInfoResponse getUser(final String username) {
 		Preconditions.checkNotNull(username, "username can't be null");
 		Preconditions.checkArgument(userDAL.getUser(username).isSome(), "unknown user name");
 
@@ -69,13 +81,25 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void enableUser(String username) {
+	public void enableUser(final String username) {
 		Preconditions.checkNotNull(username, "username can't be null");
 		Preconditions.checkNotNull(userDAL.getUser(username).isSome(), "unknown user name");
 
 		final UserInfo user = userDAL.getUser(username).some();
 		user.setActive(Boolean.TRUE);
 		userDAL.saveOrUpdateUser(user);
+	}
+
+	@Override
+	public void resetPassword(final ResetPasswordRequest request) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void modifyUser(ModifyUserRequest request) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

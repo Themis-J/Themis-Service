@@ -1,13 +1,11 @@
 package com.jdc.themis.dealer.service.impl;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.domain.AccountReceivableDurationItem;
 import com.jdc.themis.dealer.domain.Dealer;
@@ -33,12 +31,13 @@ import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetDealerResponse;
 import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeItemResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryItemResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
-import com.jdc.themis.dealer.web.domain.GetInventoryDurationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetInventoryDurationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
@@ -127,6 +126,8 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 			item.setName(vehicle.getName());
 			item.setCategoryID(vehicle.getCategoryID());
 			item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(vehicle.getCategoryID()).some().getName());
+			item.setTypeID(vehicle.getType());
+			item.setType(refDataDAL.getEnumValue("VehicleType", vehicle.getType()).some().getName());
 			response.getItems().add(item);
 		}
 		return response;
@@ -388,27 +389,28 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 	}
 
 	@Override
-	public Option<EnumValue> getEnumValue(String enumType, Integer enumValue) {
-		return refDataDAL.getEnumValue(enumType, enumValue);
+	public EnumValue getEnumValue(String enumType, Integer enumValue) {
+		return refDataDAL.getEnumValue(enumType, enumValue).some();
 	}
 
 	@Override
-	public Option<EnumValue> getEnumValue(String enumType, String enumValue) {
-		return refDataDAL.getEnumValue(enumType, enumValue);
+	public EnumValue getEnumValue(String enumType, String enumValue) {
+		return refDataDAL.getEnumValue(enumType, enumValue).some();
 	}
 
 	@Override
-	public Collection<DealerDetail> getDealers() {
-		final List<DealerDetail> dealers = Lists.newArrayList();
+	public GetDealerResponse getDealers() {
+		final GetDealerResponse response = new GetDealerResponse();
 		for (final Dealer dealer : refDataDAL.getDealers()) {
 			final DealerDetail item = new DealerDetail();
 			item.setId(dealer.getId());
 			item.setName(dealer.getName());
 			item.setCode(dealer.getCode());
 			item.setFullName(dealer.getFullName());
-			dealers.add(item);
+			response.getItems().add(item);
 		}
-		return dealers;
+		 
+		return response;
 	}
 
 }

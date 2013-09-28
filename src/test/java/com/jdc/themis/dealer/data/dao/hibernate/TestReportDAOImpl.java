@@ -22,6 +22,7 @@ import com.jdc.themis.dealer.domain.GeneralJournal;
 import com.jdc.themis.dealer.domain.ReportItem;
 import com.jdc.themis.dealer.domain.ReportTime;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
+import com.jdc.themis.dealer.domain.TaxJournal;
 import com.jdc.themis.dealer.domain.VehicleSalesJournal;
 
 import fj.data.Option;
@@ -84,6 +85,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -98,6 +100,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -183,6 +186,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -196,6 +200,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -211,6 +216,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -288,6 +294,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -302,6 +309,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{3}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -316,6 +324,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -329,6 +338,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -342,6 +352,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -373,5 +384,57 @@ public class TestReportDAOImpl {
 		Assert.assertEquals(2, reportDAL.getReportTime(2013, Option.<Integer>none()).size());
 		Assert.assertEquals(1, reportDAL.getReportTime(2013, Option.<Integer>some(8)).size());
 		Assert.assertEquals(2, hasReportTime);
+	} 
+	
+	@Test
+	public void importTaxJournal() {
+		final TaxJournal status = new TaxJournal();
+		status.setDealerID(10);
+		status.setId(1);
+		status.setAmount(new BigDecimal("1234.343"));
+		status.setValidDate(LocalDate.of(2013, 8, 1));
+		status.setUpdatedBy("test");
+		incomeJournalDAL.saveTaxJournal(10, Lists.newArrayList(status));
+		final TaxJournal status2 = new TaxJournal();
+		status2.setDealerID(11);
+		status2.setId(1);
+		status2.setAmount(new BigDecimal("1234.343"));
+		status2.setValidDate(LocalDate.of(2013, 8, 1));
+		status2.setUpdatedBy("test");
+		incomeJournalDAL.saveTaxJournal(11, Lists.newArrayList(status2));
+		
+		reportDAL.importTaxJournal(LocalDate.of(2013, 8, 1));
+		reportDAL.importTaxJournal(LocalDate.of(2013, 8, 1));
+
+		int hasJournal = 0;
+		for (final DealerIncomeExpenseFact journal : 
+			reportDAL.getDealerIncomeExpenseFacts(2013, 
+					Lists.newArrayList(new Integer[]{8}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new String[]{}), 
+					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Integer[]{}))) {
+			hasJournal++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+		} 
+		Assert.assertEquals(3, hasJournal);
+		
+		Assert.assertEquals("IncomeTax", reportDAL.getReportItem(1, "TaxJournal").some().getName());
+		
+		final ReportItem item = reportDAL.getReportItem(1, "TaxJournal").some();
+		Assert.assertEquals("IncomeTax", reportDAL.getReportItem(item.getId()).some().getName());
+		
+		int hasReportTime = 0;
+		for (final ReportTime journal : 
+			reportDAL.getAllReportTime()) {
+			hasReportTime++;
+			System.err.println(journal);
+			Assert.assertNotNull(journal);
+		} 
+		Assert.assertEquals(1, reportDAL.getReportTime(2013, Option.<Integer>none()).size());
+		Assert.assertEquals(1, reportDAL.getReportTime(2013, Option.<Integer>some(8)).size());
+		Assert.assertEquals(1, hasReportTime);
 	} 
 }

@@ -1,7 +1,5 @@
 package com.jdc.themis.dealer.service;
 
-import java.util.Collection;
-
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +12,13 @@ import com.jdc.themis.dealer.web.domain.EmployeeFeeItemDetail;
 import com.jdc.themis.dealer.web.domain.EmployeeFeeSummaryItemDetail;
 import com.jdc.themis.dealer.web.domain.GeneralJournalItemDetail;
 import com.jdc.themis.dealer.web.domain.GetAccountReceivableDurationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetDealerResponse;
 import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeItemResponse;
 import com.jdc.themis.dealer.web.domain.GetEmployeeFeeSummaryItemResponse;
 import com.jdc.themis.dealer.web.domain.GetGeneralJournalItemResponse;
-import com.jdc.themis.dealer.web.domain.GetInventoryDurationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetHumanResourceAllocationItemResponse;
+import com.jdc.themis.dealer.web.domain.GetInventoryDurationItemResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
 import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.GetVehicleResponse;
@@ -45,7 +44,7 @@ public interface RefDataQueryService {
 	DealerDetail getDealer(Integer id);
 
 	@Transactional(readOnly=true)
-	Collection<DealerDetail> getDealers();
+	GetDealerResponse getDealers();
 	
 	@Transactional(readOnly=true)
 	GetDepartmentResponse getDepartments();
@@ -116,9 +115,9 @@ public interface RefDataQueryService {
 	
 	@Transactional(readOnly=true)
 	@Cacheable("enumValueInt")
-	Option<EnumValue> getEnumValue(String enumType, Integer enumValue);
+	EnumValue getEnumValue(String enumType, Integer enumValue);
 	
 	@Transactional(readOnly=true)
 	@Cacheable("enumValueStr")
-	Option<EnumValue> getEnumValue(String enumType, String enumValue);
+	EnumValue getEnumValue(String enumType, String enumValue);
 }

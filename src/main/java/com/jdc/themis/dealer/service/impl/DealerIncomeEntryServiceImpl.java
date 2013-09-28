@@ -136,7 +136,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Performance
 	@Override
 	public GetVehicleSalesJournalResponse getVehicleSalesRevenue(
-			Integer dealerID, Option<Integer> departmentID, String validDate, Option<Integer> categoryID) {
+			final Integer dealerID, final Option<Integer> departmentID, final String validDate, final Option<Integer> categoryID) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
@@ -235,7 +235,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetSalesServiceJournalResponse getSalesServiceRevenue(
-			Integer dealerID, Integer departmentID, String validDate, Option<Integer> categoryID) {
+			final Integer dealerID, final Integer departmentID, final String validDate, final Option<Integer> categoryID) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(departmentID, "department id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
@@ -318,7 +318,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	 */
 	@Override
 	@Performance
-	public GetTaxResponse getIncomeTax(Integer dealerID, String validDate) {
+	public GetTaxResponse getIncomeTax(final Integer dealerID, final String validDate) {
 		Preconditions.checkArgument(
 				refDataQueryService.getDealer(dealerID) != null,
 				"unknown dealer id " + dealerID);
@@ -374,7 +374,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetDealerEntryItemStatusResponse getDealerEntryItemStatus(
-			Integer dealerID, String validDate) {
+			final Integer dealerID, final String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
@@ -399,7 +399,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Override
 	@Performance
-	public Instant saveGeneralIncome(SaveGeneralJournalRequest request) {
+	public Instant saveGeneralIncome(final SaveGeneralJournalRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getDepartmentID(),
@@ -436,8 +436,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Override
 	@Performance
-	public GetGeneralJournalResponse getGeneralIncome(Integer dealerID,
-			Integer departmentID, String validDate, Option<Integer> categoryID) {
+	public GetGeneralJournalResponse getGeneralIncome(final Integer dealerID,
+			final Integer departmentID, final String validDate, final Option<Integer> categoryID) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(departmentID, "department id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
@@ -477,7 +477,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public Instant saveAccountReceivableDuration (
-			SaveAccountReceivableDurationRequest request) {
+			final SaveAccountReceivableDurationRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getValidDate(),
@@ -509,7 +509,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetAccountReceivableDurationResponse getAccountReceivableDuration(
-			Integer dealerID, String validDate) {
+			final Integer dealerID, final String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
@@ -539,7 +539,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Override
 	@Performance
-	public Instant saveInventoryDuration(SaveInventoryDurationRequest request) {
+	public Instant saveInventoryDuration(final SaveInventoryDurationRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getValidDate(),
@@ -574,8 +574,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Override
 	@Performance
-	public GetInventoryDurationResponse getInventoryDuration(Integer dealerID,
-			Integer departmentID, String validDate) {
+	public GetInventoryDurationResponse getInventoryDuration(final Integer dealerID,
+			final Integer departmentID, final String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
@@ -609,7 +609,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Override
 	@Performance
-	public Instant saveEmployeeFee(SaveEmployeeFeeRequest request) {
+	public Instant saveEmployeeFee(final SaveEmployeeFeeRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getValidDate(),
@@ -630,12 +630,8 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			journal.setDealerID(request.getDealerID());
 			Preconditions.checkNotNull(detail.getItemID(),
 					"item id can't be null");
-
-			Preconditions.checkArgument(
-					refDataQueryService.getEnumValue("FeeType", detail.getFeeTypeID()).isSome(),
-					"unknown fee type id " + detail.getFeeTypeID());
 			journal.setId(refDataQueryService.getEmployeeFeeItem(detail.getItemID()).getId());
-			journal.setFeeTypeID(detail.getFeeTypeID());
+			journal.setFeeTypeID(refDataQueryService.getEnumValue("FeeType", detail.getFeeTypeID()).getValue());
 			journal.setDepartmentID(request.getDepartmentID());
 			journal.setUpdatedBy(request.getUpdateBy());
 			journal.setValidDate(LocalDate.parse(request.getValidDate()));
@@ -649,7 +645,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetEmployeeFeeResponse getEmployeeFee(Integer dealerID,
-			Integer departmentID, String validDate) {
+			final Integer departmentID, final String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
@@ -673,7 +669,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 			item.setName(refDataQueryService.getEmployeeFeeItem(journal.getId()).getName());
 			item.setItemID(journal.getId());
 			item.setFeeTypeID(journal.getFeeTypeID());
-			item.setFeeType(refDataQueryService.getEnumValue("FeeType", journal.getFeeTypeID()).some().getName());
+			item.setFeeType(refDataQueryService.getEnumValue("FeeType", journal.getFeeTypeID()).getName());
 			item.setTimestamp(journal.getTimestamp());
 			response.getDetail().add(item);
 		}
@@ -683,7 +679,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 
 	@Override
 	@Performance
-	public Instant saveEmployeeFeeSummary(SaveEmployeeFeeSummaryRequest request) {
+	public Instant saveEmployeeFeeSummary(final SaveEmployeeFeeSummaryRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getValidDate(),
@@ -718,8 +714,9 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetEmployeeFeeSummaryResponse getEmployeeFeeSummary(
-			Integer dealerID, Integer departmentID, String validDate) {
+			final Integer dealerID, final Integer departmentID, final String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
+		Preconditions.checkNotNull(departmentID, "department id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(
 				refDataQueryService.getDealer(dealerID) != null,
@@ -751,7 +748,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public Instant saveHumanResourceAllocation(
-			SaveHumanResourceAllocationRequest request) {
+			final SaveHumanResourceAllocationRequest request) {
 		Preconditions.checkNotNull(request.getDealerID(),
 				"dealer id can't be null");
 		Preconditions.checkNotNull(request.getValidDate(),
@@ -787,7 +784,7 @@ public class DealerIncomeEntryServiceImpl implements DealerIncomeEntryService {
 	@Override
 	@Performance
 	public GetHumanResourceAllocationResponse getHumanResourceAllocation(
-			Integer dealerID, String validDate) {
+			final Integer dealerID, final String validDate) {
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		Preconditions.checkNotNull(validDate, "valid date can't be null");
 		Preconditions.checkArgument(

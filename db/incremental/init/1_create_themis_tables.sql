@@ -139,6 +139,7 @@ WITH (
 ;
 
 
+DROP TABLE IF EXISTS DealerJobPosition CASCADE;
 DROP TABLE IF EXISTS HumanResourceAllocation CASCADE;
 DROP TABLE IF EXISTS JobPosition CASCADE;
 
@@ -154,7 +155,20 @@ WITH (
   OIDS = FALSE
 )
 ;
-CREATE TABLE HumanResourceAllocation
+CREATE TABLE DealerJobPosition
+(
+   dealerID integer NOT NULL, 
+   positionID integer NOT NULL,  
+   validDate date NOT NULL,
+   validEnd date NOT NULL,
+   CONSTRAINT DJP_Unique UNIQUE (dealerID, positionID), 
+   CONSTRAINT DJP_VID_FK FOREIGN KEY (positionID) REFERENCES JobPosition (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT DJP_DID_FK FOREIGN KEY (dealerID) REFERENCES Dealer (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;CREATE TABLE HumanResourceAllocation
 (
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
@@ -172,6 +186,9 @@ WITH (
 )
 ;
 
+DROP TABLE IF EXISTS DealerVehicle CASCADE;
+DROP TABLE IF EXISTS DealerSalesServiceJournalItem CASCADE;
+DROP TABLE IF EXISTS DealerGeneralJournalItem CASCADE;
 DROP TABLE IF EXISTS GeneralJournal CASCADE;
 DROP TABLE IF EXISTS GeneralJournalItem CASCADE;
 DROP TABLE IF EXISTS GeneralJournalCategory CASCADE;
@@ -179,9 +196,7 @@ DROP TABLE IF EXISTS SalesServiceJournal CASCADE;
 DROP TABLE IF EXISTS SalesServiceJournalItem CASCADE;
 DROP TABLE IF EXISTS SalesServiceJournalCategory CASCADE;
 DROP TABLE IF EXISTS VehicleSalesJournal CASCADE;
-DROP TABLE IF EXISTS VehicleJournalItem CASCADE;
 DROP TABLE IF EXISTS Vehicle CASCADE;
-
 
 CREATE TABLE GeneralJournalCategory
 (
@@ -205,6 +220,20 @@ CREATE TABLE GeneralJournalItem
    CONSTRAINT GJI_PK PRIMARY KEY (id), 
    CONSTRAINT GJI_Unique UNIQUE (name),
    CONSTRAINT GJI_FK FOREIGN KEY (categoryID) REFERENCES GeneralJournalCategory (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE DealerGeneralJournalItem
+(
+   dealerID integer NOT NULL, 
+   itemID integer NOT NULL, 
+   validDate date NOT NULL,
+   validEnd date NOT NULL,
+   CONSTRAINT DGJI_Unique UNIQUE (dealerID, itemID), 
+   CONSTRAINT DGJJI_VID_FK FOREIGN KEY (itemID) REFERENCES GeneralJournalItem (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT DGJJI_DID_FK FOREIGN KEY (dealerID) REFERENCES Dealer (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 ) 
 WITH (
   OIDS = FALSE
@@ -253,14 +282,43 @@ WITH (
   OIDS = FALSE
 )
 ;
+CREATE TABLE DealerSalesServiceJournalItem
+(
+   dealerID integer NOT NULL, 
+   itemID integer NOT NULL,  
+   validDate date NOT NULL,
+   validEnd date NOT NULL,
+   CONSTRAINT DSSJI_Unique UNIQUE (dealerID, itemID), 
+   CONSTRAINT DSSJI_VID_FK FOREIGN KEY (itemID) REFERENCES SalesServiceJournalItem (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT DSSJI_DID_FK FOREIGN KEY (dealerID) REFERENCES Dealer (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
 CREATE TABLE Vehicle
 (
    id integer, 
    name varchar(100) NOT NULL, 
    categoryID integer NOT NULL, 
+   type integer NOT NULL,
    timestamp timestamp without time zone NOT NULL, 
    CONSTRAINT Vehicle_PK PRIMARY KEY (id), 
    CONSTRAINT SSJI_FK FOREIGN KEY (categoryID) REFERENCES SalesServiceJournalCategory (id) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE DealerVehicle
+(
+   dealerID integer NOT NULL, 
+   vehicleID integer NOT NULL,  
+   validDate date NOT NULL,
+   validEnd date NOT NULL,
+   CONSTRAINT DV_Unique UNIQUE (dealerID, vehicleID), 
+   CONSTRAINT DV_VID_FK FOREIGN KEY (vehicleID) REFERENCES Vehicle (id) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   CONSTRAINT DV_DID_FK FOREIGN KEY (dealerID) REFERENCES Dealer (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 ) 
 WITH (
   OIDS = FALSE
@@ -306,6 +364,10 @@ WITH (
 ;
 
 
+DROP TABLE IF EXISTS DealerEmployeeFeeItem CASCADE;
+DROP TABLE IF EXISTS DealerAccountReceivableDurationItem CASCADE;
+DROP TABLE IF EXISTS DealerEmployeeFeeSummaryItem CASCADE;
+DROP TABLE IF EXISTS DealerInventoryDurationItem CASCADE;
 DROP TABLE IF EXISTS AccountReceivableDuration CASCADE;
 DROP TABLE IF EXISTS AccountReceivableDurationItem CASCADE;
 DROP TABLE IF EXISTS EmployeeFee CASCADE;
