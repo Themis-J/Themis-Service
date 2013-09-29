@@ -29,7 +29,7 @@ public class ReportDataGenerator {
 	
 	@Transactional
 	public void generateRevenues() {
-		final int numberOfRecords = 50;
+		final int numberOfRecords = 100;
 		final int startYear = 2012;
 		final int maxYearOffset = 2;
 		final int maxMonth = 10;
@@ -94,7 +94,7 @@ public class ReportDataGenerator {
 	
 	@Transactional
 	public void generateExpenses() {
-		final int numberOfRecords = 50;
+		final int numberOfRecords = 100;
 		final int startYear = 2012;
 		final int maxYearOffset = 2;
 		final int maxMonth = 10;

@@ -119,19 +119,19 @@ public class DepartmentReportCalculator {
 	public DepartmentReportCalculator calcExpenses(
 			final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerExpenseFacts,
 			final JournalOp op) {
-		for (final Integer dealerID : dealerExpenseFacts.keySet()) {
+		for (final Integer departmentID : dealerExpenseFacts.keySet()) {
 			final BigDecimal totalExpense = Lambda.sumFrom(
-					dealerExpenseFacts.get(dealerID),
+					dealerExpenseFacts.get(departmentID),
 					DealerIncomeExpenseFact.class).getAmount();
 			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
 			amount.setAmount(op == JournalOp.SUM ? totalExpense.doubleValue()
 					: totalExpense.doubleValue() / (monthOfYear.some() * 1.0));
 
 			if (dealerPreviousDetailOption.isSome()) {
-				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(dealerID)
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(departmentID)
 								.getExpense().getAmount()));
 			}
-			departmentDetails.get(dealerID).setExpense(amount);
+			departmentDetails.get(departmentID).setExpense(amount);
 		}
 		return this;
 	}
@@ -146,19 +146,19 @@ public class DepartmentReportCalculator {
 	public DepartmentReportCalculator calcMargins(
 			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts,
 			final JournalOp op) {
-		for (final Integer dealerID : dealerRevenueFacts.keySet()) {
+		for (final Integer departmentID : dealerRevenueFacts.keySet()) {
 			final BigDecimal totalMargin = Lambda.sumFrom(
-					dealerRevenueFacts.get(dealerID),
+					dealerRevenueFacts.get(departmentID),
 					DealerIncomeRevenueFact.class).getMargin();
 			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
 			amount.setAmount(op == JournalOp.SUM ? totalMargin.doubleValue()
 					: totalMargin.doubleValue() / (monthOfYear.some() * 1.0));
 
 			if (dealerPreviousDetailOption.isSome()) {
-				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(dealerID)
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(departmentID)
 								.getMargin().getAmount()));
 			}
-			departmentDetails.get(dealerID).setMargin(amount);
+			departmentDetails.get(departmentID).setMargin(amount);
 		}
 		return this;
 	}
@@ -173,18 +173,18 @@ public class DepartmentReportCalculator {
 	public DepartmentReportCalculator calcRevenues(
 			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts,
 			final JournalOp op) {
-		for (final Integer dealerID : dealerRevenueFacts.keySet()) {
+		for (final Integer departmentID : dealerRevenueFacts.keySet()) {
 			final BigDecimal totalAmount = Lambda.sumFrom(
-					dealerRevenueFacts.get(dealerID),
+					dealerRevenueFacts.get(departmentID),
 					DealerIncomeRevenueFact.class).getAmount();
 			final ReportDataDetailAmount amount = new ReportDataDetailAmount();
 			amount.setAmount(op == JournalOp.SUM ? totalAmount.doubleValue()
 					: totalAmount.doubleValue() / (monthOfYear.some() * 1.0));
 			if (dealerPreviousDetailOption.isSome()) {
-				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(dealerID)
+				amount.setPercentage(calcPercentage(amount.getAmount(), dealerPreviousDetailOption.some().get(departmentID)
 								.getRevenue().getAmount()));
 			} 
-			departmentDetails.get(dealerID).setRevenue(amount);
+			departmentDetails.get(departmentID).setRevenue(amount);
 		}
 		return this;
 	}

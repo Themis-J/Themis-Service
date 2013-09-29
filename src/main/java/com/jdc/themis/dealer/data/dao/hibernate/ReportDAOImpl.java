@@ -64,6 +64,7 @@ public class ReportDAOImpl implements ReportDAO {
 		final Collection<VehicleSalesJournal> list = incomeJournalDAL
 				.getVehicleSalesJournal(validDate, Utils.currentTimestamp());
 
+		logger.debug("journals for import {}", list);
 		final List<DealerIncomeRevenueFact> facts = Lists.newArrayList();
 		for (final VehicleSalesJournal journal : list) {
 			// verify report time
@@ -89,7 +90,6 @@ public class ReportDAOImpl implements ReportDAO {
 
 						@Override
 						public Option<ReportItem> _1() {
-							logger.debug("saving journal {}", journal);
 							return ReportDAOImpl.this
 									.addReportItem(
 											journal.getId(),
@@ -429,10 +429,11 @@ public class ReportDAOImpl implements ReportDAO {
 	@Override
 	public void saveDealerIncomeRevenueFacts(
 			final Collection<DealerIncomeRevenueFact> journals) {
+		logger.debug("facts to save {}", journals);
 		revenueFactLock.writeLock().lock();
 		try {
 			final Session session = sessionFactory.getCurrentSession();
-			for (DealerIncomeRevenueFact newJournal : journals) {
+			for (final DealerIncomeRevenueFact newJournal : journals) {
 				// check whether this journal has been inserted before
 				session.enableFilter(DealerIncomeRevenueFact.FILTER)
 						.setParameter("timeID", newJournal.getTimeID())
@@ -450,6 +451,8 @@ public class ReportDAOImpl implements ReportDAO {
 				@SuppressWarnings("unchecked")
 				final List<DealerIncomeRevenueFact> list = session
 						.createCriteria(DealerIncomeRevenueFact.class).list();
+				logger.debug("facts to be removed {}", list);
+				boolean isPersisted = false;
 				if (!list.isEmpty()) {
 					for (final DealerIncomeRevenueFact oldJournal : list) {
 						// if we get here, it means we have inserted this fact
@@ -460,12 +463,20 @@ public class ReportDAOImpl implements ReportDAO {
 							session.saveOrUpdate(oldJournal);
 						}
 						// ignore if we've already got this journal in table
+						if ( oldJournal.getTimestamp().equals(newJournal.getTimestamp()) ) {
+							// somehow, we have persisted this journal before
+							isPersisted = true;
+						}
 					}
 				} else {
+					// this is a new journal
+					session.save(newJournal);
+				}
+				if ( !isPersisted ) {
 					session.save(newJournal);
 				}
 				session.disableFilter(DealerIncomeRevenueFact.FILTER);
-
+				
 				session.flush();
 			}
 		} finally {
@@ -558,6 +569,7 @@ public class ReportDAOImpl implements ReportDAO {
 				@SuppressWarnings("unchecked")
 				final List<DealerIncomeExpenseFact> list = session
 						.createCriteria(DealerIncomeExpenseFact.class).list();
+				boolean isPersisted = false;
 				if (!list.isEmpty()) {
 					for (final DealerIncomeExpenseFact oldJournal : list) {
 						// if we get here, it means we have inserted this fact
@@ -567,9 +579,15 @@ public class ReportDAOImpl implements ReportDAO {
 							oldJournal.setTimeEnd(newJournal.getTimestamp());
 							session.saveOrUpdate(oldJournal);
 						}
-						// ignore if we've already got this journal in table
+						if (oldJournal.getTimestamp().equals(
+								newJournal.getTimestamp())) {
+							isPersisted = true;
+						}
 					}
 				} else {
+					session.save(newJournal);
+				}
+				if ( !isPersisted ) {
 					session.save(newJournal);
 				}
 				session.disableFilter(DealerIncomeExpenseFact.FILTER);
@@ -635,7 +653,7 @@ public class ReportDAOImpl implements ReportDAO {
 	public Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(
 			Integer year, Collection<Integer> monthOfYear,
 			Collection<Integer> departmentID, Collection<Integer> itemSource,
-			Collection<String> itemCategory, Collection<Integer> itemID, 
+			Collection<String> itemCategory, Collection<Long> itemID, 
 			Collection<Integer> dealerID) {
 		Preconditions.checkNotNull(year, "year can't be null");
 		expenseFactLock.readLock().lock();
@@ -695,7 +713,7 @@ public class ReportDAOImpl implements ReportDAO {
 	public Collection<DealerIncomeRevenueFact> getDealerIncomeRevenueFacts(
 			Integer year, Collection<Integer> monthOfYear,
 			Collection<Integer> departmentID, Collection<Integer> itemSource,
-			Collection<String> itemCategory, Collection<Integer> itemID, 
+			Collection<String> itemCategory, Collection<Long> itemID, 
 			Collection<Integer> dealerID) {
 		Preconditions.checkNotNull(year, "year can't be null");
 		expenseFactLock.readLock().lock();
@@ -730,6 +748,7 @@ public class ReportDAOImpl implements ReportDAO {
 			
 			@SuppressWarnings("unchecked")
 			final List<DealerIncomeRevenueFact> list = criteria.list();
+			logger.info("get revenue facts {}", list);
 			session.disableFilter(DealerIncomeRevenueFact.FILTER_REFTIME);
 
 			for (final DealerIncomeRevenueFact fact : list) {
@@ -750,4 +769,24 @@ public class ReportDAOImpl implements ReportDAO {
 		}
 	}
 
+	@Override
+	public Option<ReportItem> getReportItem(String itemName, String source) {
+		final Session session = sessionFactory.getCurrentSession();
+		final Integer reportItemSource = refDataDAL
+				.getEnumValue("ReportItemSource", source).some().getValue();
+		@SuppressWarnings("unchecked")
+		final List<ReportItem> reportItems = session
+				.createCriteria(ReportItem.class)
+				.add(Restrictions.eq("name", itemName))
+				.add(Restrictions.eq("itemSource", reportItemSource)).list();
+		
+		return Option.<ReportItem>iif(!reportItems.isEmpty(), new P1<ReportItem>() {
+
+			@Override
+			public ReportItem _1() {
+				return reportItems.get(0);
+			}
+			
+		});
+	}
 }

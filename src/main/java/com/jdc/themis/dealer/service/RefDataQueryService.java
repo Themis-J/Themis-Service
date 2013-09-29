@@ -68,6 +68,10 @@ public interface RefDataQueryService {
 	SalesServiceJournalItemDetail getSalesServiceRevenueItem(Integer id);
 	
 	@Transactional(readOnly=true)
+	@Cacheable("salesServiceJournalItemByName")
+	SalesServiceJournalItemDetail getSalesServiceRevenueItem(String name, String category);
+	
+	@Transactional(readOnly=true)
 	GetGeneralJournalItemResponse getGeneralIncomeItems(Option<Integer> categoryID);
 	
 	@Transactional(readOnly=true)

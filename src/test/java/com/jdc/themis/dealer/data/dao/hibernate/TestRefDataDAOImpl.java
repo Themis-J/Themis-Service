@@ -91,6 +91,11 @@ public class TestRefDataDAOImpl {
 	}
 	
 	@Test
+	public void getSalesServiceJournalItemByName() {
+		Assert.assertEquals("SalesServiceJournalItem1", refDataDAO.getSalesServiceJournalItem("SalesServiceJournalItem1", 1).some().getName());
+	}
+	
+	@Test
 	public void getSalesServiceJournalItem() {
 		Assert.assertEquals("SalesServiceJournalItem1", refDataDAO.getSalesServiceJournalItem(1).some().getName());
 		Assert.assertEquals(0, refDataDAO.getSalesServiceJournalItem(1).some().getJournalType().intValue());

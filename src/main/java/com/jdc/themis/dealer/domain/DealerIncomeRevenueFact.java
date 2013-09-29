@@ -39,7 +39,7 @@ import org.hibernate.annotations.Type;
 @Filters( {
     @Filter(name="dirfFilter", condition="timeID = :timeID and dealerID = :dealerID and itemID = :itemID and departmentID = :departmentID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
     @Filter(name="dirfAllFilter", condition="timeID = :timeID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="dirfDepFilter", condition="timeID = :timeID and departmentID = :departmentID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="dirfRefTimeFilter", condition="timestamp < :referenceTime and timeEnd >= :referenceTime"), 
 } )
 @Entity
 public class DealerIncomeRevenueFact implements Serializable, TemporalEntity {
@@ -162,6 +162,8 @@ public class DealerIncomeRevenueFact implements Serializable, TemporalEntity {
 				.append("amount", amount)
 				.append("margin", margin)
 				.append("count", count)
+				.append("timestamp", timestamp)
+				.append("timeEnd", timeEnd)
 				.getStringBuffer().toString();
 	}
 }

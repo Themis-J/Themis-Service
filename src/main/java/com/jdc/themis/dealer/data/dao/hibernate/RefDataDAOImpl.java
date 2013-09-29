@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import com.jdc.themis.dealer.domain.TaxJournalItem;
 import com.jdc.themis.dealer.domain.Vehicle;
 import com.jdc.themis.dealer.utils.Performance;
 
+import fj.P1;
 import fj.data.Option;
 
 /**
@@ -335,6 +337,26 @@ public class RefDataDAOImpl implements RefDataDAO {
 		}
 		return Option.<SalesServiceJournalItem>some(map.get(id));
 	}
+	
+	@Override
+	public Option<SalesServiceJournalItem> getSalesServiceJournalItem(final String name, final Integer categoryID) {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<SalesServiceJournalItem> list = session.createCriteria(
+				SalesServiceJournalItem.class)
+				.add(Restrictions.eq("name", name))
+				.add(Restrictions.eq("categoryID", categoryID))
+				.list();
+
+		return Option.<SalesServiceJournalItem>iif(!list.isEmpty(), new P1<SalesServiceJournalItem>() {
+
+			@Override
+			public SalesServiceJournalItem _1() {
+				return list.get(0);
+			}
+			
+		});
+	}
 
 	private enum GetCategoryIDFunction implements Function<SalesServiceJournalCategory, Integer> {
 	    INSTANCE;
@@ -346,12 +368,31 @@ public class RefDataDAOImpl implements RefDataDAO {
 	}
 	
 	@Override
-	public Option<SalesServiceJournalCategory> getSalesServiceJournalCategory(Integer id) {
+	public Option<SalesServiceJournalCategory> getSalesServiceJournalCategory(final Integer id) {
 		final Map<Integer, SalesServiceJournalCategory> map = Maps.uniqueIndex(getSalesServiceJournalCategorys(), GetCategoryIDFunction.INSTANCE);
 		if ( !map.containsKey(id) ) {
 			return Option.<SalesServiceJournalCategory>none();
 		}
 		return Option.<SalesServiceJournalCategory>some(map.get(id));
+	}
+	
+	@Override
+	public Option<SalesServiceJournalCategory> getSalesServiceJournalCategory(final String name) {
+		final Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		final List<SalesServiceJournalCategory> list = session.createCriteria(
+				SalesServiceJournalCategory.class)
+				.add(Restrictions.eq("name", name))
+				.list();
+
+		return Option.<SalesServiceJournalCategory>iif(!list.isEmpty(), new P1<SalesServiceJournalCategory>() {
+
+			@Override
+			public SalesServiceJournalCategory _1() {
+				return list.get(0);
+			}
+			
+		});
 	}
 
 	private enum GetDealerIDFunction implements Function<Dealer, Integer> {
@@ -363,7 +404,7 @@ public class RefDataDAOImpl implements RefDataDAO {
 	    }
 	}
 	@Override
-	public Option<Dealer> getDealer(Integer dealerID) {
+	public Option<Dealer> getDealer(final Integer dealerID) {
 		final Dealer dealer = Maps.uniqueIndex(getDealers(), GetDealerIDFunction.INSTANCE).get(dealerID);
 		return Option.<Dealer>fromNull(dealer);
 	}

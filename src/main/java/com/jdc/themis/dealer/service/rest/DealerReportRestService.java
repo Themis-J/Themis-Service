@@ -96,4 +96,26 @@ public class DealerReportRestService {
 						Option.fromNull(dealerID), 
 						Option.fromNull(monthOfYear))).build();
 	}
+	
+	/**
+	 * Query sales report.
+	 * 
+	 * @param year
+	 * @param dealer id
+	 * @return
+	 */
+	@GET
+	@Path("/query/salesReport")
+	@Produces({ "application/json", "application/xml" })
+	@RestServiceErrorHandler
+	public Response queryDealerSalesReport(
+			@QueryParam("year") Integer year, 
+			@QueryParam("monthOfYear") Integer monthOfYear, 
+			@QueryParam("departmentID") Integer departmentID) {
+		return Response.ok(
+				dealerIncomeReportService.querySalesReport(
+						year, 
+						Option.fromNull(monthOfYear), 
+						Option.fromNull(departmentID))).build();
+	}
 }

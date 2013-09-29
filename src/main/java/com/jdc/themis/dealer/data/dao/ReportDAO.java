@@ -20,7 +20,7 @@ public interface ReportDAO {
 			Collection<Integer> departmentID,
 			Collection<Integer> itemSource,
 			Collection<String> itemCategory, 
-			Collection<Integer> itemID, 
+			Collection<Long> itemID, 
 			Collection<Integer> dealerID);
 	
 	void saveDealerIncomeExpenseFacts(Collection<DealerIncomeExpenseFact> journals);
@@ -31,7 +31,7 @@ public interface ReportDAO {
 			Collection<Integer> departmentID, 
 			Collection<Integer> itemSource,
 			Collection<String> itemCategory, 
-			Collection<Integer> itemID, 
+			Collection<Long> itemID, 
 			Collection<Integer> dealerID);
 	
 	void importVehicleSalesJournal(LocalDate validDate);
@@ -53,6 +53,8 @@ public interface ReportDAO {
 	Option<ReportItem> addReportItem(Integer itemID, String itemName, String source, String category);
 	
 	Option<ReportItem> getReportItem(Integer itemID, String source);
+	
+	Option<ReportItem> getReportItem(String itemName, String source);
 	
 	Option<ReportItem> getReportItem(Long id);
 	

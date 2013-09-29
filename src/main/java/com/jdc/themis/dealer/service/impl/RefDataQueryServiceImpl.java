@@ -231,6 +231,18 @@ public class RefDataQueryServiceImpl implements RefDataQueryService {
 		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(ssj.getCategoryID()).some().getName());
 		return item;
 	}
+	
+	@Override
+	public SalesServiceJournalItemDetail getSalesServiceRevenueItem(String name, String category) {
+		final Option<SalesServiceJournalItem> ssjOption = refDataDAL.getSalesServiceJournalItem(name, refDataDAL.getSalesServiceJournalCategory(category).some().getId());
+		Preconditions.checkArgument(ssjOption.isSome(), "unknown item id");
+		final SalesServiceJournalItemDetail item = new SalesServiceJournalItemDetail();
+		item.setId(ssjOption.some().getId());
+		item.setName(ssjOption.some().getName());
+		item.setCategoryID(ssjOption.some().getCategoryID());
+		item.setCategory(this.refDataDAL.getSalesServiceJournalCategory(ssjOption.some().getCategoryID()).some().getName());
+		return item;
+	}
 
 	@Override
 	public GeneralJournalItemDetail getGeneralIncomeItem(Integer id) {

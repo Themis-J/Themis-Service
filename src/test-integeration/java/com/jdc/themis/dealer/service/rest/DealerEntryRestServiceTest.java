@@ -20,8 +20,8 @@ import com.jdc.themis.dealer.web.domain.VehicleDetail;
 
 public class DealerEntryRestServiceTest {
 
-	private final static String ROOT_URL = "http://localhost:8080/themis/dealer/";
-	//private final static String ROOT_URL = "http://115.28.15.122:8080/themis/dealer/";
+	//private final static String ROOT_URL = "http://localhost:8080/themis/dealer/";
+	private final static String ROOT_URL = "http://115.28.15.122:8080/themis/dealer/";
 	
 	@Test
 	public void getDepartments() throws Exception {
@@ -295,6 +295,42 @@ public class DealerEntryRestServiceTest {
 	}
 	
 	@Test
+	public void verifyTaxJournal() throws Exception {
+		final StringRequestEntity requestEntity = new StringRequestEntity(
+			      "{\"dealerID\": 8," +
+			      "\"validDate\": \"2011-06-01\"," +
+			      "\"tax\": 123.0," +
+				  "\"updateBy\": \"chenkai\" " +
+				  "}",
+			    "application/json",
+			    "UTF-8");
+		
+		final PostMethod mPost = createPostMethod(ROOT_URL + "tax",
+				requestEntity);
+		final String postOutput = mPost.getResponseBodyAsString();
+		mPost.releaseConnection();
+		System.out.println("response : " + postOutput);
+		final ObjectMapper postMapper = new ObjectMapper();
+		final GeneralSaveResponse response = postMapper.readValue(postOutput.getBytes(),
+				GeneralSaveResponse.class);
+		Assert.assertNotNull(response);
+		Assert.assertEquals(Boolean.TRUE, response.getSuccess());
+		
+		// query journal and try to match the saved journal
+		final GetMethod mGet = createGetMethod(ROOT_URL + "tax",
+				new String[] { "dealerID:8", "validDate:2011-06-01" });
+		final String getOutput = mGet.getResponseBodyAsString();
+		mGet.releaseConnection();
+		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
+		final ObjectMapper getMapper = new ObjectMapper();
+		final GetTaxResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				GetTaxResponse.class);
+		Assert.assertNotNull(getResponse);
+		Assert.assertEquals(123.0, getResponse.getTax());
+		Assert.assertEquals("2011-06-01", getResponse.getValidDate().getText());
+	}
+	
+	@Test
 	public void verifyEmployeeFeeJournal() throws Exception {
 		final StringRequestEntity requestEntity = new StringRequestEntity(
 			      "{\"dealerID\": 9," +
@@ -332,6 +368,95 @@ public class DealerEntryRestServiceTest {
 		final ObjectMapper getMapper = new ObjectMapper();
 		final GetEmployeeFeeResponse getResponse = getMapper.readValue(getOutput.getBytes(),
 				GetEmployeeFeeResponse.class);
+		Assert.assertNotNull(getResponse);
+		Assert.assertEquals(1, getResponse.getDetail().size());
+		Assert.assertEquals(2, getResponse.getDetail().get(0).getItemID().intValue());
+		Assert.assertEquals(4234.0, getResponse.getDetail().get(0).getAmount());
+		Assert.assertEquals("2010-08-01", getResponse.getValidDate().getText());
+	}
+	
+	@Test
+	public void verifyAccountReceivableDuration() throws Exception {
+		final StringRequestEntity requestEntity = new StringRequestEntity(
+			      "{\"dealerID\": 9," +
+			      "\"validDate\": \"2010-08-01\"," +
+				  "\"updateBy\": \"chenkai\", " +
+				  "\"detail\": " +
+				  "  [" +
+				  "     {" +
+				  "       \"itemID\": 2," + 
+				  "       \"amount\": 4234.00," +
+				  "       \"durationID\": 2 " +
+				  "      }" +
+				  "  ]}",
+			    "application/json",
+			    "UTF-8");
+		
+		final PostMethod mPost = createPostMethod(ROOT_URL + "accountReceivable/duration",
+				requestEntity);
+		final String output = mPost.getResponseBodyAsString();
+		mPost.releaseConnection();
+		System.out.println("response : " + output);
+		final ObjectMapper mapper = new ObjectMapper();
+		final GeneralSaveResponse response = mapper.readValue(output.getBytes(),
+				GeneralSaveResponse.class);
+		Assert.assertNotNull(response);
+		Assert.assertEquals(Boolean.TRUE, response.getSuccess());
+		
+		// query employee fee journal and try to match the saved journal
+		final GetMethod mGet = createGetMethod(ROOT_URL + "accountReceivable/duration",
+				new String[] { "dealerID:9", "validDate:2010-08-01" });
+		final String getOutput = mGet.getResponseBodyAsString();
+		mGet.releaseConnection();
+		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
+		final ObjectMapper getMapper = new ObjectMapper();
+		final GetAccountReceivableDurationResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				GetAccountReceivableDurationResponse.class);
+		Assert.assertNotNull(getResponse);
+		Assert.assertEquals(1, getResponse.getDetail().size());
+		Assert.assertEquals(2, getResponse.getDetail().get(0).getItemID().intValue());
+		Assert.assertEquals(4234.0, getResponse.getDetail().get(0).getAmount());
+		Assert.assertEquals("2010-08-01", getResponse.getValidDate().getText());
+	}
+	
+	@Test
+	public void verifyInventoryDuration() throws Exception {
+		final StringRequestEntity requestEntity = new StringRequestEntity(
+			      "{\"dealerID\": 9," +
+			      "\"validDate\": \"2010-08-01\"," +
+			      "\"updateBy\": \"chenkai\", " +
+				  "\"departmentID\": 2, " +
+				  "\"detail\": " +
+				  "  [" +
+				  "     {" +
+				  "       \"itemID\": 2," + 
+				  "       \"amount\": 4234.00," +
+				  "       \"durationID\": 2 " +
+				  "      }" +
+				  "  ]}",
+			    "application/json",
+			    "UTF-8");
+		
+		final PostMethod mPost = createPostMethod(ROOT_URL + "inventory/duration",
+				requestEntity);
+		final String output = mPost.getResponseBodyAsString();
+		mPost.releaseConnection();
+		System.out.println("response : " + output);
+		final ObjectMapper mapper = new ObjectMapper();
+		final GeneralSaveResponse response = mapper.readValue(output.getBytes(),
+				GeneralSaveResponse.class);
+		Assert.assertNotNull(response);
+		Assert.assertEquals(Boolean.TRUE, response.getSuccess());
+		
+		// query employee fee journal and try to match the saved journal
+		final GetMethod mGet = createGetMethod(ROOT_URL + "inventory/duration",
+				new String[] { "dealerID:9", "departmentID:2", "validDate:2010-08-01" });
+		final String getOutput = mGet.getResponseBodyAsString();
+		mGet.releaseConnection();
+		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
+		final ObjectMapper getMapper = new ObjectMapper();
+		final GetInventoryDurationResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				GetInventoryDurationResponse.class);
 		Assert.assertNotNull(getResponse);
 		Assert.assertEquals(1, getResponse.getDetail().size());
 		Assert.assertEquals(2, getResponse.getDetail().get(0).getItemID().intValue());

@@ -85,7 +85,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -100,7 +100,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -186,7 +186,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -200,7 +200,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -216,7 +216,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -294,7 +294,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -309,7 +309,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{3}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -324,7 +324,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -338,7 +338,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -352,7 +352,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -413,7 +413,7 @@ public class TestReportDAOImpl {
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new Integer[]{}), 
 					Lists.newArrayList(new String[]{}), 
-					Lists.newArrayList(new Integer[]{}), 
+					Lists.newArrayList(new Long[]{}), 
 					Lists.newArrayList(new Integer[]{}))) {
 			hasJournal++;
 			System.err.println(journal);
@@ -437,4 +437,23 @@ public class TestReportDAOImpl {
 		Assert.assertEquals(1, reportDAL.getReportTime(2013, Option.<Integer>some(8)).size());
 		Assert.assertEquals(1, hasReportTime);
 	} 
+	
+	@Test
+	public void addReportItem() {
+		final ReportItem newItem = reportDAL.addReportItem(100, "Test", "VehicleSalesJournal", "NewCategory").some();
+		System.out.println(newItem);
+		Assert.assertEquals(100, newItem.getSourceItemID().intValue());
+		Assert.assertEquals("Test", newItem.getName());
+		Assert.assertEquals("NewCategory", newItem.getItemCategory());
+		
+		ReportItem oldItem = reportDAL.getReportItem(100, "VehicleSalesJournal").some();
+		Assert.assertEquals(100, oldItem.getSourceItemID().intValue());
+		Assert.assertEquals("Test", oldItem.getName());
+		Assert.assertEquals("NewCategory", oldItem.getItemCategory());
+		
+		oldItem = reportDAL.getReportItem("Test", "VehicleSalesJournal").some();
+		Assert.assertEquals(100, oldItem.getSourceItemID().intValue());
+		Assert.assertEquals("Test", oldItem.getName());
+		Assert.assertEquals("NewCategory", oldItem.getItemCategory());
+	}
 }

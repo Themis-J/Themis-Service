@@ -187,6 +187,11 @@ public class TestRefDataQueryServiceImpl {
 		when(refDataDAL.getSalesServiceJournalItem(1)).thenReturn(Option.<SalesServiceJournalItem>some(v1));
 		final SalesServiceJournalItemDetail item = refDataQueryService.getSalesServiceRevenueItem(1);
 		Assert.assertEquals("s1", item.getName());
+		
+		when(refDataDAL.getSalesServiceJournalItem("s1", 1)).thenReturn(Option.<SalesServiceJournalItem>some(v1));
+		when(refDataDAL.getSalesServiceJournalCategory("SSJ1")).thenReturn(Option.<SalesServiceJournalCategory>some(category));
+		final SalesServiceJournalItemDetail item2 = refDataQueryService.getSalesServiceRevenueItem("s1", "SSJ1");
+		Assert.assertEquals("s1", item2.getName());
 	}
 	
 	@Test

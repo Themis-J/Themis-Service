@@ -23,6 +23,6 @@ public interface DealerIncomeReportService {
 	
 	@Transactional(readOnly=true)
 	QueryReportDataResponse querySalesReport(
-			Integer year, Option<Integer> monthOfYear, Option<Integer> departmentID, Option<Integer> denominator);
+			Integer year, Option<Integer> monthOfYear, Option<Integer> departmentID);
 	
 }

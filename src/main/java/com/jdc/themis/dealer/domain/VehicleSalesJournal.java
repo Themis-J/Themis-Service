@@ -169,6 +169,7 @@ public class VehicleSalesJournal implements TemporalEntity, Serializable {
 				.append("dealerID", dealerID)
 				.append("amount", amount)
 				.append("margin", margin)
+				.append("count", count)
 				.append("updatedBy", updatedBy)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)

@@ -67,9 +67,13 @@ public interface RefDataDAO {
 	
 	Option<SalesServiceJournalItem> getSalesServiceJournalItem(Integer id);
 	
+	Option<SalesServiceJournalItem> getSalesServiceJournalItem(String name, Integer categoryID);
+	
 	List<SalesServiceJournalCategory> getSalesServiceJournalCategorys();
 	
 	Option<SalesServiceJournalCategory> getSalesServiceJournalCategory(Integer id);
+	
+	Option<SalesServiceJournalCategory> getSalesServiceJournalCategory(String name);
 	
 	Option<GeneralJournalCategory> getGeneralJournalCategory(Integer id);
 	

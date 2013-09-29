@@ -24,7 +24,7 @@ import com.jdc.themis.dealer.web.domain.ResetPasswordRequest;
  */
 @Service
 public class UserServiceImpl implements UserService {
-
+	
 	@Autowired
 	private UserDAO userDAL;
 	public void setUserDAL(UserDAO userDAL) {
