@@ -71,7 +71,9 @@ CREATE TABLE UserInfo
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT User_Unique UNIQUE (username,timestamp,version), 
+   CONSTRAINT User_PK PRIMARY KEY (username,timestamp), 
+   CONSTRAINT UserTE_Unique UNIQUE (username,timeEnd,version), 
+   CONSTRAINT UserTS_Unique UNIQUE (username,timestamp,version), 
    CONSTRAINT UserRole_FK FOREIGN KEY (userRoleID) REFERENCES UserRole (id) ON UPDATE NO ACTION ON DELETE NO ACTION,
    CONSTRAINT UserDealer_FK FOREIGN KEY (dealerID) REFERENCES Dealer (id) ON UPDATE NO ACTION ON DELETE NO ACTION
 ) 
@@ -127,20 +129,20 @@ WITH (
 DROP TABLE IF EXISTS DealerEntryItemStatus CASCADE;
 CREATE TABLE DealerEntryItemStatus
 (
-   timestamp timestamp without time zone, 
-   timeEnd timestamp without time zone, 
-   validDate date, 
-   dealerID integer, 
+   timestamp timestamp without time zone NOT NULL, 
+   timeEnd timestamp without time zone NOT NULL, 
+   validDate date NOT NULL, 
+   dealerID integer NOT NULL, 
    entryItemID integer NOT NULL, 
-   version integer,
-   updateBy varchar(100),
-   CONSTRAINT DEIS_Unique UNIQUE (timestamp, dealerID, entryItemID, validDate, version)
+   version integer NOT NULL,
+   updateBy varchar(100) NOT NULL,
+   CONSTRAINT DEIS_PK PRIMARY KEY (timestamp, validDate, dealerID, entryItemID), 
+   CONSTRAINT DEIS_Unique UNIQUE (timeEnd, validDate, dealerID, entryItemID, version)
 ) 
 WITH (
   OIDS = FALSE
 )
 ;
-
 
 DROP TABLE IF EXISTS DealerJobPosition CASCADE;
 DROP TABLE IF EXISTS HumanResourceAllocation CASCADE;
@@ -179,10 +181,11 @@ WITH (
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
-   allocation double precision,
+   version integer NOT NULL,
+   allocation double precision NOT NULL,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT HRA_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, version)
+   CONSTRAINT HRA_PK PRIMARY KEY (timestamp, validDate, dealerID, departmentID, id), 
+   CONSTRAINT HRA_Unique UNIQUE (timeEnd, validDate, dealerID, departmentID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -250,10 +253,11 @@ CREATE TABLE GeneralJournal
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
-   amount double precision,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT GeneralJournal_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, version)
+   CONSTRAINT GJ_PK PRIMARY KEY (timestamp, validDate, dealerID, departmentID, id), 
+   CONSTRAINT GJ_Unique UNIQUE (timeEnd, validDate, dealerID, departmentID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -276,6 +280,7 @@ CREATE TABLE SalesServiceJournalItem
    name varchar(100), 
    categoryID integer,
    journalType integer,
+   description text,
    timestamp timestamp without time zone, 
    CONSTRAINT SSJLI_PK PRIMARY KEY (id),
    CONSTRAINT SSJLI_Unique UNIQUE (name, categoryID),
@@ -335,12 +340,13 @@ CREATE TABLE SalesServiceJournal
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
-   amount double precision,
-   margin double precision,
-   count integer,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
+   margin double precision NOT NULL,
+   count integer NOT NULL,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT SSJ_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, version)
+   CONSTRAINT SSJ_PK PRIMARY KEY (timestamp, validDate, dealerID, departmentID, id), 
+   CONSTRAINT SSJ_Unique UNIQUE (timeEnd, validDate, dealerID, departmentID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -354,12 +360,13 @@ CREATE TABLE VehicleSalesJournal
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
-   amount double precision,
-   margin double precision,
-   count integer,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
+   margin double precision NOT NULL,
+   count integer NOT NULL,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT VSJ_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id)
+   CONSTRAINT VSJ_PK PRIMARY KEY (timestamp, validDate, dealerID, departmentID, id), 
+   CONSTRAINT VSJ_Unique UNIQUE (timeEnd, validDate, dealerID, departmentID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -419,7 +426,8 @@ CREATE TABLE AccountReceivableDuration
    version integer,
    amount double precision,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT ARDuration_Unique UNIQUE (timestamp, validDate, dealerID, durationID, id, version)
+   CONSTRAINT ARD_PK PRIMARY KEY (timestamp, validDate, dealerID, durationID, id), 
+   CONSTRAINT ARD_Unique UNIQUE (timeEnd, validDate, dealerID, durationID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -444,11 +452,12 @@ CREATE TABLE EmployeeFee
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
+   version integer NOT NULL,
    feeTypeID integer NOT NULL, 
-   amount double precision,
+   amount double precision NOT NULL,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT EF_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, feeTypeID, version)
+   CONSTRAINT EF_PK PRIMARY KEY (timestamp, validDate, dealerID, departmentID, id, feeTypeID), 
+   CONSTRAINT EF_Unique UNIQUE (timeEnd, validDate, dealerID, departmentID, id, feeTypeID, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -474,10 +483,11 @@ CREATE TABLE EmployeeFeeSummary
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
-   amount double precision,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT EFS_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, id, version)
+   CONSTRAINT EFS_PK PRIMARY KEY (timestamp, validDate, dealerID, departmentID, id), 
+   CONSTRAINT EFS_Unique UNIQUE (timeEnd, validDate, dealerID, departmentID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -504,10 +514,11 @@ CREATE TABLE InventoryDuration
    departmentID integer NOT NULL,
    durationID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
-   amount double precision,
+   version integer NOT NULL, 
+   amount double precision NOT NULL, 
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT ID_Unique UNIQUE (timestamp, validDate, dealerID, departmentID, durationID, id, version)
+   CONSTRAINT ID_PK PRIMARY KEY (timestamp, validDate, dealerID, departmentID, durationID, id), 
+   CONSTRAINT ID_Unique UNIQUE (timeEnd, validDate, dealerID, departmentID, durationID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -534,10 +545,11 @@ CREATE TABLE TaxJournal
    validDate date NOT NULL, 
    dealerID integer NOT NULL,
    id integer NOT NULL,
-   version integer,
-   amount double precision,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
    updatedBy varchar(20) NOT NULL, 
-   CONSTRAINT TaxJ_Unique UNIQUE (timestamp, validDate, dealerID, id, version)
+   CONSTRAINT TaxJ_PK PRIMARY KEY (timestamp, validDate, dealerID, id), 
+   CONSTRAINT TaxJ_Unique UNIQUE (timeEnd, validDate, dealerID, id, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -581,13 +593,14 @@ CREATE TABLE DealerIncomeRevenueFact
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    itemID integer NOT NULL,
-   version integer,
-   amount double precision,
-   margin double precision,
-   count integer,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
+   margin double precision NOT NULL,
+   count integer NOT NULL,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
-   CONSTRAINT DIRF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
+   CONSTRAINT DIRF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID), 
+   CONSTRAINT DIRF_Unique UNIQUE (timeEnd, timeID, dealerID, departmentID, itemID, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -599,11 +612,12 @@ CREATE TABLE DealerIncomeExpenseFact
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    itemID integer NOT NULL,
-   version integer,
-   amount double precision,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
-   CONSTRAINT DIEF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
+   CONSTRAINT DIEF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID), 
+   CONSTRAINT DIEF_Unique UNIQUE (timeEnd, timeID, dealerID, departmentID, itemID, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -619,7 +633,8 @@ CREATE TABLE DealerEmployeeFeeFact
    amount double precision,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
-   CONSTRAINT DEFF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, version)
+   CONSTRAINT DEFF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID), 
+   CONSTRAINT DEFF_Unique UNIQUE (timeEnd, timeID, dealerID, departmentID, itemID, version)
 ) 
 WITH (
   OIDS = FALSE
@@ -636,7 +651,8 @@ CREATE TABLE DealerInventoryFact
    amount double precision,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
-   CONSTRAINT DIF_Unique UNIQUE (timestamp, timeID, dealerID, departmentID, itemID, durationID, version)
+   CONSTRAINT DIF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID, durationID, version),
+   CONSTRAINT DIF_Unique UNIQUE (timeEnd, timeID, dealerID, departmentID, itemID, durationID, version)
 ) 
 WITH (
   OIDS = FALSE

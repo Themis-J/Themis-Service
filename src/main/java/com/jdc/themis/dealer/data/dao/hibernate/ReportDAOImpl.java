@@ -468,6 +468,7 @@ public class ReportDAOImpl implements ReportDAO {
 							isPersisted = true;
 						}
 					}
+					session.flush();
 				} else {
 					// this is a new journal
 					session.save(newJournal);
@@ -584,6 +585,7 @@ public class ReportDAOImpl implements ReportDAO {
 							isPersisted = true;
 						}
 					}
+					session.flush();
 				} else {
 					session.save(newJournal);
 				}
@@ -748,7 +750,7 @@ public class ReportDAOImpl implements ReportDAO {
 			
 			@SuppressWarnings("unchecked")
 			final List<DealerIncomeRevenueFact> list = criteria.list();
-			logger.info("get revenue facts {}", list);
+			logger.debug("get revenue facts {}", list);
 			session.disableFilter(DealerIncomeRevenueFact.FILTER_REFTIME);
 
 			for (final DealerIncomeRevenueFact fact : list) {

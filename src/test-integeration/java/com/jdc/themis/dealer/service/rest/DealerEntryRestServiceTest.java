@@ -16,12 +16,13 @@ import org.junit.Test;
 import com.jdc.themis.dealer.web.domain.DepartmentDetail;
 import com.jdc.themis.dealer.web.domain.GetDealerResponse;
 import com.jdc.themis.dealer.web.domain.GetMenuResponse;
+import com.jdc.themis.dealer.web.domain.GetSalesServiceJournalItemResponse;
 import com.jdc.themis.dealer.web.domain.VehicleDetail;
 
 public class DealerEntryRestServiceTest {
 
-	//private final static String ROOT_URL = "http://localhost:8080/themis/dealer/";
-	private final static String ROOT_URL = "http://115.28.15.122:8080/themis/dealer/";
+	private final static String ROOT_URL = "http://localhost:8080/themis/dealer/";
+	//private final static String ROOT_URL = "http://115.28.15.122:8080/themis/dealer/";
 	
 	@Test
 	public void getDepartments() throws Exception {
@@ -108,6 +109,20 @@ public class DealerEntryRestServiceTest {
 			this.items = items;
 		}
 
+	}
+	
+	@Test
+	public void getSalesServiceJournalItemsByCategoryID() throws Exception {
+		final GetMethod mGet = createGetMethod(ROOT_URL + "salesServiceRevenue/items",
+				new String[] { "categoryID:3" });
+		final String output = mGet.getResponseBodyAsString();
+		mGet.releaseConnection();
+		System.out.println("items : " + new String(output.getBytes("ISO-8859-1")));
+		final ObjectMapper mapper = new ObjectMapper();
+		final GetSalesServiceJournalItemResponse items = mapper.readValue(output.getBytes(),
+				GetSalesServiceJournalItemResponse.class);
+
+		Assert.assertEquals(5, items.getItems().size());
 	}
 	
 	@Test

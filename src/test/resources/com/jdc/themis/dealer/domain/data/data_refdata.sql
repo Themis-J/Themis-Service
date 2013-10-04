@@ -58,9 +58,9 @@ insert into SalesServiceJournalCategory values (2, 'SalesServiceJournalCate2', {
 insert into GeneralJournalCategory values (1, 'GeneralJournalCate1', {ts '2012-09-17 18:47:52.69'})
 insert into GeneralJournalCategory values (2, 'GeneralJournalCate2', {ts '2012-09-17 18:47:52.69'})
 
-insert into SalesServiceJournalItem values (1, 'SalesServiceJournalItem1', 1, 0, {ts '2012-09-17 18:47:52.69'})
-insert into SalesServiceJournalItem values (2, 'SalesServiceJournalItem2', 1, 0, {ts '2012-09-17 18:47:52.69'})
-insert into SalesServiceJournalItem values (3, 'SalesServiceJournalItem3', 2, 1, {ts '2012-09-17 18:47:52.69'})
+insert into SalesServiceJournalItem values (1, 'SalesServiceJournalItem1', 1, 0, 'XX', {ts '2012-09-17 18:47:52.69'})
+insert into SalesServiceJournalItem values (2, 'SalesServiceJournalItem2', 1, 0, 'XX', {ts '2012-09-17 18:47:52.69'})
+insert into SalesServiceJournalItem values (3, 'SalesServiceJournalItem3', 2, 1, 'XX', {ts '2012-09-17 18:47:52.69'})
 
 insert into GeneralJournalItem values (1, 'GeneralJournalItem1', 1, 0, {ts '2012-09-17 18:47:52.69'})
 insert into GeneralJournalItem values (2, 'GeneralJournalItem2', 2, 1, {ts '2012-09-17 18:47:52.69'})

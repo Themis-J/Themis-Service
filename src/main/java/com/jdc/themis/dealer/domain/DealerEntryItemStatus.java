@@ -73,9 +73,8 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 		this.version = version;
 	}
 
-
-	@Type(type="datetime")
 	@Id
+	@Type(type="datetime")
 	public Instant getTimestamp() {
 		return timestamp;
 	}
@@ -127,10 +126,12 @@ public class DealerEntryItemStatus implements TemporalEntity, Serializable {
 	public String toString() {
 		return new ToStringBuilder(this).append("itemID", entryItemID)
 				.append("dealerID", dealerID)
+				.append("validDate", validDate)
+				.append("version", version)
 				.append("updatedBy", updateBy)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)
-				.append("validDate", validDate).getStringBuffer().toString();
+				.getStringBuffer().toString();
 	}
 
 }

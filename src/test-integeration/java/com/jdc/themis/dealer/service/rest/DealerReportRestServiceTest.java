@@ -10,14 +10,16 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
+import com.jdc.themis.dealer.web.domain.ReportDataDetail;
 
 public class DealerReportRestServiceTest {
 
-	//private final static String HOST = "115.28.15.122:8080";
-	private final static String HOST = "localhost:8080";
+	private final static String HOST = "115.28.15.122:8080";
+	//private final static String HOST = "localhost:8080";
 	private final static String ROOT_URL = "http://" + HOST + "/themis/dealer/";
 	private final static String REPORT_ROOT_URL = "http://" + HOST + "/themis/report/";
 	
@@ -50,6 +52,57 @@ public class DealerReportRestServiceTest {
 		
 		this.createHumanResourceAllocation(6, "2006-06-01", 0.6);
 		this.createHumanResourceAllocation(6, "2005-06-01", 0.3);
+	}
+	
+	@Test
+	@Ignore
+	public void importData() throws Exception {
+		final StringRequestEntity requestEntity = new StringRequestEntity(
+			      "{" +
+			      "\"fromDate\": \"2012-01-01\"," +
+				  "\"toDate\": \"2013-09-01\" " +
+				  "      }" +
+				  "}",
+			    "application/json",
+			    "UTF-8");
+		
+		final PostMethod mPost = createPostMethod(REPORT_ROOT_URL + "import",
+				requestEntity);
+		final String postOutput = mPost.getResponseBodyAsString();
+		mPost.releaseConnection();
+		System.out.println("response : " + postOutput);
+		final ObjectMapper postMapper = new ObjectMapper();
+		final GeneralSaveResponse response = postMapper.readValue(postOutput.getBytes(),
+				GeneralSaveResponse.class);
+		Assert.assertNotNull(response);
+	}
+	
+	@Test
+	@Ignore
+	public void query2013OverallIncomeReport() throws Exception {
+		final GetMethod mGet = createGetMethod(REPORT_ROOT_URL + "query/overallIncomeReport",
+				new String[] { "year:2013" });
+		final String getOutput = mGet.getResponseBodyAsString();
+		mGet.releaseConnection();
+		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
+		final ObjectMapper getMapper = new ObjectMapper();
+		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryReportDataResponse.class);
+		Assert.assertNotNull(getResponse);
+		Assert.assertEquals(2, getResponse.getDetail().size());
+		/**
+		 * Verify 2012 data
+		 */
+		final ReportDataDetail report2012 = getResponse.getDetail().get(0);
+		System.out.println("2012: " + new String(report2012.toString().getBytes("ISO-8859-1")));
+		Assert.assertEquals(20, report2012.getDetail().size());
+		
+		/**
+		 * Verify 2013 data
+		 */
+		final ReportDataDetail report2013 = getResponse.getDetail().get(1);
+		System.out.println("2013: " + new String(report2013.toString().getBytes("ISO-8859-1")));
+		Assert.assertEquals(20, report2013.getDetail().size());
 	}
 	
 	@Test
@@ -190,6 +243,53 @@ public class DealerReportRestServiceTest {
 		// verify department 2
 		Assert.assertEquals(100000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getRevenue().getAmount());
 		Assert.assertEquals(2000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getMargin().getAmount());
+	
+	}
+	
+	@Test
+	public void query2006DepartmentIncomeReportForNewVehicleDepartment() throws Exception {
+		final StringRequestEntity requestEntity = new StringRequestEntity(
+			      "{" +
+			      "\"fromDate\": \"2005-08-01\"," +
+				  "\"toDate\": \"2006-08-01\" " +
+				  "      }" +
+				  "}",
+			    "application/json",
+			    "UTF-8");
+		
+		final PostMethod mPost = createPostMethod(REPORT_ROOT_URL + "import",
+				requestEntity);
+		final String postOutput = mPost.getResponseBodyAsString();
+		mPost.releaseConnection();
+		System.out.println("response : " + postOutput);
+		final ObjectMapper postMapper = new ObjectMapper();
+		final GeneralSaveResponse response = postMapper.readValue(postOutput.getBytes(),
+				GeneralSaveResponse.class);
+		Assert.assertNotNull(response);
+		
+		final GetMethod mGet = createGetMethod(REPORT_ROOT_URL + "query/departmentIncomeReport",
+				new String[] { "year:2006", "departmentID:1" });
+		final String getOutput = mGet.getResponseBodyAsString();
+		mGet.releaseConnection();
+		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
+		final ObjectMapper getMapper = new ObjectMapper();
+		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryReportDataResponse.class);
+		Assert.assertNotNull(getResponse);
+		Assert.assertEquals(2, getResponse.getDetail().size());
+		//2005
+		Assert.assertEquals(8, getResponse.getDetail().get(0).getDepartmentDetail().size());
+		
+		/**
+		 * Verify 2006 data
+		 */
+		Assert.assertEquals(8, getResponse.getDetail().get(1).getDepartmentDetail().size());
+		// verify department 1
+		Assert.assertEquals(50000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(1).getRevenue().getAmount());
+		Assert.assertEquals(6000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(1).getMargin().getAmount());
+		// verify department 2
+		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getRevenue().getAmount());
+		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getMargin().getAmount());
 	
 	}
 	

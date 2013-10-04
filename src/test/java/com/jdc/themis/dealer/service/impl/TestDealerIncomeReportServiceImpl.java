@@ -228,8 +228,10 @@ public class TestDealerIncomeReportServiceImpl {
 		Assert.assertEquals(2, response.getDetail().size());
 		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());
 		Assert.assertEquals(2013, response.getDetail().get(1).getYear().intValue());
+		System.err.println("Year 2013 Detail: " + response.getDetail().get(1).getDetail());
 		Assert.assertEquals(5000.0, response.getDetail().get(1).getDetail().get(0).getRevenue().getAmount());
 		Assert.assertEquals(8000.0, response.getDetail().get(1).getDetail().get(0).getMargin().getAmount());
+		Assert.assertEquals(8000.0, response.getDetail().get(1).getDetail().get(0).getNetProfit().getAmount());
 		System.err.println(response);
 		
 		final QueryReportDataResponse response2 = service.queryOverallIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
@@ -361,7 +363,7 @@ public class TestDealerIncomeReportServiceImpl {
 		item2.setItemCategory("C1");
 		when(dal.getReportItem(1L)).thenReturn(Option.<ReportItem>some(item1));
 		when(dal.getReportItem(2L)).thenReturn(Option.<ReportItem>some(item2));
-		final QueryReportDataResponse response = service.queryDepartmentIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none());
+		final QueryReportDataResponse response = service.queryDepartmentIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getDetail().size());
 		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());
@@ -370,7 +372,7 @@ public class TestDealerIncomeReportServiceImpl {
 		Assert.assertEquals(2000.0, response.getDetail().get(1).getDepartmentDetail().get(0).getMargin().getAmount());
 		System.err.println(response);
 		
-		final QueryReportDataResponse response2 = service.queryDepartmentIncomeReport(2013, Option.<Integer>none(), Option.<Integer>some(8));
+		final QueryReportDataResponse response2 = service.queryDepartmentIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response2);
 		Assert.assertEquals(2, response2.getDetail().size());
 		Assert.assertEquals(2013, response2.getDetail().get(0).getYear().intValue());

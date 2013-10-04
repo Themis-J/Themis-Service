@@ -32,7 +32,14 @@ public class SalesServiceJournalItem implements Serializable {
 	private String name;
 	private Integer categoryID;
 	private Integer journalType;
+	private String description;
 	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	public Integer getJournalType() {
 		return journalType;
 	}
@@ -61,6 +68,9 @@ public class SalesServiceJournalItem implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this).append("id", id)
 				.append("name", name)
+				.append("categoryID", categoryID)
+				.append("journalType", journalType)
+				.append("description", description)
 				.getStringBuffer().toString();
 	}
 	public boolean equals(Object other) {

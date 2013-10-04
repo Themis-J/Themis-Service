@@ -221,7 +221,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 									.newArrayList(new Integer[] {}), Lists
 									.newArrayList(new Integer[] {}), Lists
 									.newArrayList(new String[] { "非经营性损益进项",
-											"其它进项" }), Lists
+											"非销售类返利" }), Lists
 									.newArrayList(new Long[] {}), Lists
 									.newArrayList(new Integer[] {}));
 			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> otherDealerRevenueFacts = Multimaps
@@ -235,7 +235,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 									.newArrayList(new Integer[] {}), Lists
 									.newArrayList(new Integer[] {}), Lists
 									.newArrayList(new String[] { "非经营性损益削项",
-											"其它削项" }), Lists
+											"员工分红" }), Lists
 									.newArrayList(new Long[] {}), Lists
 									.newArrayList(new Integer[] {}));
 			final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> otherDealerExpenseFacts = Multimaps
@@ -254,8 +254,8 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 
 	@Override
 	public QueryReportDataResponse queryDepartmentIncomeReport(
-			final Integer year, final Option<Integer> dealerID,
-			final Option<Integer> monthOfYear) {
+			final Integer year, final Option<Integer> monthOfYear, 
+			final Option<Integer> dealerID, final Option<Integer> departmentID) {
 		Preconditions.checkNotNull(year, "year can't be null");
 		Preconditions.checkNotNull(dealerID, "dealer id can't be null");
 		final QueryReportDataResponse response = new QueryReportDataResponse();
@@ -264,24 +264,24 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		if (monthOfYear.isNone()) {
 			int previousYear = year - 1;
 			final ReportDataDetail reportDetailPreviousYear = getDepartmentReportDataDetail(
-					previousYear, dealerID, Option.<Integer> none(),
+					previousYear, dealerID, departmentID, Option.<Integer> none(),
 					Option.<ReportDataDetail> none(), JournalOp.SUM);
 			reportDetailPreviousYear.setYear(previousYear);
 			response.getDetail().add(reportDetailPreviousYear);
 			final ReportDataDetail reportDetailCurrentYear = getDepartmentReportDataDetail(
-					year, dealerID, Option.<Integer> none(),
+					year, dealerID, departmentID, Option.<Integer> none(),
 					Option.<ReportDataDetail> some(reportDetailPreviousYear),
 					JournalOp.SUM);
 			reportDetailCurrentYear.setYear(year);
 			response.getDetail().add(reportDetailCurrentYear);
 		} else {
 			final ReportDataDetail reportDetailMonthlyAvg = getDepartmentReportDataDetail(
-					year, dealerID, monthOfYear,
+					year, dealerID, departmentID, monthOfYear,
 					Option.<ReportDataDetail> none(), JournalOp.AVG);
 			response.getDetail().add(reportDetailMonthlyAvg);
 
 			final ReportDataDetail reportDetailCurrentMonth = getDepartmentReportDataDetail(
-					year, dealerID, monthOfYear,
+					year, dealerID, departmentID, monthOfYear,
 					Option.<ReportDataDetail> some(reportDetailMonthlyAvg),
 					JournalOp.SUM);
 			response.getDetail().add(reportDetailCurrentMonth);
@@ -291,6 +291,7 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 
 	private ReportDataDetail getDepartmentReportDataDetail(final Integer year,
 			final Option<Integer> dealerIDOption,
+			final Option<Integer> departmentIDOption,
 			final Option<Integer> monthOfYearOption,
 			final Option<ReportDataDetail> previousDetailOption,
 			final JournalOp op) {
@@ -305,7 +306,8 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 						year,
 						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
 								.some() } : new Integer[] {}),
-						Lists.newArrayList(new Integer[] {}), // department id
+						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
+									.some() } : new Integer[] {}), // department id
 						Lists.newArrayList(new Integer[] {}),
 						Lists.newArrayList(new String[] { "新轿车零售", "新货车零售",
 								"附加产品业务", "二手车零售", "维修收入", "配件收入", "钣喷收入",
@@ -324,7 +326,8 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 						year,
 						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
 								.some() } : new Integer[] {}),
-						Lists.newArrayList(new Integer[] {}), // department id
+						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
+									.some() } : new Integer[] {}), // department id
 						Lists.newArrayList(new Integer[] {}),
 						Lists.newArrayList(new String[] { "变动费用", "销售费用",
 								"人工费用", "半固定费用", "固定费用" }),
