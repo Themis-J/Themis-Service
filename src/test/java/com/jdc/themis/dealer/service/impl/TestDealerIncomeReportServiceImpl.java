@@ -78,7 +78,7 @@ public class TestDealerIncomeReportServiceImpl {
 		service.importReportData(request);
 	}
 	private final static String[] revenueCategories = new String[] {"新轿车零售", "新货车零售",
-			"附加产品业务", "二手车零售", "维修收入", "配件收入", "钣喷收入", "新车其它收入", "二手车其它收入", "维修其它收入", "维修其它收入", "钣喷其它收入", "租恁收入"};
+			"附加产品业务", "二手车零售", "维修收入", "配件收入", "钣喷收入", "新车其它收入", "二手车其它收入", "维修其它收入", "钣喷其它收入", "租恁收入"};
 	
 	@Test
 	public void queryYearlyOverallIncomeReport() {

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.time.calendar.LocalDate;
 
@@ -53,9 +52,6 @@ public class ReportDAOImpl implements ReportDAO {
 	@Autowired
 	private IncomeJournalDAO incomeJournalDAL;
 
-	private final ReentrantReadWriteLock revenueFactLock = new ReentrantReadWriteLock();
-	private final ReentrantReadWriteLock expenseFactLock = new ReentrantReadWriteLock();
-
 	@Override
 	@Performance
 	public void importVehicleSalesJournal(final LocalDate validDate) {
@@ -69,13 +65,13 @@ public class ReportDAOImpl implements ReportDAO {
 		for (final VehicleSalesJournal journal : list) {
 			// verify report time
 			final Option<ReportTime> reportTime = this.getReportTime(validDate)
-					.orElse(new P1<Option<ReportTime>>(){
+					.orElse(new P1<Option<ReportTime>>() {
 
 						@Override
 						public Option<ReportTime> _1() {
 							return ReportDAOImpl.this.addReportTime(validDate);
 						}
-						
+
 					});
 
 			final DealerIncomeRevenueFact fact = new DealerIncomeRevenueFact();
@@ -84,30 +80,29 @@ public class ReportDAOImpl implements ReportDAO {
 			fact.setMargin(journal.getMargin());
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			final Option<ReportItem> reportItem = 
-					this.getReportItem(journal.getId(), "VehicleSalesJournal")
-					.orElse(new P1<Option<ReportItem>>() {
+			final Option<ReportItem> reportItem = this.getReportItem(
+					journal.getId(), "VehicleSalesJournal").orElse(
+					new P1<Option<ReportItem>>() {
 
 						@Override
 						public Option<ReportItem> _1() {
-							return ReportDAOImpl.this
-									.addReportItem(
-											journal.getId(),
-											refDataDAL.getVehicle(journal.getId()).some()
-													.getName(),
-											"VehicleSalesJournal",
-											refDataDAL
-													.getSalesServiceJournalCategory(
-															refDataDAL
+							return ReportDAOImpl.this.addReportItem(
+									journal.getId(),
+									refDataDAL.getVehicle(journal.getId())
+											.some().getName(),
+									"VehicleSalesJournal",
+									refDataDAL
+											.getSalesServiceJournalCategory(
+													refDataDAL
 															.getVehicle(
 																	journal.getId())
 															.some()
-															.getCategoryID()).some()
-													.getName());
+															.getCategoryID())
+											.some().getName());
 						}
-						
+
 					});
-			
+
 			fact.setDealerID(journal.getDealerID());
 			fact.setDepartmentID(journal.getDepartmentID());
 			fact.setItemID(reportItem.some().getId());
@@ -135,14 +130,15 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeExpenseFact> expenseFacts = Lists.newArrayList();
 		for (final SalesServiceJournal journal : list) {
 			// verify report time
-			final Option<ReportTime> reportTime = this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>(){
+			final Option<ReportTime> reportTime = this.getReportTime(validDate)
+					.orElse(new P1<Option<ReportTime>>() {
 
-				@Override
-				public Option<ReportTime> _1() {
-					return ReportDAOImpl.this.addReportTime(validDate);
-				}
-				
-			});
+						@Override
+						public Option<ReportTime> _1() {
+							return ReportDAOImpl.this.addReportTime(validDate);
+						}
+
+					});
 			logger.debug("saving journal {}", journal);
 			if (revenueJournalType.equals(refDataDAL
 					.getSalesServiceJournalItem(journal.getId()).some()
@@ -154,29 +150,28 @@ public class ReportDAOImpl implements ReportDAO {
 				fact.setTimeID(reportTime.some().getId());
 				// verify report item here
 				final Option<ReportItem> reportItem = this.getReportItem(
-						journal.getId(), "SalesServiceJournal")
-						.orElse(new P1<Option<ReportItem>>() {
+						journal.getId(), "SalesServiceJournal").orElse(
+						new P1<Option<ReportItem>>() {
 
 							@Override
 							public Option<ReportItem> _1() {
-								return ReportDAOImpl.this
-										.addReportItem(
-												journal.getId(),
-												refDataDAL
-														.getSalesServiceJournalItem(
-																journal.getId()).some()
-														.getName(),
-												"SalesServiceJournal",
-												refDataDAL
-														.getSalesServiceJournalCategory(
-																refDataDAL
-																		.getSalesServiceJournalItem(
-																				journal.getId())
-																		.some()
-																		.getCategoryID())
-														.some().getName());
+								return ReportDAOImpl.this.addReportItem(
+										journal.getId(),
+										refDataDAL
+												.getSalesServiceJournalItem(
+														journal.getId()).some()
+												.getName(),
+										"SalesServiceJournal",
+										refDataDAL
+												.getSalesServiceJournalCategory(
+														refDataDAL
+																.getSalesServiceJournalItem(
+																		journal.getId())
+																.some()
+																.getCategoryID())
+												.some().getName());
 							}
-							
+
 						});
 
 				fact.setDealerID(journal.getDealerID());
@@ -196,31 +191,30 @@ public class ReportDAOImpl implements ReportDAO {
 				fact.setTimeID(reportTime.some().getId());
 				// verify report item here
 				final Option<ReportItem> reportItem = this.getReportItem(
-						journal.getId(), "SalesServiceJournal")
-						.orElse(new P1<Option<ReportItem>>() {
+						journal.getId(), "SalesServiceJournal").orElse(
+						new P1<Option<ReportItem>>() {
 
 							@Override
 							public Option<ReportItem> _1() {
-								return ReportDAOImpl.this
-										.addReportItem(
-												journal.getId(),
-												refDataDAL
-														.getSalesServiceJournalItem(
-																journal.getId()).some()
-														.getName(),
-												"SalesServiceJournal",
-												refDataDAL
-														.getSalesServiceJournalCategory(
-																refDataDAL
-																		.getSalesServiceJournalItem(
-																				journal.getId())
-																		.some()
-																		.getCategoryID())
-														.some().getName());
+								return ReportDAOImpl.this.addReportItem(
+										journal.getId(),
+										refDataDAL
+												.getSalesServiceJournalItem(
+														journal.getId()).some()
+												.getName(),
+										"SalesServiceJournal",
+										refDataDAL
+												.getSalesServiceJournalCategory(
+														refDataDAL
+																.getSalesServiceJournalItem(
+																		journal.getId())
+																.some()
+																.getCategoryID())
+												.some().getName());
 							}
-							
+
 						});
-				
+
 				fact.setDealerID(journal.getDealerID());
 				fact.setDepartmentID(journal.getDepartmentID());
 				fact.setItemID(reportItem.some().getId());
@@ -263,41 +257,45 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
 		for (final GeneralJournal journal : expenseJournals) {
 			// verify report time
-			final Option<ReportTime> reportTime = 
-					this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>() {
+			final Option<ReportTime> reportTime = this.getReportTime(validDate)
+					.orElse(new P1<Option<ReportTime>>() {
 
 						@Override
 						public Option<ReportTime> _1() {
 							return ReportDAOImpl.this.addReportTime(validDate);
 						}
-						
+
 					});
 
 			final DealerIncomeExpenseFact fact = new DealerIncomeExpenseFact();
 			fact.setAmount(journal.getAmount());
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			final Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
-					"GeneralJournal").orElse(new P1<Option<ReportItem>>() {
+			final Option<ReportItem> reportItem = this.getReportItem(
+					journal.getId(), "GeneralJournal").orElse(
+					new P1<Option<ReportItem>>() {
 
 						@Override
 						public Option<ReportItem> _1() {
 							return ReportDAOImpl.this.addReportItem(
 									journal.getId(),
-									refDataDAL.getGeneralJournalItem(journal.getId())
-											.some().getName(),
+									refDataDAL
+											.getGeneralJournalItem(
+													journal.getId()).some()
+											.getName(),
 									"GeneralJournal",
 									refDataDAL
 											.getGeneralJournalCategory(
 													refDataDAL
 															.getGeneralJournalItem(
-																	journal.getId()).some()
-															.getCategoryID()).some()
-											.getName());
+																	journal.getId())
+															.some()
+															.getCategoryID())
+											.some().getName());
 						}
-						
+
 					});
-		    
+
 			fact.setDealerID(journal.getDealerID());
 			fact.setDepartmentID(journal.getDepartmentID());
 			fact.setItemID(reportItem.some().getId());
@@ -311,15 +309,15 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeRevenueFact> revenueFacts = Lists.newArrayList();
 		for (final GeneralJournal journal : revenueJournals) {
 			// verify report time
-			final Option<ReportTime> reportTime = 
-					this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>() {
+			final Option<ReportTime> reportTime = this.getReportTime(validDate)
+					.orElse(new P1<Option<ReportTime>>() {
 
-				@Override
-				public Option<ReportTime> _1() {
-					return ReportDAOImpl.this.addReportTime(validDate);
-				}
-				
-			});
+						@Override
+						public Option<ReportTime> _1() {
+							return ReportDAOImpl.this.addReportTime(validDate);
+						}
+
+					});
 
 			final DealerIncomeRevenueFact fact = new DealerIncomeRevenueFact();
 			fact.setAmount(journal.getAmount());
@@ -327,25 +325,29 @@ public class ReportDAOImpl implements ReportDAO {
 			fact.setCount(0);
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			final Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
-					"GeneralJournal").orElse(new P1<Option<ReportItem>>() {
+			final Option<ReportItem> reportItem = this.getReportItem(
+					journal.getId(), "GeneralJournal").orElse(
+					new P1<Option<ReportItem>>() {
 
 						@Override
 						public Option<ReportItem> _1() {
 							return ReportDAOImpl.this.addReportItem(
 									journal.getId(),
-									refDataDAL.getGeneralJournalItem(journal.getId())
-											.some().getName(),
+									refDataDAL
+											.getGeneralJournalItem(
+													journal.getId()).some()
+											.getName(),
 									"GeneralJournal",
 									refDataDAL
 											.getGeneralJournalCategory(
 													refDataDAL
 															.getGeneralJournalItem(
-																	journal.getId()).some()
-															.getCategoryID()).some()
-											.getName());
+																	journal.getId())
+															.some()
+															.getCategoryID())
+											.some().getName());
 						}
-						
+
 					});
 
 			fact.setDealerID(journal.getDealerID());
@@ -394,14 +396,15 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<ReportTime> reportTimeList = session
 				.createCriteria(ReportTime.class)
 				.add(Restrictions.eq("validDate", validDate)).list();
-		return Option.<ReportTime>iif(!reportTimeList.isEmpty(), new P1<ReportTime>() {
+		return Option.<ReportTime> iif(!reportTimeList.isEmpty(),
+				new P1<ReportTime>() {
 
-			@Override
-			public ReportTime _1() {
-				return reportTimeList.get(0);
-			}
-			
-		});
+					@Override
+					public ReportTime _1() {
+						return reportTimeList.get(0);
+					}
+
+				});
 	}
 
 	@Override
@@ -415,74 +418,72 @@ public class ReportDAOImpl implements ReportDAO {
 				.createCriteria(ReportItem.class)
 				.add(Restrictions.eq("sourceItemID", itemID))
 				.add(Restrictions.eq("itemSource", reportItemSource)).list();
-		
-		return Option.<ReportItem>iif(!reportItems.isEmpty(), new P1<ReportItem>() {
 
-			@Override
-			public ReportItem _1() {
-				return reportItems.get(0);
-			}
-			
-		});
+		return Option.<ReportItem> iif(!reportItems.isEmpty(),
+				new P1<ReportItem>() {
+
+					@Override
+					public ReportItem _1() {
+						return reportItems.get(0);
+					}
+
+				});
 	}
 
 	@Override
 	public void saveDealerIncomeRevenueFacts(
 			final Collection<DealerIncomeRevenueFact> journals) {
 		logger.debug("facts to save {}", journals);
-		revenueFactLock.writeLock().lock();
-		try {
-			final Session session = sessionFactory.getCurrentSession();
-			for (final DealerIncomeRevenueFact newJournal : journals) {
-				// check whether this journal has been inserted before
-				session.enableFilter(DealerIncomeRevenueFact.FILTER)
-						.setParameter("timeID", newJournal.getTimeID())
-						.setParameter("itemID", newJournal.getItemID())
-						.setParameter("dealerID", newJournal.getDealerID())
-						.setParameter("departmentID",
-								newJournal.getDepartmentID())
-						.setParameter("referenceTime", Utils.currentTimestamp()); // we
-																					// are
-																					// only
-																					// interested
-																					// in
-																					// latest
-																					// record
-				@SuppressWarnings("unchecked")
-				final List<DealerIncomeRevenueFact> list = session
-						.createCriteria(DealerIncomeRevenueFact.class).list();
-				logger.debug("facts to be removed {}", list);
-				boolean isPersisted = false;
-				if (!list.isEmpty()) {
-					for (final DealerIncomeRevenueFact oldJournal : list) {
-						// if we get here, it means we have inserted this fact
-						// before
-						if (oldJournal.getTimestamp().isBefore(
-								newJournal.getTimestamp())) {
-							oldJournal.setTimeEnd(newJournal.getTimestamp());
-							session.saveOrUpdate(oldJournal);
-						}
-						// ignore if we've already got this journal in table
-						if ( oldJournal.getTimestamp().equals(newJournal.getTimestamp()) ) {
-							// somehow, we have persisted this journal before
-							isPersisted = true;
-						}
+
+		final Session session = sessionFactory.getCurrentSession();
+		for (final DealerIncomeRevenueFact newJournal : journals) {
+			// check whether this journal has been inserted before
+			session.enableFilter(DealerIncomeRevenueFact.FILTER)
+					.setParameter("timeID", newJournal.getTimeID())
+					.setParameter("itemID", newJournal.getItemID())
+					.setParameter("dealerID", newJournal.getDealerID())
+					.setParameter("departmentID", newJournal.getDepartmentID())
+					.setParameter("referenceTime", Utils.currentTimestamp()); // we
+																				// are
+																				// only
+																				// interested
+																				// in
+																				// latest
+																				// record
+			@SuppressWarnings("unchecked")
+			final List<DealerIncomeRevenueFact> list = session.createCriteria(
+					DealerIncomeRevenueFact.class).list();
+			logger.debug("facts to be removed {}", list);
+			boolean isPersisted = false;
+			if (!list.isEmpty()) {
+				for (final DealerIncomeRevenueFact oldJournal : list) {
+					// if we get here, it means we have inserted this fact
+					// before
+					if (oldJournal.getTimestamp().isBefore(
+							newJournal.getTimestamp())) {
+						oldJournal.setTimeEnd(newJournal.getTimestamp());
+						session.saveOrUpdate(oldJournal);
 					}
-					session.flush();
-				} else {
-					// this is a new journal
-					session.save(newJournal);
+					// ignore if we've already got this journal in table
+					if (oldJournal.getTimestamp().equals(
+							newJournal.getTimestamp())) {
+						// somehow, we have persisted this journal before
+						isPersisted = true;
+					}
 				}
-				if ( !isPersisted ) {
-					session.save(newJournal);
-				}
-				session.disableFilter(DealerIncomeRevenueFact.FILTER);
-				
 				session.flush();
+			} else {
+				// this is a new journal
+				session.save(newJournal);
 			}
-		} finally {
-			revenueFactLock.writeLock().unlock();
+			if (!isPersisted) {
+				session.save(newJournal);
+			}
+			session.disableFilter(DealerIncomeRevenueFact.FILTER);
+
+			session.flush();
 		}
+
 	}
 
 	@Override
@@ -516,14 +517,15 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<ReportTime> list = criteria.list();
 		return list;
 	}
+
 	public Collection<ReportTime> getReportTime(Integer year,
 			Collection<Integer> monthOfYear) {
 		final Session session = sessionFactory.getCurrentSession();
 		final Criteria criteria = session.createCriteria(ReportTime.class);
 		criteria.add(Restrictions.eq("year", year));
-		if ( !monthOfYear.isEmpty() ) {
+		if (!monthOfYear.isEmpty()) {
 			criteria.add(Restrictions.in("monthOfYear", monthOfYear));
-		} 
+		}
 		@SuppressWarnings("unchecked")
 		final List<ReportTime> list = criteria.list();
 		return list;
@@ -542,62 +544,56 @@ public class ReportDAOImpl implements ReportDAO {
 	public Option<ReportItem> getReportItem(Long id) {
 		final Map<Long, ReportItem> map = Maps.uniqueIndex(getAllReportItem(),
 				GetReportItemFunction.INSTANCE);
-		
-		return Option.<ReportItem>iif(map.containsKey(id), map.get(id));
+
+		return Option.<ReportItem> iif(map.containsKey(id), map.get(id));
 	}
 
 	@Override
 	public void saveDealerIncomeExpenseFacts(
 			Collection<DealerIncomeExpenseFact> journals) {
-		expenseFactLock.writeLock().lock();
-		try {
-			final Session session = sessionFactory.getCurrentSession();
-			for (DealerIncomeExpenseFact newJournal : journals) {
-				// check whether this journal has been inserted before
-				session.enableFilter(DealerIncomeExpenseFact.FILTER)
-						.setParameter("timeID", newJournal.getTimeID())
-						.setParameter("itemID", newJournal.getItemID())
-						.setParameter("dealerID", newJournal.getDealerID())
-						.setParameter("departmentID",
-								newJournal.getDepartmentID())
-						.setParameter("referenceTime", Utils.currentTimestamp()); // we
-																					// are
-																					// only
-																					// interested
-																					// in
-																					// latest
-																					// record
-				@SuppressWarnings("unchecked")
-				final List<DealerIncomeExpenseFact> list = session
-						.createCriteria(DealerIncomeExpenseFact.class).list();
-				boolean isPersisted = false;
-				if (!list.isEmpty()) {
-					for (final DealerIncomeExpenseFact oldJournal : list) {
-						// if we get here, it means we have inserted this fact
-						// before
-						if (oldJournal.getTimestamp().isBefore(
-								newJournal.getTimestamp())) {
-							oldJournal.setTimeEnd(newJournal.getTimestamp());
-							session.saveOrUpdate(oldJournal);
-						}
-						if (oldJournal.getTimestamp().equals(
-								newJournal.getTimestamp())) {
-							isPersisted = true;
-						}
+		final Session session = sessionFactory.getCurrentSession();
+		for (DealerIncomeExpenseFact newJournal : journals) {
+			// check whether this journal has been inserted before
+			session.enableFilter(DealerIncomeExpenseFact.FILTER)
+					.setParameter("timeID", newJournal.getTimeID())
+					.setParameter("itemID", newJournal.getItemID())
+					.setParameter("dealerID", newJournal.getDealerID())
+					.setParameter("departmentID", newJournal.getDepartmentID())
+					.setParameter("referenceTime", Utils.currentTimestamp()); // we
+																				// are
+																				// only
+																				// interested
+																				// in
+																				// latest
+																				// record
+			@SuppressWarnings("unchecked")
+			final List<DealerIncomeExpenseFact> list = session.createCriteria(
+					DealerIncomeExpenseFact.class).list();
+			boolean isPersisted = false;
+			if (!list.isEmpty()) {
+				for (final DealerIncomeExpenseFact oldJournal : list) {
+					// if we get here, it means we have inserted this fact
+					// before
+					if (oldJournal.getTimestamp().isBefore(
+							newJournal.getTimestamp())) {
+						oldJournal.setTimeEnd(newJournal.getTimestamp());
+						session.saveOrUpdate(oldJournal);
 					}
-					session.flush();
-				} else {
-					session.save(newJournal);
+					if (oldJournal.getTimestamp().equals(
+							newJournal.getTimestamp())) {
+						isPersisted = true;
+					}
 				}
-				if ( !isPersisted ) {
-					session.save(newJournal);
-				}
-				session.disableFilter(DealerIncomeExpenseFact.FILTER);
-
 				session.flush();
+			} else {
+				session.save(newJournal);
 			}
-		} finally {
-			expenseFactLock.writeLock().unlock();
+			if (!isPersisted) {
+				session.save(newJournal);
+			}
+			session.disableFilter(DealerIncomeExpenseFact.FILTER);
+
+			session.flush();
 		}
 	}
 
@@ -611,33 +607,33 @@ public class ReportDAOImpl implements ReportDAO {
 		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
 		for (final TaxJournal journal : list) {
 			// verify report time
-			final Option<ReportTime> reportTime = 
-					this.getReportTime(validDate).orElse(new P1<Option<ReportTime>>() {
+			final Option<ReportTime> reportTime = this.getReportTime(validDate)
+					.orElse(new P1<Option<ReportTime>>() {
 
 						@Override
 						public Option<ReportTime> _1() {
 							return ReportDAOImpl.this.addReportTime(validDate);
 						}
-						
+
 					});
 
 			final DealerIncomeExpenseFact fact = new DealerIncomeExpenseFact();
 			fact.setAmount(journal.getAmount());
 			fact.setTimeID(reportTime.some().getId());
 			// verify report item here
-			final Option<ReportItem> reportItem = this.getReportItem(journal.getId(),
-					"TaxJournal").orElse(new P1<Option<ReportItem>>() {
+			final Option<ReportItem> reportItem = this.getReportItem(
+					journal.getId(), "TaxJournal").orElse(
+					new P1<Option<ReportItem>>() {
 
 						@Override
 						public Option<ReportItem> _1() {
 							return ReportDAOImpl.this.addReportItem(
-									journal.getId(),
-									refDataDAL.getTaxJournalItem(journal.getId()).some()
-											.getName(),
-									"TaxJournal",
+									journal.getId(), refDataDAL
+											.getTaxJournalItem(journal.getId())
+											.some().getName(), "TaxJournal",
 									null);
 						}
-						
+
 					});
 
 			fact.setDealerID(journal.getDealerID());
@@ -655,120 +651,104 @@ public class ReportDAOImpl implements ReportDAO {
 	public Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(
 			Integer year, Collection<Integer> monthOfYear,
 			Collection<Integer> departmentID, Collection<Integer> itemSource,
-			Collection<String> itemCategory, Collection<Long> itemID, 
+			Collection<String> itemCategory, Collection<Long> itemID,
 			Collection<Integer> dealerID) {
 		Preconditions.checkNotNull(year, "year can't be null");
-		expenseFactLock.readLock().lock();
-		try {
-			final Session session = sessionFactory.getCurrentSession();
-			final Collection<ReportTime> reportTimes = getReportTime(year,
-					monthOfYear);
-			if (reportTimes.isEmpty()) {
-				return Lists.newArrayList();
-			}
-
-			final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
-			session.enableFilter(DealerIncomeExpenseFact.FILTER_REFTIME)
-					.setParameter("referenceTime", Utils.currentTimestamp());
-
-			final Criteria criteria = session
-					.createCriteria(DealerIncomeExpenseFact.class);
-			criteria.add(Restrictions.in("timeID",
-					Lambda.extractProperty(reportTimes, "id")));
-			if (!dealerID.isEmpty()) {
-				criteria.add(Restrictions.in("dealerID",
-						dealerID));
-			}
-			if (!departmentID.isEmpty()) {
-				criteria.add(Restrictions.in("departmentID",
-						departmentID));
-			}
-			if ( !itemID.isEmpty() ) {
-				criteria.add(Restrictions.in("itemID",
-					itemID));
-			}
-			
-			@SuppressWarnings("unchecked")
-			final List<DealerIncomeExpenseFact> list = criteria.list();
-			session.disableFilter(DealerIncomeExpenseFact.FILTER_REFTIME);
-
-			for (final DealerIncomeExpenseFact fact : list) {
-				final ReportItem item = getReportItem(fact.getItemID()).some();
-				if (!itemCategory.isEmpty()
-						&& !itemCategory.contains(item.getItemCategory())) {
-					continue;
-				}
-				if (!itemSource.isEmpty()
-						&& !itemSource.contains(item.getItemSource())) {
-					continue;
-				}
-				facts.add(fact);
-			}
-			return facts;
-		} finally {
-			expenseFactLock.readLock().unlock();
+		final Session session = sessionFactory.getCurrentSession();
+		final Collection<ReportTime> reportTimes = getReportTime(year,
+				monthOfYear);
+		if (reportTimes.isEmpty()) {
+			return Lists.newArrayList();
 		}
+
+		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
+		session.enableFilter(DealerIncomeExpenseFact.FILTER_REFTIME)
+				.setParameter("referenceTime", Utils.currentTimestamp());
+
+		final Criteria criteria = session
+				.createCriteria(DealerIncomeExpenseFact.class);
+		criteria.add(Restrictions.in("timeID",
+				Lambda.extractProperty(reportTimes, "id")));
+		if (!dealerID.isEmpty()) {
+			criteria.add(Restrictions.in("dealerID", dealerID));
+		}
+		if (!departmentID.isEmpty()) {
+			criteria.add(Restrictions.in("departmentID", departmentID));
+		}
+		if (!itemID.isEmpty()) {
+			criteria.add(Restrictions.in("itemID", itemID));
+		}
+
+		@SuppressWarnings("unchecked")
+		final List<DealerIncomeExpenseFact> list = criteria.list();
+		session.disableFilter(DealerIncomeExpenseFact.FILTER_REFTIME);
+
+		for (final DealerIncomeExpenseFact fact : list) {
+			final ReportItem item = getReportItem(fact.getItemID()).some();
+			if (!itemCategory.isEmpty()
+					&& !itemCategory.contains(item.getItemCategory())) {
+				continue;
+			}
+			if (!itemSource.isEmpty()
+					&& !itemSource.contains(item.getItemSource())) {
+				continue;
+			}
+			facts.add(fact);
+		}
+		return facts;
 	}
-	
+
 	@Override
 	@Performance
 	public Collection<DealerIncomeRevenueFact> getDealerIncomeRevenueFacts(
 			Integer year, Collection<Integer> monthOfYear,
 			Collection<Integer> departmentID, Collection<Integer> itemSource,
-			Collection<String> itemCategory, Collection<Long> itemID, 
+			Collection<String> itemCategory, Collection<Long> itemID,
 			Collection<Integer> dealerID) {
 		Preconditions.checkNotNull(year, "year can't be null");
-		expenseFactLock.readLock().lock();
-		try {
-			final Session session = sessionFactory.getCurrentSession();
-			final Collection<ReportTime> reportTimes = getReportTime(year,
-					monthOfYear);
-			if (reportTimes.isEmpty()) {
-				return Lists.newArrayList();
-			}
-
-			final List<DealerIncomeRevenueFact> facts = Lists.newArrayList();
-			session.enableFilter(DealerIncomeRevenueFact.FILTER_REFTIME)
-					.setParameter("referenceTime", Utils.currentTimestamp());
-
-			final Criteria criteria = session
-					.createCriteria(DealerIncomeRevenueFact.class);
-			criteria.add(Restrictions.in("timeID",
-					Lambda.extractProperty(reportTimes, "id")));
-			if (!dealerID.isEmpty()) {
-				criteria.add(Restrictions.in("dealerID",
-						dealerID));
-			}
-			if ( !departmentID.isEmpty() ) {
-				criteria.add(Restrictions.in("departmentID",
-						departmentID));
-			}
-			if ( !itemID.isEmpty() ) {
-				criteria.add(Restrictions.in("itemID",
-					itemID));
-			}
-			
-			@SuppressWarnings("unchecked")
-			final List<DealerIncomeRevenueFact> list = criteria.list();
-			logger.debug("get revenue facts {}", list);
-			session.disableFilter(DealerIncomeRevenueFact.FILTER_REFTIME);
-
-			for (final DealerIncomeRevenueFact fact : list) {
-				final ReportItem item = getReportItem(fact.getItemID()).some();
-				if (!itemCategory.isEmpty()
-						&& !itemCategory.contains(item.getItemCategory())) {
-					continue;
-				}
-				if (!itemSource.isEmpty()
-						&& !itemSource.contains(item.getItemSource())) {
-					continue;
-				}
-				facts.add(fact);
-			}
-			return facts;
-		} finally {
-			expenseFactLock.readLock().unlock();
+		final Session session = sessionFactory.getCurrentSession();
+		final Collection<ReportTime> reportTimes = getReportTime(year,
+				monthOfYear);
+		if (reportTimes.isEmpty()) {
+			return Lists.newArrayList();
 		}
+
+		final List<DealerIncomeRevenueFact> facts = Lists.newArrayList();
+		session.enableFilter(DealerIncomeRevenueFact.FILTER_REFTIME)
+				.setParameter("referenceTime", Utils.currentTimestamp());
+
+		final Criteria criteria = session
+				.createCriteria(DealerIncomeRevenueFact.class);
+		criteria.add(Restrictions.in("timeID",
+				Lambda.extractProperty(reportTimes, "id")));
+		if (!dealerID.isEmpty()) {
+			criteria.add(Restrictions.in("dealerID", dealerID));
+		}
+		if (!departmentID.isEmpty()) {
+			criteria.add(Restrictions.in("departmentID", departmentID));
+		}
+		if (!itemID.isEmpty()) {
+			criteria.add(Restrictions.in("itemID", itemID));
+		}
+
+		@SuppressWarnings("unchecked")
+		final List<DealerIncomeRevenueFact> list = criteria.list();
+		logger.debug("get revenue facts {}", list);
+		session.disableFilter(DealerIncomeRevenueFact.FILTER_REFTIME);
+
+		for (final DealerIncomeRevenueFact fact : list) {
+			final ReportItem item = getReportItem(fact.getItemID()).some();
+			if (!itemCategory.isEmpty()
+					&& !itemCategory.contains(item.getItemCategory())) {
+				continue;
+			}
+			if (!itemSource.isEmpty()
+					&& !itemSource.contains(item.getItemSource())) {
+				continue;
+			}
+			facts.add(fact);
+		}
+		return facts;
 	}
 
 	@Override
@@ -781,14 +761,15 @@ public class ReportDAOImpl implements ReportDAO {
 				.createCriteria(ReportItem.class)
 				.add(Restrictions.eq("name", itemName))
 				.add(Restrictions.eq("itemSource", reportItemSource)).list();
-		
-		return Option.<ReportItem>iif(!reportItems.isEmpty(), new P1<ReportItem>() {
 
-			@Override
-			public ReportItem _1() {
-				return reportItems.get(0);
-			}
-			
-		});
+		return Option.<ReportItem> iif(!reportItems.isEmpty(),
+				new P1<ReportItem>() {
+
+					@Override
+					public ReportItem _1() {
+						return reportItems.get(0);
+					}
+
+				});
 	}
 }

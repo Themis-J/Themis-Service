@@ -629,8 +629,8 @@ CREATE TABLE DealerEmployeeFeeFact
    dealerID integer NOT NULL,
    departmentID integer NOT NULL,
    itemID integer NOT NULL,
-   version integer,
-   amount double precision,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
    CONSTRAINT DEFF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID), 
@@ -647,12 +647,29 @@ CREATE TABLE DealerInventoryFact
    departmentID integer NOT NULL,
    itemID integer NOT NULL,
    durationID integer NOT NULL,
-   version integer,
-   amount double precision,
+   version integer NOT NULL,
+   amount double precision NOT NULL,
    timestamp timestamp without time zone NOT NULL, 
    timeEnd timestamp without time zone NOT NULL, 
-   CONSTRAINT DIF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID, durationID, version),
+   CONSTRAINT DIF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID, durationID),
    CONSTRAINT DIF_Unique UNIQUE (timeEnd, timeID, dealerID, departmentID, itemID, durationID, version)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+CREATE TABLE DealerHRAllocationFact
+(
+   timeID integer NOT NULL, 
+   dealerID integer NOT NULL,
+   departmentID integer NOT NULL,
+   itemID integer NOT NULL,
+   version integer NOT NULL,
+   allocation double precision NOT NULL,
+   timestamp timestamp without time zone NOT NULL, 
+   timeEnd timestamp without time zone NOT NULL, 
+   CONSTRAINT DHRAF_PK PRIMARY KEY (timestamp, timeID, dealerID, departmentID, itemID),
+   CONSTRAINT DHRAF_Unique UNIQUE (timeEnd, timeID, dealerID, departmentID, itemID, version)
 ) 
 WITH (
   OIDS = FALSE

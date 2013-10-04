@@ -12,10 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimaps;
 import com.jdc.themis.dealer.data.dao.ReportDAO;
 import com.jdc.themis.dealer.domain.DealerIncomeExpenseFact;
@@ -81,46 +79,6 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		}
 	}
 
-	private enum GetDealerIDFromRevenueFunction implements
-			Function<DealerIncomeRevenueFact, Integer> {
-		INSTANCE;
-
-		@Override
-		public Integer apply(final DealerIncomeRevenueFact item) {
-			return item.getDealerID();
-		}
-	}
-
-	private enum GetDealerIDFromExpenseFunction implements
-			Function<DealerIncomeExpenseFact, Integer> {
-		INSTANCE;
-
-		@Override
-		public Integer apply(final DealerIncomeExpenseFact item) {
-			return item.getDealerID();
-		}
-	}
-
-	private enum GetDepartmentIDFromRevenueFunction implements
-			Function<DealerIncomeRevenueFact, Integer> {
-		INSTANCE;
-
-		@Override
-		public Integer apply(final DealerIncomeRevenueFact item) {
-			return item.getDepartmentID();
-		}
-	}
-
-	private enum GetDepartmentIDFromExpenseFunction implements
-			Function<DealerIncomeExpenseFact, Integer> {
-		INSTANCE;
-
-		@Override
-		public Integer apply(final DealerIncomeExpenseFact item) {
-			return item.getDepartmentID();
-		}
-	}
-
 	@Override
 	@Performance
 	public QueryReportDataResponse queryOverallIncomeReport(final Integer year,
@@ -173,36 +131,40 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		calculator.withDenominator(denominatorIDOption);
 
 		// Get all revenues
-		final Collection<DealerIncomeRevenueFact> revenueFacts = reportDAL
-				.getDealerIncomeRevenueFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-								.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}), Lists
-								.newArrayList(new String[] { "新轿车零售", "新货车零售",
-										"附加产品业务", "二手车零售", "维修收入", "配件收入",
-										"钣喷收入", "新车其它收入", "二手车其它收入", "维修其它收入",
-										"维修其它收入", "钣喷其它收入", "租恁收入" }), Lists
-								.newArrayList(new Long[] {}), Lists
-								.newArrayList(new Integer[] {}));
+		final DealerIncomeFactsQueryBuilder queryBuilder = 
+				new DealerIncomeFactsQueryBuilder(reportDAL);
+		queryBuilder.withYear(year);
+		if ( monthOfYearOption.isSome() ) {
+			queryBuilder.withMonthOfYear(monthOfYearOption.some());
+		} 
+		if ( departmentIDOption.isSome() ) {
+			queryBuilder.withDepartmentID(departmentIDOption.some());
+		}
+		queryBuilder.withItemCategory("新轿车零售")
+								.withItemCategory("新货车零售")
+								.withItemCategory("附加产品业务")
+								.withItemCategory("二手车零售")
+								.withItemCategory("维修收入")
+								.withItemCategory("配件收入")
+								.withItemCategory("钣喷收入")
+								.withItemCategory("新车其它收入")
+								.withItemCategory("二手车其它收入")
+								.withItemCategory("维修其它收入")
+								.withItemCategory("钣喷其它收入")
+								.withItemCategory("租恁收入");
+		final Collection<DealerIncomeRevenueFact> revenueFacts = queryBuilder.queryRevenues();
 
 		final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts = Multimaps
 				.index(revenueFacts, GetDealerIDFromRevenueFunction.INSTANCE);
 		// Get all expenses
-		final Collection<DealerIncomeExpenseFact> expenseFacts = reportDAL
-				.getDealerIncomeExpenseFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-								.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}), Lists
-								.newArrayList(new String[] { "变动费用", "销售费用",
-										"人工费用", "半固定费用", "固定费用" }), Lists
-								.newArrayList(new Long[] {}), Lists
-								.newArrayList(new Integer[] {}));
+		final Collection<DealerIncomeExpenseFact> expenseFacts = 
+												queryBuilder.clear()
+															.withItemCategory("变动费用")
+															.withItemCategory("销售费用")
+															.withItemCategory("人工费用")
+															.withItemCategory("半固定费用")
+															.withItemCategory("固定费用")
+															.queryExpenses();
 
 		final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerExpenseFacts = Multimaps
 				.index(expenseFacts, GetDealerIDFromExpenseFunction.INSTANCE);
@@ -213,31 +175,24 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 
 		if (departmentIDOption.isNone()) {
 			// calculate net profit
-			final Collection<DealerIncomeRevenueFact> otherRevenueFacts = reportDAL
-					.getDealerIncomeRevenueFacts(
-							year,
-							Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-									.some() } : new Integer[] {}), Lists
-									.newArrayList(new Integer[] {}), Lists
-									.newArrayList(new Integer[] {}), Lists
-									.newArrayList(new String[] { "非经营性损益进项",
-											"非销售类返利" }), Lists
-									.newArrayList(new Long[] {}), Lists
-									.newArrayList(new Integer[] {}));
+			final DealerIncomeFactsQueryBuilder otherQueryBuilder = 
+					new DealerIncomeFactsQueryBuilder(reportDAL);
+			otherQueryBuilder.withYear(year);
+			if ( monthOfYearOption.isSome() ) {
+				otherQueryBuilder.withMonthOfYear(monthOfYearOption.some());
+			} 
+			otherQueryBuilder.withItemCategory("非经营性损益进项")
+									.withItemCategory("非销售类返利");
+			final Collection<DealerIncomeRevenueFact> otherRevenueFacts = otherQueryBuilder.queryRevenues();
+			
 			final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> otherDealerRevenueFacts = Multimaps
 					.index(otherRevenueFacts,
 							GetDealerIDFromRevenueFunction.INSTANCE);
-			final Collection<DealerIncomeExpenseFact> otherExpenseFacts = reportDAL
-					.getDealerIncomeExpenseFacts(
-							year,
-							Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-									.some() } : new Integer[] {}), Lists
-									.newArrayList(new Integer[] {}), Lists
-									.newArrayList(new Integer[] {}), Lists
-									.newArrayList(new String[] { "非经营性损益削项",
-											"员工分红" }), Lists
-									.newArrayList(new Long[] {}), Lists
-									.newArrayList(new Integer[] {}));
+			otherQueryBuilder.clear()
+								.withItemCategory("非经营性损益削项")
+								.withItemCategory("员工分红");
+			final Collection<DealerIncomeExpenseFact> otherExpenseFacts = otherQueryBuilder.queryExpenses();
+			
 			final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> otherDealerExpenseFacts = Multimaps
 					.index(otherExpenseFacts,
 							GetDealerIDFromExpenseFunction.INSTANCE);
@@ -301,39 +256,42 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		calculator.withPrevious(previousDetailOption);
 
 		// Get all revenues
-		final Collection<DealerIncomeRevenueFact> revenueFacts = reportDAL
-				.getDealerIncomeRevenueFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-									.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}),
-						Lists.newArrayList(new String[] { "新轿车零售", "新货车零售",
-								"附加产品业务", "二手车零售", "维修收入", "配件收入", "钣喷收入",
-								"新车其它收入", "二手车其它收入", "维修其它收入", "维修其它收入",
-								"钣喷其它收入", "租恁收入" }),
-						Lists.newArrayList(new Long[] {}),
-						Lists.newArrayList(dealerIDOption.isSome() ? new Integer[] { dealerIDOption
-								.some() } : new Integer[] {}));
-
+		final DealerIncomeFactsQueryBuilder queryBuilder = 
+				new DealerIncomeFactsQueryBuilder(reportDAL);
+		queryBuilder.withYear(year);
+		if ( monthOfYearOption.isSome() ) {
+			queryBuilder.withMonthOfYear(monthOfYearOption.some());
+		} 
+		if ( departmentIDOption.isSome() ) {
+			queryBuilder.withDepartmentID(departmentIDOption.some());
+		}
+		if ( dealerIDOption.isSome() ) {
+			queryBuilder.withDealerID(dealerIDOption.some());
+		}
+		final Collection<DealerIncomeRevenueFact> revenueFacts =
+				queryBuilder.withItemCategory("新轿车零售")
+								.withItemCategory("新货车零售")
+								.withItemCategory("附加产品业务")
+								.withItemCategory("二手车零售")
+								.withItemCategory("维修收入")
+								.withItemCategory("配件收入")
+								.withItemCategory("钣喷收入")
+								.withItemCategory("新车其它收入")
+								.withItemCategory("二手车其它收入")
+								.withItemCategory("维修其它收入")
+								.withItemCategory("钣喷其它收入")
+								.withItemCategory("租恁收入").queryRevenues();
+		
 		final ImmutableListMultimap<Integer, DealerIncomeRevenueFact> dealerRevenueFacts = Multimaps
 				.index(revenueFacts,
 						GetDepartmentIDFromRevenueFunction.INSTANCE);
 		// Get all expenses
-		final Collection<DealerIncomeExpenseFact> expenseFacts = reportDAL
-				.getDealerIncomeExpenseFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-									.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}),
-						Lists.newArrayList(new String[] { "变动费用", "销售费用",
-								"人工费用", "半固定费用", "固定费用" }),
-						Lists.newArrayList(new Long[] {}),
-						Lists.newArrayList(dealerIDOption.isSome() ? new Integer[] { dealerIDOption
-								.some() } : new Integer[] {}));
+		final Collection<DealerIncomeExpenseFact> expenseFacts =
+				queryBuilder.clear().withItemCategory("变动费用")
+								.withItemCategory("销售费用")
+								.withItemCategory("人工费用")
+								.withItemCategory("半固定费用")
+								.withItemCategory("固定费用").queryExpenses();
 
 		final ImmutableListMultimap<Integer, DealerIncomeExpenseFact> dealerExpenseFacts = Multimaps
 				.index(expenseFacts,
@@ -393,65 +351,46 @@ public class DealerIncomeReportServiceImpl implements DealerIncomeReportService 
 		calculator.withMonth(monthOfYearOption);
 		calculator.withPrevious(previousDetailOption);
 
-		final Collection<DealerIncomeRevenueFact> overallSalesFacts = reportDAL
-				.getDealerIncomeRevenueFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-								.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}),
-						Lists.newArrayList(new String[] { "新轿车零售", "新货车零售",
-								"附加产品业务", "二手车零售", "新车其它收入", "二手车其它收入" }),
-						Lists.newArrayList(new Long[] {}), Lists
-								.newArrayList(new Integer[] {}));
+		final DealerIncomeFactsQueryBuilder revenueFactsQueryBuilder = 
+				new DealerIncomeFactsQueryBuilder(reportDAL);
+		revenueFactsQueryBuilder.withYear(year);
+		if ( monthOfYearOption.isSome() ) {
+			revenueFactsQueryBuilder.withMonthOfYear(monthOfYearOption.some());
+		} 
+		if ( departmentIDOption.isSome() ) {
+			revenueFactsQueryBuilder.withDepartmentID(departmentIDOption.some());
+		}
+		revenueFactsQueryBuilder.withItemCategory("新轿车零售")
+										.withItemCategory("新货车零售")
+										.withItemCategory("附加产品业务")
+										.withItemCategory("二手车零售")
+										.withItemCategory("新车其它收入")
+										.withItemCategory("二手车其它收入");
+		final Collection<DealerIncomeRevenueFact> overallSalesFacts = revenueFactsQueryBuilder.queryRevenues();
+		
+		revenueFactsQueryBuilder.clear()
+								.withItemCategory("新轿车零售")
+								.withItemCategory("新货车零售");
+		final Collection<DealerIncomeRevenueFact> retailFacts = revenueFactsQueryBuilder.queryRevenues();
+		
+		revenueFactsQueryBuilder.clear()
+								.withItemCategory("新车其它收入")
+								.withItemCategory("二手车其它收入")
+								.withItemID(refDataDAL
+									.getSalesServiceRevenueItem(
+										"大客户采购（租车公司，政府机关）",
+										"新车其它收入").getId().longValue())
+								.withItemID(refDataDAL
+										.getSalesServiceRevenueItem("批发销售",
+										"二手车其它收入").getId().longValue());
+		final Collection<DealerIncomeRevenueFact> wholesaleFacts = revenueFactsQueryBuilder.queryRevenues();
 
-		final Collection<DealerIncomeRevenueFact> retailFacts = reportDAL
-				.getDealerIncomeRevenueFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-								.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}),
-						Lists.newArrayList(new String[] { "新轿车零售", "新货车零售" }),
-						Lists.newArrayList(new Long[] {}), Lists
-								.newArrayList(new Integer[] {}));
-
-		final Collection<DealerIncomeRevenueFact> wholesaleFacts = reportDAL
-				.getDealerIncomeRevenueFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-								.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}), Lists
-								.newArrayList(new String[] { "新车其它收入",
-										"二手车其它收入" }), Lists
-								.newArrayList(new Long[] {
-										refDataDAL
-												.getSalesServiceRevenueItem(
-														"大客户采购（租车公司，政府机关）",
-														"新车其它收入").getId().longValue(),
-										refDataDAL
-												.getSalesServiceRevenueItem("批发销售",
-														"二手车其它收入").getId().longValue() }), Lists
-								.newArrayList(new Integer[] {}));
-
-		final Collection<DealerIncomeRevenueFact> otherFacts = reportDAL
-				.getDealerIncomeRevenueFacts(
-						year,
-						Lists.newArrayList(monthOfYearOption.isSome() ? new Integer[] { monthOfYearOption
-								.some() } : new Integer[] {}),
-						Lists.newArrayList(departmentIDOption.isSome() ? new Integer[] { departmentIDOption
-								.some() } : new Integer[] {}), // department id
-						Lists.newArrayList(new Integer[] {}), Lists
-								.newArrayList(new String[] { "新车其它收入" }), Lists
-								.newArrayList(new Long[] { refDataDAL
+		revenueFactsQueryBuilder.clear()
+								.withItemCategory("新车其它收入")
+								.withItemID(refDataDAL
 										.getSalesServiceRevenueItem("他店调车",
-												"新车其它收入")
-										.getId().longValue() }), Lists
-								.newArrayList(new Integer[] {}));
+												"新车其它收入").getId().longValue());
+		final Collection<DealerIncomeRevenueFact> otherFacts = revenueFactsQueryBuilder.queryRevenues();
 
 		calculator
 				.calcOverall(
