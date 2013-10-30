@@ -8,13 +8,16 @@ import org.springframework.stereotype.Service;
 import com.google.common.base.Preconditions;
 import com.jdc.themis.dealer.data.dao.UserDAO;
 import com.jdc.themis.dealer.domain.UserInfo;
+import com.jdc.themis.dealer.domain.UserRole;
 import com.jdc.themis.dealer.service.RefDataQueryService;
 import com.jdc.themis.dealer.service.UserService;
 import com.jdc.themis.dealer.utils.Performance;
 import com.jdc.themis.dealer.web.domain.AddNewUserRequest;
 import com.jdc.themis.dealer.web.domain.GetUserInfoResponse;
+import com.jdc.themis.dealer.web.domain.GetUserRoleResponse;
 import com.jdc.themis.dealer.web.domain.ModifyUserRequest;
 import com.jdc.themis.dealer.web.domain.ResetPasswordRequest;
+import com.jdc.themis.dealer.web.domain.UserRoleDetail;
 
 /**
  * Service layer to manage user information.
@@ -49,7 +52,13 @@ public class UserServiceImpl implements UserService {
 		final UserInfo user = new UserInfo();
 		user.setUsername(request.getUsername());
 		user.setPassword(request.getPassword());
+		user.setUserRoleID(request.getUserRole());
 		user.setActive(Boolean.TRUE);
+		if ( request.getUpdatedBy() == null ) {
+			user.setUpdatedBy(request.getUsername());
+		} else {
+			user.setUpdatedBy(request.getUpdatedBy());
+		}
 		if ( request.getDealerID() != null ) {
 			user.setDealerID(refDataQueryDAL.getDealer(request.getDealerID()).getId());
 		} 
@@ -73,12 +82,14 @@ public class UserServiceImpl implements UserService {
 		Preconditions.checkNotNull(username, "username can't be null");
 		Preconditions.checkArgument(userDAL.getUser(username).isSome(), "unknown user name");
 
+		final UserInfo user = userDAL.getUser(username).some();
 		final GetUserInfoResponse response = new GetUserInfoResponse();
-		response.setUsername(username);
-		if ( userDAL.getUser(username).some().getDealerID() != null ) {
-			response.setDealer(refDataQueryDAL.getDealer(userDAL.getUser(username).some().getDealerID()));
+		response.setUsername(user.getUsername());
+		if ( user.getDealerID() != null ) {
+			response.setDealer(refDataQueryDAL.getDealer(user.getDealerID()));
 		} 
-		response.setRole(userDAL.getUserRole(userDAL.getUser(username).some().getUserRoleID()).some().getName());
+		response.setActive(user.getActive());
+		response.setRole(userDAL.getUserRole(user.getUserRoleID()).some().getName());
 		return response;
 	}
 
@@ -109,9 +120,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Instant modifyUser(ModifyUserRequest request) {
+	public Instant modifyUser(final ModifyUserRequest request) {
 		Preconditions.checkNotNull(request.getUsername(), "user name can't be null");
 		Preconditions.checkNotNull(request.getPassword(), "password can't be null");
+		Preconditions.checkNotNull(request.getUpdatedBy(), "updated by can't be null");
 		Preconditions.checkArgument(userDAL.getUser(request.getUsername()).isSome(), "user name does not exists");
 		Preconditions.checkArgument(request.getPassword().equals(userDAL.getUser(request.getUsername()).some().getPassword()), 
 				"password doesn't match");
@@ -121,7 +133,20 @@ public class UserServiceImpl implements UserService {
 		if ( request.getUserRole() != null ) {
 			user.setUserRoleID(request.getUserRole());
 		} 
+		user.setUpdatedBy(request.getUpdatedBy());
 		return userDAL.saveOrUpdateUser(user);
+	}
+
+	@Override
+	public GetUserRoleResponse getUserRoles() {
+		final GetUserRoleResponse response = new GetUserRoleResponse();
+		for ( final UserRole role : userDAL.getUserRoles() ) {
+			final UserRoleDetail roleDetail = new UserRoleDetail();
+			roleDetail.setId(role.getId());
+			roleDetail.setName(role.getName());
+			response.getDetail().add(roleDetail);
+		}
+		return response;
 	}
 
 }

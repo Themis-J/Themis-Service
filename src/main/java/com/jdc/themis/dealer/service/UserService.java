@@ -4,6 +4,7 @@ import javax.time.Instant;
 
 import org.springframework.transaction.annotation.Transactional;
 import com.jdc.themis.dealer.web.domain.AddNewUserRequest;
+import com.jdc.themis.dealer.web.domain.GetUserRoleResponse;
 import com.jdc.themis.dealer.web.domain.ModifyUserRequest;
 import com.jdc.themis.dealer.web.domain.ResetPasswordRequest;
 import com.jdc.themis.dealer.web.domain.GetUserInfoResponse;
@@ -27,5 +28,8 @@ public interface UserService {
 	
 	@Transactional(readOnly=true)
 	GetUserInfoResponse getUser(String username);
+	
+	@Transactional(readOnly=true)
+	GetUserRoleResponse getUserRoles();
 	
 }

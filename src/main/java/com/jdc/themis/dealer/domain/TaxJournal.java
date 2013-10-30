@@ -44,7 +44,7 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 		)
 @Filters( {
     @Filter(name="taxJournalFilter", condition="validDate = :referenceDate and id = :id and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="taxDateFilter", condition="validDate = :referenceDate and timestamp < :referenceTime and timeEnd >= :referenceTime group by id, dealerID, validDate")
+    @Filter(name="taxDateFilter", condition="validDate = :referenceDate and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})

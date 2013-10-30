@@ -29,7 +29,9 @@ import com.jdc.themis.dealer.web.domain.DepartmentDetail;
 import com.jdc.themis.dealer.web.domain.GetDealerResponse;
 import com.jdc.themis.dealer.web.domain.GetDepartmentResponse;
 import com.jdc.themis.dealer.web.domain.ImportReportDataRequest;
-import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
+import com.jdc.themis.dealer.web.domain.QueryDealerIncomeResponse;
+import com.jdc.themis.dealer.web.domain.QueryDealerSalesResponse;
+import com.jdc.themis.dealer.web.domain.QueryDepartmentIncomeResponse;
 import com.jdc.themis.dealer.web.domain.SalesServiceJournalItemDetail;
 
 import fj.data.Option;
@@ -223,7 +225,7 @@ public class TestDealerIncomeReportServiceImpl {
 		item2.setItemCategory("C1");
 		when(dal.getReportItem(1L)).thenReturn(Option.<ReportItem>some(item1));
 		when(dal.getReportItem(2L)).thenReturn(Option.<ReportItem>some(item2));
-		final QueryReportDataResponse response = service.queryOverallIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none(), Option.<Integer>none());
+		final QueryDealerIncomeResponse response = service.queryOverallIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getDetail().size());
 		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());
@@ -234,7 +236,7 @@ public class TestDealerIncomeReportServiceImpl {
 		Assert.assertEquals(8000.0, response.getDetail().get(1).getDetail().get(0).getNetProfit().getAmount());
 		System.err.println(response);
 		
-		final QueryReportDataResponse response2 = service.queryOverallIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
+		final QueryDealerIncomeResponse response2 = service.queryOverallIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response2);
 		Assert.assertEquals(2, response2.getDetail().size());
 		Assert.assertEquals(2013, response2.getDetail().get(0).getYear().intValue());
@@ -363,24 +365,24 @@ public class TestDealerIncomeReportServiceImpl {
 		item2.setItemCategory("C1");
 		when(dal.getReportItem(1L)).thenReturn(Option.<ReportItem>some(item1));
 		when(dal.getReportItem(2L)).thenReturn(Option.<ReportItem>some(item2));
-		final QueryReportDataResponse response = service.queryDepartmentIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none(), Option.<Integer>none());
+		final QueryDepartmentIncomeResponse response = service.queryDepartmentIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getDetail().size());
 		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());
 		Assert.assertEquals(2013, response.getDetail().get(1).getYear().intValue());
-		Assert.assertEquals(1000.0, response.getDetail().get(1).getDepartmentDetail().get(0).getRevenue().getAmount());
-		Assert.assertEquals(2000.0, response.getDetail().get(1).getDepartmentDetail().get(0).getMargin().getAmount());
+		Assert.assertEquals(1000.0, response.getDetail().get(1).getDetail().get(0).getRevenue().getAmount());
+		Assert.assertEquals(2000.0, response.getDetail().get(1).getDetail().get(0).getMargin().getAmount());
 		System.err.println(response);
 		
-		final QueryReportDataResponse response2 = service.queryDepartmentIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
+		final QueryDepartmentIncomeResponse response2 = service.queryDepartmentIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response2);
 		Assert.assertEquals(2, response2.getDetail().size());
 		Assert.assertEquals(2013, response2.getDetail().get(0).getYear().intValue());
 		Assert.assertEquals(8, response2.getDetail().get(0).getMonth().intValue());
 		Assert.assertEquals(2013, response2.getDetail().get(1).getYear().intValue());
 		Assert.assertEquals(8, response2.getDetail().get(1).getMonth().intValue());
-		Assert.assertEquals(1000.0 / 8, response2.getDetail().get(0).getDepartmentDetail().get(0).getRevenue().getAmount());
-		Assert.assertEquals(1000.0, response2.getDetail().get(1).getDepartmentDetail().get(0).getRevenue().getAmount());
+		Assert.assertEquals(1000.0 / 8, response2.getDetail().get(0).getDetail().get(0).getRevenue().getAmount());
+		Assert.assertEquals(1000.0, response2.getDetail().get(1).getDetail().get(0).getRevenue().getAmount());
 		System.out.println(response2);
 	}
 	
@@ -528,7 +530,7 @@ public class TestDealerIncomeReportServiceImpl {
 		item2.setItemCategory("C1");
 		when(dal.getReportItem(1L)).thenReturn(Option.<ReportItem>some(item1));
 		when(dal.getReportItem(2L)).thenReturn(Option.<ReportItem>some(item2));
-		final QueryReportDataResponse response = service.queryOverallIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none(), Option.<Integer>some(0));
+		final QueryDealerIncomeResponse response = service.queryOverallIncomeReport(2013, Option.<Integer>none(), Option.<Integer>none(), Option.<Integer>some(0));
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getDetail().size());
 		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());
@@ -537,7 +539,7 @@ public class TestDealerIncomeReportServiceImpl {
 		Assert.assertEquals(1.6, response.getDetail().get(1).getDetail().get(0).getMargin().getAmount());
 		System.err.println(response);
 		
-		final QueryReportDataResponse response21 = service.queryOverallIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
+		final QueryDealerIncomeResponse response21 = service.queryOverallIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response21);
 		Assert.assertEquals(2, response21.getDetail().size());
 		Assert.assertEquals(2013, response21.getDetail().get(0).getYear().intValue());
@@ -550,7 +552,7 @@ public class TestDealerIncomeReportServiceImpl {
 		Assert.assertEquals(5000.0, response21.getDetail().get(1).getDetail().get(0).getNetProfit().getAmount());
 		System.out.println(response21);
 		
-		final QueryReportDataResponse response2 = service.queryOverallIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>some(1));
+		final QueryDealerIncomeResponse response2 = service.queryOverallIncomeReport(2013, Option.<Integer>some(8), Option.<Integer>none(), Option.<Integer>some(1));
 		Assert.assertNotNull(response2);
 		Assert.assertEquals(2, response2.getDetail().size());
 		Assert.assertEquals(2013, response2.getDetail().get(0).getYear().intValue());
@@ -720,24 +722,24 @@ public class TestDealerIncomeReportServiceImpl {
 		when(refDataDAL.getSalesServiceRevenueItem("他店调车", "新车其它收入")).thenReturn(v1);
 		when(refDataDAL.getSalesServiceRevenueItem("批发销售", "二手车其它收入")).thenReturn(v1);
 		
-		final QueryReportDataResponse response = service.querySalesReport(2013, Option.<Integer>none(), Option.<Integer>none());
+		final QueryDealerSalesResponse response = service.queryDealerSalesReport(2013, Option.<Integer>none(), Option.<Integer>none());
 		Assert.assertNotNull(response);
 		Assert.assertEquals(2, response.getDetail().size());
 		Assert.assertEquals(2012, response.getDetail().get(0).getYear().intValue());
 		Assert.assertEquals(2013, response.getDetail().get(1).getYear().intValue());
-		Assert.assertEquals(80.0, response.getDetail().get(1).getSalesDetail().get(0).getOverall().getAmount());
-		Assert.assertEquals(0.0, response.getDetail().get(1).getSalesDetail().get(0).getRetail().getAmount());
+		Assert.assertEquals(80.0, response.getDetail().get(1).getDetail().get(0).getOverall().getAmount());
+		Assert.assertEquals(0.0, response.getDetail().get(1).getDetail().get(0).getRetail().getAmount());
 		System.err.println(response);
 		
-		final QueryReportDataResponse response2 = service.querySalesReport(2013, Option.<Integer>some(8), Option.<Integer>none());
+		final QueryDealerSalesResponse response2 = service.queryDealerSalesReport(2013, Option.<Integer>some(8), Option.<Integer>none());
 		Assert.assertNotNull(response2);
 		Assert.assertEquals(2, response2.getDetail().size());
 		Assert.assertEquals(2013, response2.getDetail().get(0).getYear().intValue());
 		Assert.assertEquals(8, response2.getDetail().get(0).getMonth().intValue());
 		Assert.assertEquals(2013, response2.getDetail().get(1).getYear().intValue());
 		Assert.assertEquals(8, response2.getDetail().get(1).getMonth().intValue());
-		Assert.assertEquals(6.25, response2.getDetail().get(0).getSalesDetail().get(0).getOverall().getAmount());
-		Assert.assertEquals(0.0, response2.getDetail().get(1).getSalesDetail().get(0).getWholesale().getAmount());
+		Assert.assertEquals(6.25, response2.getDetail().get(0).getDetail().get(0).getOverall().getAmount());
+		Assert.assertEquals(0.0, response2.getDetail().get(1).getDetail().get(0).getWholesale().getAmount());
 		System.out.println(response2);
 	}
 }

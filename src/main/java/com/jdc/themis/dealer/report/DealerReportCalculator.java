@@ -1,5 +1,8 @@
 package com.jdc.themis.dealer.report;
 
+import static com.jdc.themis.dealer.report.ReportUtils.calcPercentage;
+import static com.jdc.themis.dealer.report.ReportUtils.calcReference;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
@@ -14,8 +17,8 @@ import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.web.domain.DealerDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDealerDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDetailAmount;
-import com.jdc.themis.dealer.web.domain.ReportDataDetail;
-import static com.jdc.themis.dealer.report.ReportUtils.*;
+import com.jdc.themis.dealer.web.domain.ReportDealerDataList;
+
 import fj.data.Option;
 
 /**
@@ -81,8 +84,8 @@ public class DealerReportCalculator {
 	 * 
 	 * @return
 	 */
-	public ReportDataDetail getReportDetail() {
-		final ReportDataDetail reportDetail = new ReportDataDetail();
+	public ReportDealerDataList getReportDetail() {
+		final ReportDealerDataList reportDetail = new ReportDealerDataList();
 		reportDetail.setYear(year);
 		if ( monthOfYear.isSome() ) {
 			reportDetail.setMonth(monthOfYear.some());
@@ -122,7 +125,7 @@ public class DealerReportCalculator {
 	 * @param previousDetail
 	 * @return
 	 */
-	public DealerReportCalculator withPrevious(final Option<ReportDataDetail> previousDetail) {
+	public DealerReportCalculator withPrevious(final Option<ReportDealerDataList> previousDetail) {
 		if ( previousDetail.isNone() ) {
 			return this;
 		}

@@ -18,7 +18,7 @@ import com.google.common.collect.Multimaps;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.domain.ReportTime;
 import com.jdc.themis.dealer.web.domain.DealerDetail;
-import com.jdc.themis.dealer.web.domain.ReportDataDetail;
+import com.jdc.themis.dealer.web.domain.ReportDealerSalesDataList;
 
 import fj.data.Option;
 
@@ -113,11 +113,11 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detail = calc.calcOverall(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.calcOverall(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getSalesDetail().get(0).getOverall().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getOverall().getReference());
+		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getDetail().get(0).getOverall().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getOverall().getReference());
 	}
 	
 	@Test
@@ -184,13 +184,13 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detailPrevious = calc.calcOverall(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
-		final ReportDataDetail detail = calc.withPrevious(Option.<ReportDataDetail>some(detailPrevious)).calcOverall(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detailPrevious = calc.calcOverall(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.withPrevious(Option.<ReportDealerSalesDataList>some(detailPrevious)).calcOverall(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getSalesDetail().get(0).getOverall().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getOverall().getReference());
-		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getSalesDetail().get(1).getOverall().getPercentage());
+		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getDetail().get(0).getOverall().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getOverall().getReference());
+		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getDetail().get(1).getOverall().getPercentage());
 	}
 	
 	@Test
@@ -237,11 +237,11 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detail = calc.calcRetail(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.calcRetail(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getSalesDetail().get(0).getRetail().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getRetail().getReference());
+		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getDetail().get(0).getRetail().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getRetail().getReference());
 	}
 	
 	@Test
@@ -308,13 +308,13 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detailPrevious = calc.calcRetail(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
-		final ReportDataDetail detail = calc.withPrevious(Option.<ReportDataDetail>some(detailPrevious)).calcRetail(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detailPrevious = calc.calcRetail(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.withPrevious(Option.<ReportDealerSalesDataList>some(detailPrevious)).calcRetail(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getSalesDetail().get(0).getRetail().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getRetail().getReference());
-		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getSalesDetail().get(1).getRetail().getPercentage());
+		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getDetail().get(0).getRetail().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getRetail().getReference());
+		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getDetail().get(1).getRetail().getPercentage());
 	}
 	
 	@Test
@@ -361,11 +361,11 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detail = calc.calcWholesale(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.calcWholesale(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getSalesDetail().get(0).getWholesale().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getWholesale().getReference());
+		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getDetail().get(0).getWholesale().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getWholesale().getReference());
 	}
 	
 	@Test
@@ -432,13 +432,13 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detailPrevious = calc.calcWholesale(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
-		final ReportDataDetail detail = calc.withPrevious(Option.<ReportDataDetail>some(detailPrevious)).calcWholesale(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detailPrevious = calc.calcWholesale(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.withPrevious(Option.<ReportDealerSalesDataList>some(detailPrevious)).calcWholesale(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getSalesDetail().get(0).getWholesale().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getWholesale().getReference());
-		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getSalesDetail().get(1).getWholesale().getPercentage());
+		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getDetail().get(0).getWholesale().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getWholesale().getReference());
+		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getDetail().get(1).getWholesale().getPercentage());
 	}
 	
 	@Test
@@ -485,11 +485,11 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detail = calc.calcOther(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.calcOther(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getSalesDetail().get(0).getOther().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getOther().getReference());
+		Assert.assertEquals(new BigInteger((fact1.getCount() + fact2.getCount()) + "").doubleValue(), detail.getDetail().get(0).getOther().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getOther().getReference());
 	}
 	
 	@Test
@@ -556,13 +556,13 @@ public class TestDealerSalesReportCalculator {
 				.index(Lists.newArrayList(fact1, fact2, fact3),
 						GetDealerIDFromRevenueFunction.INSTANCE);
 
-		final ReportDataDetail detailPrevious = calc.calcOther(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
-		final ReportDataDetail detail = calc.withPrevious(Option.<ReportDataDetail>some(detailPrevious)).calcOther(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detailPrevious = calc.calcOther(dealerRevenueFactsPrevious, JournalOp.SUM).getReportDetail();
+		final ReportDealerSalesDataList detail = calc.withPrevious(Option.<ReportDealerSalesDataList>some(detailPrevious)).calcOther(dealerRevenueFacts, JournalOp.SUM).getReportDetail();
 		System.out.println(detail);
 		Assert.assertNotNull(detail);
-		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getSalesDetail().get(0).getOther().getAmount());
-		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getSalesDetail().get(0).getOther().getReference());
-		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getSalesDetail().get(1).getOther().getPercentage());
+		Assert.assertEquals(fact1.getCount().doubleValue() + fact2.getCount().doubleValue(), detail.getDetail().get(0).getOther().getAmount());
+		Assert.assertEquals((fact3.getCount().doubleValue()) / 9.0, detail.getDetail().get(0).getOther().getReference());
+		Assert.assertEquals((fact3.getCount().doubleValue() - fact4.getCount().doubleValue()) / fact4.getCount().doubleValue(), detail.getDetail().get(1).getOther().getPercentage());
 	}
 	
 	private enum GetDealerIDFromRevenueFunction implements

@@ -7,6 +7,8 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 @Entity
 public class UserRole implements Serializable {
@@ -32,5 +34,10 @@ public class UserRole implements Serializable {
 	}
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
+	}
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", id)
+				.append("name", name)
+				.getStringBuffer().toString();
 	}
 }

@@ -1,6 +1,8 @@
 package com.jdc.themis.dealer.report;
 
 
+import static com.jdc.themis.dealer.report.ReportUtils.calcPercentage;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
@@ -13,10 +15,9 @@ import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.domain.DealerIncomeExpenseFact;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.web.domain.DepartmentDetail;
-import static com.jdc.themis.dealer.report.ReportUtils.*;
 import com.jdc.themis.dealer.web.domain.ReportDataDepartmentDetail;
-import com.jdc.themis.dealer.web.domain.ReportDataDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDetailAmount;
+import com.jdc.themis.dealer.web.domain.ReportDepartmentDataList;
 
 import fj.data.Option;
 
@@ -66,13 +67,13 @@ public class DepartmentReportCalculator {
 	 * 
 	 * @return
 	 */
-	public ReportDataDetail getReportDetail() {
-		final ReportDataDetail reportDetail = new ReportDataDetail();
+	public ReportDepartmentDataList getReportDetail() {
+		final ReportDepartmentDataList reportDetail = new ReportDepartmentDataList();
 		reportDetail.setYear(year);
 		if ( monthOfYear.isSome() ) {
 			reportDetail.setMonth(monthOfYear.some());
 		} 
-		reportDetail.getDepartmentDetail().addAll(departmentDetails.values());
+		reportDetail.getDetail().addAll(departmentDetails.values());
 		return reportDetail;
 	}
 	
@@ -95,12 +96,12 @@ public class DepartmentReportCalculator {
 	 * @param previousDetail
 	 * @return
 	 */
-	public DepartmentReportCalculator withPrevious(final Option<ReportDataDetail> previousDetail) {
+	public DepartmentReportCalculator withPrevious(final Option<ReportDepartmentDataList> previousDetail) {
 		if ( previousDetail.isNone() ) {
 			return this;
 		}
 		final Map<Integer, ReportDataDepartmentDetail> dealerPreviousDetails = Maps
-				.uniqueIndex(previousDetail.some().getDepartmentDetail(),
+				.uniqueIndex(previousDetail.some().getDetail(),
 						GetDepartmentIDFromReportDetailFunction.INSTANCE);
 		dealerPreviousDetailOption = Option
 				.<Map<Integer, ReportDataDepartmentDetail>> some(dealerPreviousDetails);

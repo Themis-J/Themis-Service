@@ -26,9 +26,11 @@ import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.data.dao.IncomeJournalDAO;
 import com.jdc.themis.dealer.data.dao.RefDataDAO;
 import com.jdc.themis.dealer.data.dao.ReportDAO;
+import com.jdc.themis.dealer.domain.DealerHRAllocationFact;
 import com.jdc.themis.dealer.domain.DealerIncomeExpenseFact;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.domain.GeneralJournal;
+import com.jdc.themis.dealer.domain.HumanResourceAllocation;
 import com.jdc.themis.dealer.domain.ReportItem;
 import com.jdc.themis.dealer.domain.ReportTime;
 import com.jdc.themis.dealer.domain.SalesServiceJournal;
@@ -504,6 +506,19 @@ public class ReportDAOImpl implements ReportDAO {
 		return ImmutableList.copyOf(list);
 	}
 
+	private Collection<ReportTime> getReportTimeLessThanGivenMonth(Integer year,
+			Option<Integer> lessThanMonthOfYear) {
+		final Session session = sessionFactory.getCurrentSession();
+		final Criteria criteria = session.createCriteria(ReportTime.class);
+		criteria.add(Restrictions.eq("year", year));
+		if (lessThanMonthOfYear.isSome()) {
+			criteria.add(Restrictions.le("monthOfYear", lessThanMonthOfYear.some()));
+		}
+		@SuppressWarnings("unchecked")
+		final List<ReportTime> list = criteria.list();
+		return list;
+	}
+	
 	@Override
 	public Collection<ReportTime> getReportTime(Integer year,
 			Option<Integer> monthOfYear) {
@@ -697,6 +712,58 @@ public class ReportDAOImpl implements ReportDAO {
 		}
 		return facts;
 	}
+	
+	@Override
+	@Performance
+	public Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(
+			Integer year, Option<Integer> lessThanMonthOfYear,
+			Collection<Integer> departmentID, Collection<Integer> itemSource,
+			Collection<String> itemCategory, Collection<Long> itemID,
+			Collection<Integer> dealerID) {
+		Preconditions.checkNotNull(year, "year can't be null");
+		final Session session = sessionFactory.getCurrentSession();
+		final Collection<ReportTime> reportTimes = getReportTimeLessThanGivenMonth(year,
+				lessThanMonthOfYear);
+		if (reportTimes.isEmpty()) {
+			return Lists.newArrayList();
+		}
+
+		final List<DealerIncomeExpenseFact> facts = Lists.newArrayList();
+		session.enableFilter(DealerIncomeExpenseFact.FILTER_REFTIME)
+				.setParameter("referenceTime", Utils.currentTimestamp());
+
+		final Criteria criteria = session
+				.createCriteria(DealerIncomeExpenseFact.class);
+		criteria.add(Restrictions.in("timeID",
+				Lambda.extractProperty(reportTimes, "id")));
+		if (!dealerID.isEmpty()) {
+			criteria.add(Restrictions.in("dealerID", dealerID));
+		}
+		if (!departmentID.isEmpty()) {
+			criteria.add(Restrictions.in("departmentID", departmentID));
+		}
+		if (!itemID.isEmpty()) {
+			criteria.add(Restrictions.in("itemID", itemID));
+		}
+
+		@SuppressWarnings("unchecked")
+		final List<DealerIncomeExpenseFact> list = criteria.list();
+		session.disableFilter(DealerIncomeExpenseFact.FILTER_REFTIME);
+
+		for (final DealerIncomeExpenseFact fact : list) {
+			final ReportItem item = getReportItem(fact.getItemID()).some();
+			if (!itemCategory.isEmpty()
+					&& !itemCategory.contains(item.getItemCategory())) {
+				continue;
+			}
+			if (!itemSource.isEmpty()
+					&& !itemSource.contains(item.getItemSource())) {
+				continue;
+			}
+			facts.add(fact);
+		}
+		return facts;
+	}
 
 	@Override
 	@Performance
@@ -709,6 +776,59 @@ public class ReportDAOImpl implements ReportDAO {
 		final Session session = sessionFactory.getCurrentSession();
 		final Collection<ReportTime> reportTimes = getReportTime(year,
 				monthOfYear);
+		if (reportTimes.isEmpty()) {
+			return Lists.newArrayList();
+		}
+
+		final List<DealerIncomeRevenueFact> facts = Lists.newArrayList();
+		session.enableFilter(DealerIncomeRevenueFact.FILTER_REFTIME)
+				.setParameter("referenceTime", Utils.currentTimestamp());
+
+		final Criteria criteria = session
+				.createCriteria(DealerIncomeRevenueFact.class);
+		criteria.add(Restrictions.in("timeID",
+				Lambda.extractProperty(reportTimes, "id")));
+		if (!dealerID.isEmpty()) {
+			criteria.add(Restrictions.in("dealerID", dealerID));
+		}
+		if (!departmentID.isEmpty()) {
+			criteria.add(Restrictions.in("departmentID", departmentID));
+		}
+		if (!itemID.isEmpty()) {
+			criteria.add(Restrictions.in("itemID", itemID));
+		}
+
+		@SuppressWarnings("unchecked")
+		final List<DealerIncomeRevenueFact> list = criteria.list();
+		logger.debug("get revenue facts {}", list);
+		session.disableFilter(DealerIncomeRevenueFact.FILTER_REFTIME);
+
+		for (final DealerIncomeRevenueFact fact : list) {
+			final ReportItem item = getReportItem(fact.getItemID()).some();
+			if (!itemCategory.isEmpty()
+					&& !itemCategory.contains(item.getItemCategory())) {
+				continue;
+			}
+			if (!itemSource.isEmpty()
+					&& !itemSource.contains(item.getItemSource())) {
+				continue;
+			}
+			facts.add(fact);
+		}
+		return facts;
+	}
+	
+	@Override
+	@Performance
+	public Collection<DealerIncomeRevenueFact> getDealerIncomeRevenueFacts(
+			Integer year, Option<Integer> lessThanMonthOfYear,
+			Collection<Integer> departmentID, Collection<Integer> itemSource,
+			Collection<String> itemCategory, Collection<Long> itemID,
+			Collection<Integer> dealerID) {
+		Preconditions.checkNotNull(year, "year can't be null");
+		final Session session = sessionFactory.getCurrentSession();
+		final Collection<ReportTime> reportTimes = getReportTimeLessThanGivenMonth(year,
+				lessThanMonthOfYear);
 		if (reportTimes.isEmpty()) {
 			return Lists.newArrayList();
 		}
@@ -771,5 +891,103 @@ public class ReportDAOImpl implements ReportDAO {
 					}
 
 				});
+	}
+
+	@Override
+	public void importHRAllocation(final LocalDate validDate) {
+		logger.info("Importing HR allocation to income expense");
+
+		final Collection<HumanResourceAllocation> list = incomeJournalDAL.getHumanResourceAllocation(
+				validDate, Utils.currentTimestamp());
+
+		final List<DealerHRAllocationFact> facts = Lists.newArrayList();
+		for (final HumanResourceAllocation journal : list) {
+			// verify report time
+			final Option<ReportTime> reportTime = this.getReportTime(validDate)
+					.orElse(new P1<Option<ReportTime>>() {
+
+						@Override
+						public Option<ReportTime> _1() {
+							return ReportDAOImpl.this.addReportTime(validDate);
+						}
+
+					});
+
+			final DealerHRAllocationFact fact = new DealerHRAllocationFact();
+			fact.setAllocation(journal.getAllocation());
+			fact.setTimeID(reportTime.some().getId());
+			// verify report item here
+			final Option<ReportItem> reportItem = this.getReportItem(
+					journal.getId(), "HumanResourceAllocation").orElse(
+					new P1<Option<ReportItem>>() {
+
+						@Override
+						public Option<ReportItem> _1() {
+							return ReportDAOImpl.this.addReportItem(
+									journal.getId(), refDataDAL
+											.getJobPosition(journal.getId())
+											.some().getName(), "HumanResourceAllocation",
+									null);
+						}
+
+					});
+
+			fact.setDealerID(journal.getDealerID());
+			fact.setDepartmentID(journal.getDepartmentID()); 
+			fact.setItemID(reportItem.some().getId());
+			fact.setTimestamp(journal.getTimestamp());
+			fact.setTimeEnd(journal.getTimeEnd());
+			facts.add(fact);
+		}
+		this.saveDealerHRAllocationFacts(facts);
+	}
+
+	@Override
+	public void saveDealerHRAllocationFacts(
+			Collection<DealerHRAllocationFact> journals) {
+		final Session session = sessionFactory.getCurrentSession();
+		for (final DealerHRAllocationFact newJournal : journals) {
+			// check whether this journal has been inserted before
+			session.enableFilter(DealerHRAllocationFact.FILTER)
+					.setParameter("timeID", newJournal.getTimeID())
+					.setParameter("itemID", newJournal.getItemID())
+					.setParameter("dealerID", newJournal.getDealerID())
+					.setParameter("departmentID", newJournal.getDepartmentID())
+					.setParameter("referenceTime", Utils.currentTimestamp()); // we
+																				// are
+																				// only
+																				// interested
+																				// in
+																				// latest
+																				// record
+			@SuppressWarnings("unchecked")
+			final List<DealerHRAllocationFact> list = session.createCriteria(
+					DealerHRAllocationFact.class).list();
+			boolean isPersisted = false;
+			if (!list.isEmpty()) {
+				for (final DealerHRAllocationFact oldJournal : list) {
+					// if we get here, it means we have inserted this fact
+					// before
+					if (oldJournal.getTimestamp().isBefore(
+							newJournal.getTimestamp())) {
+						oldJournal.setTimeEnd(newJournal.getTimestamp());
+						session.saveOrUpdate(oldJournal);
+					}
+					if (oldJournal.getTimestamp().equals(
+							newJournal.getTimestamp())) {
+						isPersisted = true;
+					}
+				}
+				session.flush();
+			} else {
+				session.save(newJournal);
+			}
+			if (!isPersisted) {
+				session.save(newJournal);
+			}
+			session.disableFilter(DealerHRAllocationFact.FILTER);
+
+			session.flush();
+		}
 	}
 }

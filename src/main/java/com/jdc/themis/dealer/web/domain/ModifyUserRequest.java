@@ -15,7 +15,14 @@ public class ModifyUserRequest implements Serializable{
 	private String password;
 	private Integer userRole;
 	private Integer dealerID;
+	private String updatedBy;
 	
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 	public String getUsername() {
 		return username;
 	}
