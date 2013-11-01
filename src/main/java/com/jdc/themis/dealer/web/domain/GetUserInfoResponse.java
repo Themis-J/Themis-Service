@@ -14,7 +14,14 @@ public class GetUserInfoResponse implements Serializable {
 	private String username;
 	private String role;
 	private DealerDetail dealer;
+	private Boolean active;
 	
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 	public String getUsername() {
 		return username;
 	}

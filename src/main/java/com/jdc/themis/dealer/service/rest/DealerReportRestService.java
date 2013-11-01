@@ -115,7 +115,7 @@ public class DealerReportRestService {
 			@QueryParam("monthOfYear") Integer monthOfYear, 
 			@QueryParam("departmentID") Integer departmentID) {
 		return Response.ok(
-				dealerIncomeReportService.querySalesReport(
+				dealerIncomeReportService.queryDealerSalesReport(
 						year, 
 						Option.fromNull(monthOfYear), 
 						Option.fromNull(departmentID))).build();

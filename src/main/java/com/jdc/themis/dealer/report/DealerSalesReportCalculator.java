@@ -14,8 +14,8 @@ import com.google.common.collect.Maps;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.web.domain.DealerDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDealerSalesDetail;
-import com.jdc.themis.dealer.web.domain.ReportDataDetail;
 import com.jdc.themis.dealer.web.domain.ReportDataDetailAmount;
+import com.jdc.themis.dealer.web.domain.ReportDealerSalesDataList;
 
 import fj.data.Option;
 
@@ -66,13 +66,13 @@ public class DealerSalesReportCalculator {
 	 * 
 	 * @return
 	 */
-	public ReportDataDetail getReportDetail() {
-		final ReportDataDetail reportDetail = new ReportDataDetail();
+	public ReportDealerSalesDataList getReportDetail() {
+		final ReportDealerSalesDataList reportDetail = new ReportDealerSalesDataList();
 		reportDetail.setYear(year);
 		if ( monthOfYear.isSome() ) {
 			reportDetail.setMonth(monthOfYear.some());
 		} 
-		reportDetail.getSalesDetail().addAll(dealerDetails.values());
+		reportDetail.getDetail().addAll(dealerDetails.values());
 		return reportDetail;
 	}
 	
@@ -94,12 +94,12 @@ public class DealerSalesReportCalculator {
 	 * @param previousDetail
 	 * @return
 	 */
-	public DealerSalesReportCalculator withPrevious(final Option<ReportDataDetail> previousDetail) {
+	public DealerSalesReportCalculator withPrevious(final Option<ReportDealerSalesDataList> previousDetail) {
 		if ( previousDetail.isNone() ) {
 			return this;
 		}
 		final Map<Integer, ReportDataDealerSalesDetail> dealerPreviousDetails = Maps
-				.uniqueIndex(previousDetail.some().getSalesDetail(),
+				.uniqueIndex(previousDetail.some().getDetail(),
 						GetDealerIDFromReportDetailFunction.INSTANCE);
 		dealerPreviousDetailOption = Option
 				.<Map<Integer, ReportDataDealerSalesDetail>> some(dealerPreviousDetails);

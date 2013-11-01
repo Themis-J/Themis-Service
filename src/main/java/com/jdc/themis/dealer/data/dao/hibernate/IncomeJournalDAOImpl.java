@@ -642,7 +642,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 
 	@Override
 	public Collection<VehicleSalesJournal> getVehicleSalesJournal(
-			LocalDate validDate, Instant timestamp) {
+			final LocalDate validDate, final Instant timestamp) {
 		final Session session = sessionFactory.getCurrentSession();
 		session.enableFilter(VehicleSalesJournal.FILTER_VALIDATE)
 			.setParameter("referenceDate", validDate)
@@ -656,7 +656,7 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 
 	@Override
 	public Collection<SalesServiceJournal> getSalesServiceJournal(
-			LocalDate validDate, Instant timestamp) {
+			final LocalDate validDate, final Instant timestamp) {
 		final Session session = sessionFactory.getCurrentSession();
 		session.enableFilter(SalesServiceJournal.FILTER_VALIDATE)
 			.setParameter("referenceDate", validDate)
@@ -669,8 +669,8 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
-	public Collection<GeneralJournal> getGeneralJournal(LocalDate validDate,
-			Instant timestamp) {
+	public Collection<GeneralJournal> getGeneralJournal(final LocalDate validDate,
+			final Instant timestamp) {
 		final Session session = sessionFactory.getCurrentSession();
 		session.enableFilter(GeneralJournal.FILTER_VALIDATE)
 			.setParameter("referenceDate", validDate)
@@ -683,8 +683,8 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 	}
 
 	@Override
-	public Collection<TaxJournal> getTaxJournal(LocalDate validDate,
-			Instant timestamp) {
+	public Collection<TaxJournal> getTaxJournal(final LocalDate validDate,
+			final Instant timestamp) {
 		final Session session = sessionFactory.getCurrentSession();
 		session.enableFilter(TaxJournal.FILTER_VALIDATE)
 			.setParameter("referenceDate", validDate)
@@ -693,6 +693,20 @@ public class IncomeJournalDAOImpl implements IncomeJournalDAO {
 		final List<TaxJournal> list = session.createCriteria(
 				TaxJournal.class).list();
 		session.disableFilter(TaxJournal.FILTER_VALIDATE);
+		return list;
+	}
+
+	@Override
+	public Collection<HumanResourceAllocation> getHumanResourceAllocation(
+			final LocalDate validDate, final Instant timestamp) {
+		final Session session = sessionFactory.getCurrentSession();
+		session.enableFilter(HumanResourceAllocation.FILTER_VALIDATE)
+			.setParameter("referenceDate", validDate)
+			.setParameter("referenceTime", timestamp);
+		@SuppressWarnings("unchecked")
+		final List<HumanResourceAllocation> list = session.createCriteria(
+				HumanResourceAllocation.class).list();
+		session.disableFilter(HumanResourceAllocation.FILTER_VALIDATE);
 		return list;
 	}
 

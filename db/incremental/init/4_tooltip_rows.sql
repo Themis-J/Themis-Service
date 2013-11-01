@@ -1,5 +1,5 @@
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">现金折扣所得</legend>
     <div>
         <b>所含金额</b>
@@ -14,7 +14,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=43;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">现金折扣获准</legend>
     <div>
         <b>所含金额</b>
@@ -29,7 +29,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=48;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">现金折扣获准</legend>
     <div>
         <b>所含金额</b>
@@ -44,7 +44,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=44;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">利息所得</legend>
     <div>
         <b>所含金额</b><br>
@@ -61,7 +61,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=44;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">利息所得</legend>
     <div>
         <b>所含金额</b><br>
@@ -78,7 +78,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=44;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">坏帐费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -93,7 +93,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=58;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">坏账回收</legend>
     <div>
         <b>所含金额</b><br>
@@ -108,7 +108,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=45;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">坏账回收</legend>
     <div>
         <b>所含金额</b><br>
@@ -123,7 +123,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=45;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">董事费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -138,7 +138,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=50;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">营业外收入</legend>
     <div>
         <b>所含金额</b><br>
@@ -156,7 +156,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=46;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">营业外支出</legend>
     <div>
         <b>所含金额</b><br>
@@ -171,7 +171,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=51;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">代收</legend>
     <div>
         <b>所含金额</b><br>
@@ -187,7 +187,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=47;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">代付</legend>
     <div>
         <b>所含金额</b><br>
@@ -203,7 +203,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=52;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">建店返利</legend>
     <div>
         <b>所含金额</b><br>
@@ -214,7 +214,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=53;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">市场营销补贴</legend>
     <div>
         <b>所含金额</b><br>
@@ -225,7 +225,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=54;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">满意度奖励</legend>
     <div>
         <b>所含金额</b><br>
@@ -236,7 +236,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=55;
 
 UPDATE GeneralJournalItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">其他奖励</legend>
     <div>
         <b>所含金额</b><br>
@@ -246,7 +246,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=56;
 
 UPDATE AccountReceivableDurationItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">客户 - 维修、钣喷与备件</legend>
     <div>
         <b>所含金额</b><br>
@@ -256,7 +256,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=1;
 
 UPDATE AccountReceivableDurationItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">原厂</legend>
     <div>
         <b>所含金额</b><br>
@@ -266,7 +266,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=3;
 
 UPDATE AccountReceivableDurationItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">保修索赔</legend>
     <div>
         <b>所含金额</b><br>
@@ -276,7 +276,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=5;
 
 UPDATE AccountReceivableDurationItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">保险理赔应收款</legend>
     <div>
         <b>所含金额</b><br>
@@ -286,7 +286,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=6;
 
 UPDATE AccountReceivableDurationItem
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">分期与保险手续费</legend>
     <div>
         <b>所含金额</b><br>
@@ -296,7 +296,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=7;
 
 UPDATE AccountReceivableDurationItem
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">其它应收帐款</legend>
     <div>
         <b>所含金额</b><br>
@@ -312,7 +312,7 @@ WHERE id=8;
 
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">本品牌新车库存台次</legend>
     <div>
         <b>所含金额</b><br>
@@ -323,7 +323,7 @@ WHERE id=1;
 
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">非本品牌新车库存台次</legend>
     <div>
         <b>所含金额</b><br>
@@ -334,7 +334,7 @@ WHERE id=2;
 
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">非本品牌新车库存台次</legend>
     <div>
         <b>所含金额</b><br>
@@ -344,7 +344,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=2;
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">其它车辆库存</legend>
     <div>
         <b>所含金额</b><br>
@@ -354,7 +354,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=3;
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">二手车库存台次</legend>
     <div>
         <b>所含金额</b><br>
@@ -364,7 +364,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=12;
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">本品牌备件库存</legend>
     <div>
         <b>所含金额</b><br>
@@ -374,7 +374,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=5;
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">本品牌精品库存</legend>
     <div>
         <b>所含金额</b><br>
@@ -384,7 +384,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=6;
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">非本品牌备件库存</legend>
     <div>
         <b>所含金额</b><br>
@@ -394,7 +394,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=7;
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">非本品牌精品库存</legend>
     <div>
         <b>所含金额</b><br>
@@ -406,7 +406,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=8;
 
 UPDATE InventoryDurationItem 
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">轮胎库存</legend>
     <div>
         <b>所含金额</b><br>
@@ -418,7 +418,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=9;
 
 UPDATE EmployeeFeeSummaryItem  
-SET tooltip='<div style="width: 500px"  >
+SET tooltip='<div style="width: 500px"  class="hidden">
     <legend style="font-size: 16px">本月未结算工时</legend>
     <div>
         <b>所含金额</b><br>
@@ -428,7 +428,7 @@ SET tooltip='<div style="width: 500px"  >
 WHERE id=1;
 
 UPDATE EmployeeFeeSummaryItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">本月实际工作天数</legend>
     <div>
         <b>所含金额</b><br>
@@ -440,7 +440,7 @@ WHERE id=2;
 
 
 UPDATE EmployeeFeeSummaryItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">本月实际维修工位数量</legend>
     <div>
         <b>所含金额</b><br>
@@ -452,7 +452,7 @@ WHERE id=3;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">销售顾问以外的各部门员工薪酬</legend>
     <div>
         <b>所含金额</b><br>
@@ -480,7 +480,7 @@ WHERE id=5;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">广告费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -508,7 +508,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=6;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">车辆短期融资信贷利息</legend>
     <div>
         <b>所含金额</b><br>
@@ -536,7 +536,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=7;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">库存维护、修复费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -575,7 +575,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=8;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">公司用车费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -620,7 +620,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=9;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">员工差旅培训费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -651,7 +651,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=10;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">商品运输费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -679,7 +679,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=11;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">公司服装费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -707,7 +707,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=12;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">顾客满意度费用-维修、售后等</legend>
     <div>
         <b>所含金额</b><br>
@@ -735,7 +735,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=13;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">车间低耗品及工具</legend>
     <div>
         <b>所含金额</b><br>
@@ -773,7 +773,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=14;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">土地租金或按揭月供利息</legend>
     <div>
         <b>所含金额</b><br>
@@ -802,7 +802,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=31;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">公司用车以外的固定资产保险</legend>
     <div>
         <b>所含金额</b><br>
@@ -831,7 +831,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=32;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">水电费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -854,7 +854,7 @@ WHERE id=33;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">房屋建筑物维护</legend>
     <div>
         <b>所含金额</b><br>
@@ -881,7 +881,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=34;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">房产税（按受益期归集）</legend>
     <div>
         <b>所含金额</b><br>
@@ -909,7 +909,7 @@ WHERE id=35;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">房屋折旧及购入土地摊销</legend>
     <div>
         <b>所含金额</b><br>
@@ -936,7 +936,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=36;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">房屋外的固定资产折旧</legend>
     <div>
         <b>所含金额</b><br>
@@ -964,7 +964,7 @@ WHERE id=36;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">营业税金附加及其它税费</legend>
     <div>
         <b>所含金额</b><br>
@@ -975,7 +975,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=38;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">一般保险</legend>
     <div>
         <b>所含金额</b><br>
@@ -1008,7 +1008,7 @@ WHERE id=39;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">设备维护</legend>
     <div>
         <b>所含金额</b><br>
@@ -1036,7 +1036,7 @@ WHERE id=40;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">证照费</legend>
     <div>
         <b>所含金额</b><br>
@@ -1058,7 +1058,7 @@ WHERE id=41;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">其它小额固定费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -1081,7 +1081,7 @@ WHERE id=42;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">员工/团队奖金</legend>
     <div>
         <b>所含金额</b><br>
@@ -1103,7 +1103,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=57;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">销售顾问薪酬</legend>
     <div>
         <b>所含金额</b><br>
@@ -1131,7 +1131,7 @@ WHERE id=1;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">金融保险顾问薪酬</legend>
     <div>
         <b>所含金额</b><br>
@@ -1154,7 +1154,7 @@ WHERE id=2;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">车辆交付费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -1186,7 +1186,7 @@ WHERE id=3;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">顾客满意度费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -1210,7 +1210,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=4;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">会员费、非品牌协会、出版物订阅费</legend>
     <div>
         <b>所含金额</b><br>
@@ -1245,7 +1245,7 @@ WHERE id=19;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">办公用品</legend>
     <div>
         <b>所含金额</b><br>
@@ -1273,7 +1273,7 @@ WHERE id=20;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">外包服务费</legend>
     <div>
         <b>所含金额</b><br>
@@ -1304,7 +1304,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=21;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">邮资</legend>
     <div>
         <b>所含金额</b><br>
@@ -1334,7 +1334,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=22;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">差旅费</legend>
     <div>
         <b>所含金额</b><br>
@@ -1365,7 +1365,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=23;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">审计与法律服务费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -1395,7 +1395,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=24;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">软件、数据维护费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -1428,7 +1428,7 @@ WHERE id=25;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">捐赠款</legend>
     <div>
         <b>所含金额</b><br>
@@ -1456,7 +1456,7 @@ WHERE id=26;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">其它利息及银行手续费</legend>
     <div>
         <b>所含金额</b><br>
@@ -1487,7 +1487,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=27;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">保安、清洁费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -1516,7 +1516,7 @@ WHERE id=28;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">通讯费 (电话、传真、网络)</legend>
     <div>
         <b>所含金额</b><br>
@@ -1546,7 +1546,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=29;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">其它 (含安全生产费用)</legend>
     <div>
         <b>所含金额</b><br>
@@ -1575,7 +1575,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=30;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">公司领导层薪酬</legend>
     <div>
         <b>所含金额</b><br>
@@ -1604,7 +1604,7 @@ WHERE id=15;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">部门经理薪酬</legend>
     <div>
         <b>所含金额</b><br>
@@ -1633,7 +1633,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=16;
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">福利</legend>
     <div>
         <b>所含金额</b><br>
@@ -1670,7 +1670,7 @@ WHERE id=17;
 
 
 UPDATE GeneralJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">非正式人员费用</legend>
     <div>
         <b>所含金额</b><br>
@@ -1680,7 +1680,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=18;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">分期收入</legend>
     <div>
         <b>附加产品业务-新车</b><br>
@@ -1703,7 +1703,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=6;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">保险收入</legend>
     <div>
         <b>附加产品业务-新车</b><br>
@@ -1728,7 +1728,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=7;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">延保收入</legend>
     <div>
         <b>附加产品业务-新车</b><br>
@@ -1753,7 +1753,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=8;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">牌照收入</legend>
     <div>
         <b>附加产品业务-新车</b><br>
@@ -1778,7 +1778,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=9;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">其他附加收入</legend>
     <div>
         <b>附加产品业务-新车</b><br>
@@ -1811,7 +1811,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=10;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">认证二手车零售</legend>
     <div>
         <b>二手车部门</b><br>
@@ -1834,7 +1834,7 @@ WHERE id=11;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">认证二手车翻新</legend>
     <div>
         <b>二手车部门</b><br>
@@ -1857,7 +1857,7 @@ WHERE id=12;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">非认证二手车零售</legend>
     <div>
         <b>二手车部门</b><br>
@@ -1879,7 +1879,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=13;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">非认证二手车翻新</legend>
     <div>
         <b>二手车部门</b><br>
@@ -1902,7 +1902,7 @@ WHERE id=14;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">批发销售</legend>
     <div>
         <b>二手车部门</b><br>
@@ -1924,7 +1924,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=15;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">库存调整</legend>
     <div>
         <b>二手车部门</b><br>
@@ -1946,7 +1946,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=16;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">客户付费工时</legend>
     <div>
         <b>维修部</b><br>
@@ -1976,7 +1976,7 @@ WHERE id=17;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">内部工时</legend>
     <div>
         <b>维修部</b><br>
@@ -1999,7 +1999,7 @@ WHERE id=19;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         精品安装工时
     </legend>
@@ -2028,7 +2028,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=20;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         内外清洗、细节保养清洁工时
     </legend>
@@ -2052,7 +2052,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=21;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         其它工时
     </legend>
@@ -2076,7 +2076,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=22;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         未使用工
     </legend>
@@ -2101,7 +2101,7 @@ WHERE id=23;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         未使用工
     </legend>
@@ -2125,7 +2125,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=23;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         外修
     </legend>
@@ -2152,7 +2152,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=24;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         延保
     </legend>
@@ -2178,7 +2178,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=25;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         客户－维修部
     </legend>
@@ -2203,7 +2203,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=26;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         保修
     </legend>
@@ -2228,7 +2228,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=27;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         内部
     </legend>
@@ -2253,7 +2253,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=28;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         精品
     </legend>
@@ -2288,7 +2288,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=29;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         客户－钣喷
     </legend>
@@ -2313,7 +2313,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=30;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         批发
     </legend>
@@ -2338,7 +2338,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=31;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         柜台零售
     </legend>
@@ -2368,7 +2368,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=32;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         其它营业外收入
     </legend>
@@ -2394,7 +2394,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=33;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         油品
     </legend>
@@ -2420,7 +2420,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=34;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         轮胎
     </legend>
@@ -2446,7 +2446,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=35;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         订货折扣或其它厂家返利
     </legend>
@@ -2478,7 +2478,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=36;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         客户付费钣喷工时
     </legend>
@@ -2504,7 +2504,7 @@ WHERE id=38;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         钣喷保修工时
     </legend>
@@ -2530,7 +2530,7 @@ WHERE id=39;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         钣喷内部工时
     </legend>
@@ -2555,7 +2555,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=40;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         钣喷未使用/浪费工时
     </legend>
@@ -2581,7 +2581,7 @@ WHERE id=44;
 
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         外修
     </legend>
@@ -2609,7 +2609,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=45;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         钣喷材料收入
     </legend>
@@ -2634,7 +2634,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=46;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         大客户采购（租车公司，政府机关）
     </legend>
@@ -2646,7 +2646,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=2;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         二网销售
     </legend>
@@ -2658,7 +2658,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=3;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         他店调车
     </legend>
@@ -2670,7 +2670,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=4;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         零售销售返利
     </legend>
@@ -2682,7 +2682,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=5;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         汽车租赁
     </legend>
@@ -2696,7 +2696,7 @@ SET tooltip='<div style="width: 500px" >
 WHERE id=47;
 
 UPDATE SalesServiceJournalItem  
-SET tooltip='<div style="width: 500px" >
+SET tooltip='<div style="width: 500px" class="hidden">
     <legend style="font-size: 16px">
         其他附加业务
     </legend>

@@ -3,6 +3,7 @@ package com.jdc.themis.dealer.data.dao;
 import java.util.Collection;
 import javax.time.calendar.LocalDate;
 
+import com.jdc.themis.dealer.domain.DealerHRAllocationFact;
 import com.jdc.themis.dealer.domain.DealerIncomeExpenseFact;
 import com.jdc.themis.dealer.domain.DealerIncomeRevenueFact;
 import com.jdc.themis.dealer.domain.ReportItem;
@@ -23,6 +24,15 @@ public interface ReportDAO {
 			Collection<Long> itemID, 
 			Collection<Integer> dealerID);
 	
+	Collection<DealerIncomeRevenueFact> getDealerIncomeRevenueFacts(
+			Integer year,
+			Option<Integer> lessThanMonthOfYear, 
+			Collection<Integer> departmentID,
+			Collection<Integer> itemSource,
+			Collection<String> itemCategory, 
+			Collection<Long> itemID, 
+			Collection<Integer> dealerID);
+	
 	void saveDealerIncomeExpenseFacts(Collection<DealerIncomeExpenseFact> journals);
 	
 	Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(
@@ -34,6 +44,17 @@ public interface ReportDAO {
 			Collection<Long> itemID, 
 			Collection<Integer> dealerID);
 	
+	Collection<DealerIncomeExpenseFact> getDealerIncomeExpenseFacts(
+			Integer year,
+			Option<Integer> lessThanMonthOfYear, 
+			Collection<Integer> departmentID, 
+			Collection<Integer> itemSource,
+			Collection<String> itemCategory, 
+			Collection<Long> itemID, 
+			Collection<Integer> dealerID);
+	
+	void saveDealerHRAllocationFacts(Collection<DealerHRAllocationFact> journals);
+	
 	void importVehicleSalesJournal(LocalDate validDate);
 	
 	void importSalesServiceJournal(LocalDate validDate);
@@ -41,6 +62,8 @@ public interface ReportDAO {
 	void importGeneralJournal(LocalDate validDate);
 	
 	void importTaxJournal(LocalDate validDate);
+	
+	void importHRAllocation(LocalDate validDate);
 	
 	Option<ReportTime> getReportTime(LocalDate validDate);
 	

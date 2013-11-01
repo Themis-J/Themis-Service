@@ -15,6 +15,7 @@ public class AddNewUserRequest implements Serializable{
 	private String password;
 	private Integer userRole;
 	private Integer dealerID;
+	private String updatedBy;
 	
 	public String getUsername() {
 		return username;
@@ -40,4 +41,11 @@ public class AddNewUserRequest implements Serializable{
 	public void setDealerID(Integer dealerID) {
 		this.dealerID = dealerID;
 	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
 }

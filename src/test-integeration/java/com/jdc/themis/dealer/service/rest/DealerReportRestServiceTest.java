@@ -13,13 +13,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.jdc.themis.dealer.web.domain.QueryReportDataResponse;
-import com.jdc.themis.dealer.web.domain.ReportDataDetail;
+import com.jdc.themis.dealer.web.domain.QueryDealerIncomeResponse;
+import com.jdc.themis.dealer.web.domain.QueryDealerSalesResponse;
+import com.jdc.themis.dealer.web.domain.QueryDepartmentIncomeResponse;
+import com.jdc.themis.dealer.web.domain.ReportDealerDataList;
 
 public class DealerReportRestServiceTest {
 
-	private final static String HOST = "115.28.15.122:8080";
-	//private final static String HOST = "localhost:8080";
+	//private final static String HOST = "115.28.15.122:8080";
+	private final static String HOST = "localhost:8080";
 	private final static String ROOT_URL = "http://" + HOST + "/themis/dealer/";
 	private final static String REPORT_ROOT_URL = "http://" + HOST + "/themis/report/";
 	
@@ -86,21 +88,21 @@ public class DealerReportRestServiceTest {
 		mGet.releaseConnection();
 		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
 		final ObjectMapper getMapper = new ObjectMapper();
-		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
-				QueryReportDataResponse.class);
+		final QueryDealerIncomeResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryDealerIncomeResponse.class);
 		Assert.assertNotNull(getResponse);
 		Assert.assertEquals(2, getResponse.getDetail().size());
 		/**
 		 * Verify 2012 data
 		 */
-		final ReportDataDetail report2012 = getResponse.getDetail().get(0);
+		final ReportDealerDataList report2012 = (ReportDealerDataList) getResponse.getDetail().get(0);
 		System.out.println("2012: " + new String(report2012.toString().getBytes("ISO-8859-1")));
 		Assert.assertEquals(20, report2012.getDetail().size());
 		
 		/**
 		 * Verify 2013 data
 		 */
-		final ReportDataDetail report2013 = getResponse.getDetail().get(1);
+		final ReportDealerDataList report2013 = (ReportDealerDataList) getResponse.getDetail().get(1);
 		System.out.println("2013: " + new String(report2013.toString().getBytes("ISO-8859-1")));
 		Assert.assertEquals(20, report2013.getDetail().size());
 	}
@@ -132,8 +134,8 @@ public class DealerReportRestServiceTest {
 		mGet.releaseConnection();
 		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
 		final ObjectMapper getMapper = new ObjectMapper();
-		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
-				QueryReportDataResponse.class);
+		final QueryDealerIncomeResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryDealerIncomeResponse.class);
 		Assert.assertNotNull(getResponse);
 		Assert.assertEquals(2, getResponse.getDetail().size());
 		//2005
@@ -179,8 +181,8 @@ public class DealerReportRestServiceTest {
 		mGet.releaseConnection();
 		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
 		final ObjectMapper getMapper = new ObjectMapper();
-		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
-				QueryReportDataResponse.class);
+		final QueryDealerIncomeResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryDealerIncomeResponse.class);
 		Assert.assertNotNull(getResponse);
 		Assert.assertEquals(2, getResponse.getDetail().size());
 		//2005
@@ -226,23 +228,23 @@ public class DealerReportRestServiceTest {
 		mGet.releaseConnection();
 		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
 		final ObjectMapper getMapper = new ObjectMapper();
-		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
-				QueryReportDataResponse.class);
+		final QueryDepartmentIncomeResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryDepartmentIncomeResponse.class);
 		Assert.assertNotNull(getResponse);
 		Assert.assertEquals(2, getResponse.getDetail().size());
 		//2005
-		Assert.assertEquals(8, getResponse.getDetail().get(0).getDepartmentDetail().size());
+		Assert.assertEquals(8, getResponse.getDetail().get(0).getDetail().size());
 		
 		/**
 		 * Verify 2006 data
 		 */
-		Assert.assertEquals(8, getResponse.getDetail().get(1).getDepartmentDetail().size());
+		Assert.assertEquals(8, getResponse.getDetail().get(1).getDetail().size());
 		// verify department 1
-		Assert.assertEquals(50000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(1).getRevenue().getAmount());
-		Assert.assertEquals(6000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(1).getMargin().getAmount());
+		Assert.assertEquals(50000.0, getResponse.getDetail().get(1).getDetail().get(1).getRevenue().getAmount());
+		Assert.assertEquals(6000.0, getResponse.getDetail().get(1).getDetail().get(1).getMargin().getAmount());
 		// verify department 2
-		Assert.assertEquals(100000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getRevenue().getAmount());
-		Assert.assertEquals(2000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getMargin().getAmount());
+		Assert.assertEquals(100000.0, getResponse.getDetail().get(1).getDetail().get(2).getRevenue().getAmount());
+		Assert.assertEquals(2000.0, getResponse.getDetail().get(1).getDetail().get(2).getMargin().getAmount());
 	
 	}
 	
@@ -273,23 +275,23 @@ public class DealerReportRestServiceTest {
 		mGet.releaseConnection();
 		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
 		final ObjectMapper getMapper = new ObjectMapper();
-		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
-				QueryReportDataResponse.class);
+		final QueryDepartmentIncomeResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryDepartmentIncomeResponse.class);
 		Assert.assertNotNull(getResponse);
 		Assert.assertEquals(2, getResponse.getDetail().size());
 		//2005
-		Assert.assertEquals(8, getResponse.getDetail().get(0).getDepartmentDetail().size());
+		Assert.assertEquals(8, getResponse.getDetail().get(0).getDetail().size());
 		
 		/**
 		 * Verify 2006 data
 		 */
-		Assert.assertEquals(8, getResponse.getDetail().get(1).getDepartmentDetail().size());
+		Assert.assertEquals(8, getResponse.getDetail().get(1).getDetail().size());
 		// verify department 1
-		Assert.assertEquals(50000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(1).getRevenue().getAmount());
-		Assert.assertEquals(6000.0, getResponse.getDetail().get(1).getDepartmentDetail().get(1).getMargin().getAmount());
+		Assert.assertEquals(50000.0, getResponse.getDetail().get(1).getDetail().get(1).getRevenue().getAmount());
+		Assert.assertEquals(6000.0, getResponse.getDetail().get(1).getDetail().get(1).getMargin().getAmount());
 		// verify department 2
-		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getRevenue().getAmount());
-		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getDepartmentDetail().get(2).getMargin().getAmount());
+		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getDetail().get(2).getRevenue().getAmount());
+		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getDetail().get(2).getMargin().getAmount());
 	
 	}
 	
@@ -320,23 +322,23 @@ public class DealerReportRestServiceTest {
 		mGet.releaseConnection();
 		System.out.println("response : " + new String(getOutput.getBytes("ISO-8859-1")));
 		final ObjectMapper getMapper = new ObjectMapper();
-		final QueryReportDataResponse getResponse = getMapper.readValue(getOutput.getBytes(),
-				QueryReportDataResponse.class);
+		final QueryDealerSalesResponse getResponse = getMapper.readValue(getOutput.getBytes(),
+				QueryDealerSalesResponse.class);
 		Assert.assertNotNull(getResponse);
 		Assert.assertEquals(2, getResponse.getDetail().size());
 		//2005
-		Assert.assertEquals(20, getResponse.getDetail().get(0).getSalesDetail().size());
+		Assert.assertEquals(20, getResponse.getDetail().get(0).getDetail().size());
 		
 		/**
 		 * Verify 2006 data
 		 */
-		Assert.assertEquals(20, getResponse.getDetail().get(1).getSalesDetail().size());
+		Assert.assertEquals(20, getResponse.getDetail().get(1).getDetail().size());
 		// verify dealer 10
-		Assert.assertEquals(5000.0, getResponse.getDetail().get(1).getSalesDetail().get(9).getOverall().getAmount());
-		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getSalesDetail().get(9).getRetail().getAmount());
+		Assert.assertEquals(5000.0, getResponse.getDetail().get(1).getDetail().get(9).getOverall().getAmount());
+		Assert.assertEquals(0.0, getResponse.getDetail().get(1).getDetail().get(9).getRetail().getAmount());
 		// verify dealer 11
-		Assert.assertEquals(500.0, getResponse.getDetail().get(1).getSalesDetail().get(10).getOverall().getAmount());
-		Assert.assertEquals(500.0, getResponse.getDetail().get(1).getSalesDetail().get(10).getRetail().getAmount());
+		Assert.assertEquals(500.0, getResponse.getDetail().get(1).getDetail().get(10).getOverall().getAmount());
+		Assert.assertEquals(500.0, getResponse.getDetail().get(1).getDetail().get(10).getRetail().getAmount());
 	
 	}
 	

@@ -23,6 +23,7 @@ import org.hibernate.annotations.Type;
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="timeID", type="long"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer"), 
+					@org.hibernate.annotations.ParamDef(name="durationID", type="integer"), 
 					@org.hibernate.annotations.ParamDef(name="itemID", type="long"), 
 					@org.hibernate.annotations.ParamDef(name="departmentID", type="integer")}), 
 			@org.hibernate.annotations.FilterDef(name="difAllFilter", 
@@ -37,7 +38,7 @@ import org.hibernate.annotations.Type;
 		}
 		)
 @Filters( {
-    @Filter(name="difFilter", condition="timeID = :timeID and dealerID = :dealerID and itemID = :itemID and departmentID = :departmentID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
+    @Filter(name="difFilter", condition="timeID = :timeID and durationID = :durationID and dealerID = :dealerID and itemID = :itemID and departmentID = :departmentID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
     @Filter(name="difAllFilter", condition="timeID = :timeID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
     @Filter(name="deffRefTimeFilter", condition="timestamp < :referenceTime and timeEnd >= :referenceTime"), 
 } )
@@ -57,6 +58,8 @@ public class DealerInventoryFact implements Serializable, TemporalEntity {
 	private Integer departmentID;
 	@Id
 	private Long itemID;
+	@Id
+	private Integer durationID;
 	private BigDecimal amount;
 	@Id
 	@Type(type = "datetime")
@@ -64,6 +67,15 @@ public class DealerInventoryFact implements Serializable, TemporalEntity {
 	@Type(type = "datetime")
 	private Instant timeEnd;
 	private Integer version;
+
+	@Id
+	public Integer getDurationID() {
+		return durationID;
+	}
+
+	public void setDurationID(Integer durationID) {
+		this.durationID = durationID;
+	}
 
 	 @Version
 	public Integer getVersion() {
@@ -133,6 +145,7 @@ public class DealerInventoryFact implements Serializable, TemporalEntity {
 				.append("dealerID", dealerID)
 				.append("itemID", itemID)
 				.append("departmentID", departmentID)
+				.append("durationID", durationID)
 				.append("amount", amount)
 				.append("timestamp", timestamp)
 				.append("timeEnd", timeEnd)

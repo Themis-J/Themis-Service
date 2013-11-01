@@ -27,6 +27,10 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
 					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate"), 
 					@org.hibernate.annotations.ParamDef(name="dealerID", type="integer")}), 
+			@org.hibernate.annotations.FilterDef(name="hrDateFilter", 
+					parameters = {
+					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
+					@org.hibernate.annotations.ParamDef(name="referenceDate", type="com.jdc.themis.dealer.data.hibernate.type.PersistentLocalDate")}),
 			@org.hibernate.annotations.FilterDef(name="hrFilterSingleItem", 
 					parameters = {
 					@org.hibernate.annotations.ParamDef(name="referenceTime", type="com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp"), 
@@ -38,7 +42,8 @@ import com.jdc.themis.dealer.data.hibernate.type.PersistentTimestamp;
 		)
 @Filters( {
     @Filter(name="hrFilterSingleItem", condition="validDate = :referenceDate and id = :id and departmentID = :departmentID and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"), 
-    @Filter(name="hrFilter", condition="validDate = :referenceDate and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime")
+    @Filter(name="hrFilter", condition="validDate = :referenceDate and dealerID = :dealerID and timestamp < :referenceTime and timeEnd >= :referenceTime"),
+    @Filter(name="hrDateFilter", condition="validDate = :referenceDate and timestamp < :referenceTime and timeEnd >= :referenceTime")
 } )
 @TypeDefs({ @TypeDef(name = "datetime", typeClass = PersistentTimestamp.class),
 	@TypeDef(name = "localdate", typeClass = PersistentLocalDate.class)})
@@ -48,7 +53,8 @@ public class HumanResourceAllocation implements TemporalEntity, Serializable {
 	private static final long serialVersionUID = 1L;
 	public static final String FILTER = "hrFilter";
 	public static final String FILTER_SINGLEITEM = "hrFilterSingleItem";
-
+	public static final String FILTER_VALIDATE = "hrDateFilter";
+	
 	@Id
 	private Integer id;
 	@Id
