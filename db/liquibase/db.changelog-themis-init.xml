@@ -9,5 +9,7 @@
 		<comment>Themis Init</comment>
 		<sqlFile path="incremental/init/1_create_themis_tables.sql" stripComments="true"/>
 		<sqlFile path="incremental/init/2_insert_themis_data.sql" stripComments="true"/>
+		<sqlFile path="incremental/init/3_tooltip_columns.sql" stripComments="true"/>
+		<sqlFile path="incremental/init/4_tooltip_rows.sql" stripComments="true"/>
 	</changeSet>
 </databaseChangeLog>
